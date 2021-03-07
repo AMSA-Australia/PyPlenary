@@ -1,4 +1,4 @@
-{#
+<!--
     Copyright © 2021  Lee Yingtong Li (RunasSudo)
 
     This program is free software: you can redistribute it and/or modify
@@ -13,9 +13,11 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#}
+-->
 
 <!DOCTYPE html>
+<html lang="en">
+{% load static %}
 <html>
 	<head>
 		{% block head %}
@@ -26,7 +28,7 @@
 			<title>{% block title %}{% endblock %}</title>
 			
 			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" integrity="sha256-UXesixbeLkB/UYxVTzuj/gg3+LMzgwAmg3zD+C4ZASQ=" crossorigin="anonymous">
-			<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+			<link rel="stylesheet" type="text/css" href="{% static 'councilApp/css/main.css'%}">
 		{% endblock %}
 	</head>
 	<body>

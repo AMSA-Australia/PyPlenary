@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'councilApp/semantic_base.html' %}
 
-{#
+<!--
     Copyright © 2021  Lee Yingtong Li (RunasSudo)
 
     This program is free software: you can redistribute it and/or modify
@@ -15,29 +15,24 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#}
+-->
 
-{% block title %}{{ config.site.name }}{% endblock %}
-
-{% block masthead %}
-	{{ super() }}
-	<div class="ui text container">
-		<h1 class="ui inverted header">{{ config.site.name }}</h1>
-		<h2>{{ config.site.tagline }}</h2>
+{% block body %}
+	<div class="ui inverted vertical masthead center aligned segment">
+		
+			<div class="ui container">
+				<div class="ui large secondary inverted pointing menu">
+					<a class="{% if active_tab == 'index' %}active {% endif %}item" href="">AMSA National Council 1 2021</a>
+					<a class="{% if active_tab == 'speaker_list' %}active {% endif %}item" href="">Speaker List</a>
+				</div>
+			</div>
+		{% block masthead %}
+		{% endblock %}
 	</div>
-{% endblock %}
-
-{% block content %}
-	<div class="ui cards">
-		<a class="ui card" href="{{ url_for('speaker_list') }}">
-			<div class="content">
-				<div class="header">Speaker List</div>
-				<div class="description">View the speaker list, or put yourself on the list to indicate you would like to speak.</div>
-			</div>
-			<div class="ui bottom attached primary button">
-				<i class="chevron right icon" style="margin: 0 .42857143em 0 -.21428571em;"></i>
-				Enter
-			</div>
-		</a>
+	
+	<div class="ui vertical stripe segment">
+		<div class="ui container">
+			{% block content %}{% endblock %}
+		</div>
 	</div>
 {% endblock %}

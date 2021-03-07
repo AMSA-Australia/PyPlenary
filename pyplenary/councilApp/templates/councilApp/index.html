@@ -1,6 +1,6 @@
-{% extends 'semantic_base.html' %}
+{% extends 'councilApp/base.html' %}
 
-{#
+<!--
     Copyright © 2021  Lee Yingtong Li (RunasSudo)
 
     This program is free software: you can redistribute it and/or modify
@@ -15,23 +15,28 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#}
+-->
 
-{% block body %}
-	<div class="ui inverted vertical masthead center aligned segment">
-		{% block masthead %}
-			<div class="ui container">
-				<div class="ui large secondary inverted pointing menu">
-					<a class="{% if active_tab == 'index' %}active {% endif %}item" href="{{ url_for('index') }}">{{ config.site.name }}</a>
-					<a class="{% if active_tab == 'speaker_list' %}active {% endif %}item" href="{{ url_for('speaker_list') }}">Speaker List</a>
-				</div>
-			</div>
-		{% endblock %}
+{% block title %}AMSA National Council 1 2021{% endblock %}
+
+{% block masthead %}
+	<div class="ui text container">
+		<h1 class="ui inverted header">AMSA National Council 1 2021</h1>
+		<h2>26–28 March 2021 🍊</h2>
 	</div>
-	
-	<div class="ui vertical stripe segment">
-		<div class="ui container">
-			{% block content %}{% endblock %}
-		</div>
+{% endblock %}
+
+{% block content %}
+	<div class="ui cards">
+		<a class="ui card" href="">
+			<div class="content">
+				<div class="header">Speaker List</div>
+				<div class="description">View the speaker list, or put yourself on the list to indicate you would like to speak.</div>
+			</div>
+			<div class="ui bottom attached primary button">
+				<i class="chevron right icon" style="margin: 0 .42857143em 0 -.21428571em;"></i>
+				Enter
+			</div>
+		</a>
 	</div>
 {% endblock %}
