@@ -12,4 +12,5 @@ from . import views
 urlpatterns = [
 	path('', views.index),
 	path('index.html', views.index),
+	path('speaker_list/', views.speakerList),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

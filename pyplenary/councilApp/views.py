@@ -13,10 +13,17 @@ from django.views.decorators.http import last_modified
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+import toml
 
-@never_cache
+# Load config
+with open('config.toml', 'r', encoding="utf8") as f:
+	config = toml.load(f)
+
 def index(request):
-    return render(request, 'councilApp/index.html')
+    return render(request, 'councilApp/index.html', {'active_tab':'index', 'config':config})
+
+def speakerList(request):
+    return render(request, 'councilApp/index.html', {'active_tab':'speaker_list', 'config':config})
 
 def loginCustom(request):
     if request.user.is_authenticated:
