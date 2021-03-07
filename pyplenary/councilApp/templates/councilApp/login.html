@@ -1,0 +1,31 @@
+{% extends "PHapp/header.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="outer-container">
+<div class="inner-container">
+	<h2>Login</h2>
+	<p>If you haven't yet registered a team, do so <a href='/registration/'>here</a>.</p>
+	<p>If you have forgotten your password or username, <a href='/password_change/'>click here</a>. If you have further issues logging in, email us at <a href="mailto:mumspuzzlehunt2019@gmail.com" target="_top">mumspuzzlehunt2019@gmail.com</a> with an email account that you have registered.</p>
+	{% if wrong %}
+		<div class="alert alert-danger" role="alert">
+			Invalid username or password.
+		</div>
+	{% endif %}
+
+	<div>
+		<form method="post">
+			<div class="form-group">
+				{% csrf_token %}
+
+				{{ loginForm|crispy }}	
+
+				<br>
+				<button type="submit" class="btn btn-success btn-block">Submit</button>
+			</div>
+		</form>
+	</div>
+</div>
+</div>
+{% endblock %}

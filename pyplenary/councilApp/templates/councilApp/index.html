@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'councilApp/base.html' %}
 
-{#
+<!--
     Copyright © 2021  Lee Yingtong Li (RunasSudo)
 
     This program is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#}
+-->
 
-{% block title %}{{ config.site.name }}{% endblock %}
+{% block title %}AMSA National Council 1 2021{% endblock %}
 
 {% block masthead %}
-	{{ super() }}
 	<div class="ui text container">
 		<h1 class="ui inverted header">{{ config.site.name }}</h1>
 		<h2>{{ config.site.tagline }}</h2>
@@ -29,7 +28,7 @@
 
 {% block content %}
 	<div class="ui cards">
-		<a class="ui card" href="{{ url_for('speaker_list') }}">
+		<a class="ui card" href="">
 			<div class="content">
 				<div class="header">Speaker List</div>
 				<div class="description">View the speaker list, or put yourself on the list to indicate you would like to speak.</div>
