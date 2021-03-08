@@ -13,4 +13,9 @@ urlpatterns = [
 	path('', views.index),
 	path('index.html', views.index),
 	path('speaker_list/', views.speakerList),
+	path('delegates/', views.delegates),
+	path('profile/', views.profile),
+	path('vote/', views.vote),
+	path('login/', views.loginCustom),
+	path('logout/', views.logoutCustom),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

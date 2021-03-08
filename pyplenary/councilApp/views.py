@@ -13,10 +13,14 @@ from django.views.decorators.http import last_modified
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from .forms import *
+from .models import *
 import toml
+import os
 
 # Load config
-with open('config.toml', 'r', encoding="utf8") as f:
+print(os.getcwd())
+with open('config.toml', 'r', encoding='utf8') as f:
 	config = toml.load(f)
 
 def index(request):
@@ -24,6 +28,21 @@ def index(request):
 
 def speakerList(request):
     return render(request, 'councilApp/index.html', {'active_tab':'speaker_list', 'config':config})
+
+def delegates(request):
+    allDelegates = Delegates.objects.all()
+    allDelegates = sorted(allDelegates, key=lambda x:x.speakerNum)
+    thisDelegateId = None
+    if request.user.is_authenticated:
+        thisDelegateId = Delegates.objects.get(authClone=request.user).id
+    return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates, 'thisDelegateId':thisDelegateId, 
+        'active_tab':'delegates', 'config':config})
+
+def profile(request):
+    return render(request, 'councilApp/profile.html', {'active_tab':'profile', 'config':config})
+
+def vote(request):
+    return render(request, 'councilApp/vote.html', {'active_tab':'vote', 'config':config})
 
 def loginCustom(request):
     if request.user.is_authenticated:
@@ -38,7 +57,7 @@ def loginCustom(request):
             
             if user == None:
                 loginForm = LoginForm()
-                return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':True})
+                return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':True, 'active_tab':'login', 'config':config})
             else:
                 login(request, user)
                 try:
@@ -48,7 +67,7 @@ def loginCustom(request):
     else:
         loginForm = LoginForm()
 
-    return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':False})
+    return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':False, 'active_tab':'login', 'config':config})
 
 def logoutCustom(request):
     logout(request)
