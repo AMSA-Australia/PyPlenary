@@ -20,23 +20,57 @@
 {% block title %}AMSA National Council 1 2021{% endblock %}
 
 {% block masthead %}
-	<div class="ui text container">
-		<h1 class="ui inverted header">{{ config.site.name }}</h1>
-		<h2>{{ config.site.tagline }}</h2>
-	</div>
+  <div class="masthead">
+    <h1>{{ config.site.name }}</h1>
+    <h2>{{ config.site.tagline }}</h2>
+  </div>
 {% endblock %}
 
 {% block content %}
-	<div class="ui cards">
-		<a class="ui card" href="">
-			<div class="content">
-				<div class="header">Speaker List</div>
-				<div class="description">View the speaker list, or put yourself on the list to indicate you would like to speak.</div>
-			</div>
-			<div class="ui bottom attached primary button">
-				<i class="chevron right icon" style="margin: 0 .42857143em 0 -.21428571em;"></i>
-				Enter
-			</div>
-		</a>
-	</div>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Speaker List</h5>
+          <p class="card-text">View the speaker list, or put yourself on the list to indicate you would like to speak.</p>
+        </div>
+        <a href="/" class="btn btn-primary card-btn stretched-link">Enter</a>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">View delegates</h5>
+          <p class="card-text">View all delegates</p>
+        </div>
+        <a href="/delegates/" class="btn btn-primary card-btn stretched-link">Enter</a>
+      </div>
+    </div>
+
+    {% if user.is_authenticated %}
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">View profile</h5>
+            <p class="card-text">View your registered profile</p>
+          </div>
+          <a href="/profile/" class="btn btn-primary card-btn stretched-link">Enter</a>
+        </div>
+      </div>
+
+      {% if user.delegates.rep %}
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Vote</h5>
+              <p class="card-text">For AMSA reps to vote</p>
+            </div>
+            <a href="/vote/" class="btn btn-primary card-btn stretched-link">Enter</a>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+
+  </div>
 {% endblock %}

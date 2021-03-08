@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'councilApp',    
     'crispy_forms',
     'django_extensions',
+    'crispy_forms_semantic_ui',
 ]
 
 MIDDLEWARE = [
@@ -120,4 +121,5 @@ STATICFILES_DIRS = []
 
 CSRF_USE_SESSIONS = True
 
+#CRISPY_TEMPLATE_PACK = 'semantic-ui'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
