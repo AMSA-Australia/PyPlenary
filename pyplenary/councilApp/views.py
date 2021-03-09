@@ -75,6 +75,7 @@ def poll(request):
                 return redirect('/poll/')
         else:
             pollForm = StartPollForm()
+            
 
         return render(request, 'councilApp/poll.html', {'pollForm':pollForm, 'active':False, 'active_tab':'poll', 'config':config})
     
