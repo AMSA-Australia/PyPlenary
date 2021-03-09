@@ -1,26 +1,29 @@
 from django import forms
-from django.shortcuts import render, redirect
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.views.decorators.cache import never_cache
 from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
-from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from django.contrib.auth.models import User
-from django.forms import formset_factory, ValidationError
 from django.core import mail
 from django.core.mail import send_mail
-from django.views.decorators.http import last_modified
-from django.urls import reverse
+from django.forms import formset_factory, ValidationError
+from django.http import JsonResponse, FileResponse, Http404, HttpResponse
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.html import strip_tags
+from django.views.decorators.cache import never_cache
+from django.views.decorators.http import last_modified
+
 from .forms import *
 from .models import *
 import toml
 import os
 
 # Load config
+os.chdir(settings.BASE_DIR)
 print(os.getcwd())
-with open('config.toml', 'r', encoding='utf8') as f:
+with open('../config.toml', 'r', encoding='utf8') as f:
 	config = toml.load(f)
 
 def index(request):
@@ -41,8 +44,44 @@ def delegates(request):
 def profile(request):
     return render(request, 'councilApp/profile.html', {'active_tab':'profile', 'config':config})
 
+@login_required
 def vote(request):
     return render(request, 'councilApp/vote.html', {'active_tab':'vote', 'config':config})
+
+@login_required
+def poll(request):
+    delegate = Delegates.objects.get(authClone = request.user)
+    if not delegate.superadmin:
+        raise Http404()
+
+    allPolls = Polls.objects.all()
+    active = sum([i.active for i in allPolls])
+
+    if not active:
+        if request.method == 'POST':
+            pollForm = StartPollForm(request.POST)
+            if pollForm.is_valid():
+                for i in Polls.objects.all():
+                    i.active = False
+                    i.save()
+
+                newPoll = Polls()
+                newPoll.title = pollForm.cleaned_data.get('title')
+                newPoll.anonymous = pollForm.cleaned_data.get('anonymous')
+                newPoll.repsOnly = pollForm.cleaned_data.get('repsOnly')
+                newPoll.active = True
+                newPoll.save()
+
+                return redirect('/poll/')
+        else:
+            pollForm = StartPollForm()
+
+        return render(request, 'councilApp/poll.html', {'pollForm':pollForm, 'active':False, 'active_tab':'poll', 'config':config})
+    
+    else:
+        activePoll = Polls.objects.get(active = True)
+        return render(request, 'councilApp/poll.html', {'activePoll':activePoll, 'active':True, 'active_tab':'poll', 'config':config})
+
 
 def loginCustom(request):
     if request.user.is_authenticated:

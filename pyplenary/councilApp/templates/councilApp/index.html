@@ -34,15 +34,37 @@
           <h5 class="card-title">Speaker List</h5>
           <p class="card-text">View the speaker list, or put yourself on the list to indicate you would like to speak.</p>
         </div>
-        <a href="/" class="btn btn-primary card-btn stretched-link">Enter</a>
+        <a href="/" class="btn btn-primary card-btn stretched-link">  Enter</a>
+      </div>
+    </div>
+
+    {% if user.is_authenticated and user.delegates.superadmin %}
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Poll Centre</h5>
+            <p class="card-text">Create or manage polls.</p>
+          </div>
+          <a href="/vote/" class="btn btn-primary card-btn stretched-link">Enter</a>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Vote</h5>
+          <p class="card-text">Platform for you to vote on polls.</p>
+        </div>
+        <a href="/vote/" class="btn btn-primary card-btn stretched-link">Enter</a>
       </div>
     </div>
 
     <div class="col">
       <div class="card h-100">
         <div class="card-body">
-          <h5 class="card-title">View delegates</h5>
-          <p class="card-text">View all delegates</p>
+          <h5 class="card-title">View Delegates</h5>
+          <p class="card-text">View all delegates at this Council.</p>
         </div>
         <a href="/delegates/" class="btn btn-primary card-btn stretched-link">Enter</a>
       </div>
@@ -52,24 +74,12 @@
       <div class="col">
         <div class="card h-100">
           <div class="card-body">
-            <h5 class="card-title">View profile</h5>
-            <p class="card-text">View your registered profile</p>
+            <h5 class="card-title">View Profile</h5>
+            <p class="card-text">View your registered profile.</p>
           </div>
           <a href="/profile/" class="btn btn-primary card-btn stretched-link">Enter</a>
         </div>
       </div>
-
-      {% if user.delegates.rep %}
-        <div class="col">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">Vote</h5>
-              <p class="card-text">For AMSA reps to vote</p>
-            </div>
-            <a href="/vote/" class="btn btn-primary card-btn stretched-link">Enter</a>
-          </div>
-        </div>
-      {% endif %}
     {% endif %}
 
   </div>

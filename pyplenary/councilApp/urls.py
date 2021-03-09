@@ -15,6 +15,7 @@ urlpatterns = [
 	path('speaker_list/', views.speakerList),
 	path('delegates/', views.delegates),
 	path('profile/', views.profile),
+	path('poll/', views.poll),
 	path('vote/', views.vote),
 	path('login/', views.loginCustom),
 	path('logout/', views.logoutCustom),

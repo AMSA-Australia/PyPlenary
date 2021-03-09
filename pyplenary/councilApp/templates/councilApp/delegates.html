@@ -4,14 +4,16 @@
 {% block content %}
 <h2>Delegate List</h2>
 <br>
+<input type="text" class="form-control" id="delegateSearchInput" onkeyup="searchDelegateTable()" placeholder="Search within delegate table...">
+<br>
 <div class="table-responsive">
-  <table class="table">
+  <table class="table table-hover" id="delegateTable">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">Speaker number</th>
-        <th scope="col">Name</th>
-        <th scope="col">Role</th>
-        <th scope="col">Institution</th>
+        <th scope="col" style="width: 15%">Speaker #</th>
+        <th scope="col" style="width: 25%">Name</th>
+        <th scope="col" style="width: 25%">Role</th>
+        <th scope="col" style="width: 35%">Institution</th>
       </tr>
     </thead>
     <tbody>
@@ -21,7 +23,7 @@
         {% else %}
           <tr>
         {% endif %}
-          <th scope="col">{{ delegate.speakerNum }}</th>
+          <td>{{ delegate.speakerNum }}</th>
           <td>{{ delegate.name }}</td>
           <td>{{ delegate.role }}</td>
           <td>{{ delegate.institution }}</td>

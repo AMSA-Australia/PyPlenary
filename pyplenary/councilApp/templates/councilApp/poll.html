@@ -1,0 +1,24 @@
+{% extends 'councilApp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>Poll Centre</h2>
+<br>
+
+{% if not active %}
+  <div>
+    <form method="post">
+      <div class="form">
+        {% csrf_token %}
+        {{ pollForm|crispy }}  
+        <br>
+        <button type="submit" class="btn btn-success btn-block">Submit</button>
+      </div>
+    </form>
+  </div>
+{% else %}
+  <div>
+    <h3>{{activePoll.title}}</h3>
+  </div>
+{% endif %}
+{% endblock %}
