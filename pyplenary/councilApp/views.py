@@ -27,7 +27,7 @@ def index(request):
     return render(request, 'councilApp/index.html', {'active_tab':'index', 'config':config})
 
 def speakerList(request):
-    return render(request, 'councilApp/index.html', {'active_tab':'speaker_list', 'config':config})
+    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'config':config})
 
 def delegates(request):
     allDelegates = Delegates.objects.all()
