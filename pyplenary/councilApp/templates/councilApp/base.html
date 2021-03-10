@@ -22,7 +22,7 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">{{ config.site.name }}</a>
+        <a class="navbar-brand" href="/">{{ config.site.name }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -31,30 +31,38 @@
             <li class="nav-item">
               <a class="nav-link {% if active_tab == 'index' %}active{% endif %}" aria-current="page" href="/">Home</a>
             </li>
+
             <li class="nav-item">
               <a class="nav-link {% if active_tab == 'speaker_list' %}active{% endif %}" href="/speaker_list/">Speaker List</a>
             </li>
+
+            {% if user.is_authenticated and user.delegate.superadmin %}
+              <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'poll' %}active{% endif %}"  href="/poll/">Poll Centre</a>
+              </li>
+            {% endif %} 
+
             <li class="nav-item">
-              <a class="nav-link {% if active_tab == 'delegates' %}active{% endif %}" href="/delegates/">Delegate list</a>
+              <a class="nav-link {% if active_tab == 'vote' %}active{% endif %}"  href="/vote/">Vote</a>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'delegates' %}active{% endif %}" href="/delegates/">Delegate List</a>
+            </li>
+
             {% if user.is_authenticated %}
-              <li>
+              <li class="nav-item">
                 <a class="nav-link {% if active_tab == 'profile' %}active{% endif %}"  href="/profile/">Profile</a>
               </li>
-              {% if user.delegates.rep %}
-                <li>
-                  <a class="nav-link {% if active_tab == 'vote' %}active{% endif %}"  href="/vote/">Vote</a>
-                </li>
-              {% endif %} 
             {% endif %}
         </ul>
         <ul class="navbar-nav ms-auto">
           {% if user.is_authenticated %}
-            <li>
+            <li class="nav-item">
               <a class="nav-link" href="/logout/">Logout</a>
             </li>
           {% else %}
-            <li>
+            <li class="nav-item">
               <a class="nav-link {% if active_tab == 'login' %}active{% endif %}" href="/login/">Login</a>
             </li>
           {% endif %}

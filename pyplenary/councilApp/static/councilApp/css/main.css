@@ -50,3 +50,13 @@
 .card-btn {
     background-color: #ff9133;
 }
+
+.nav-item {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.nav-link.active {
+    border-color: #ffffff;
+    border-bottom-style: solid;
+}
