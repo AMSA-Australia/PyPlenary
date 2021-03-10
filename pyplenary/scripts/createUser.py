@@ -10,18 +10,18 @@ def run():
 		password = input("Password: ")
 	password2 = None
 	while password != password2:
-		password2 = input("Password again:")
-	rep = bool(int(input("Rep? [1/0]")))
-	institution = input("Institution? ")
+		password2 = input("Password again: ")
+	rep = bool(int(input("Rep? [1/0] ")))
+	institution = input("Institution? Short name please: ")
 
 	newUser = User.objects.create_user(email, email, password)
 
-	newDelegate = Delegates()
+	newDelegate = Delegate()
 	newDelegate.authClone = newUser
 	newDelegate.name = name
 	newDelegate.email = email
 	newDelegate.rep = True
-	newDelegate.institution = "Melb"
+	newDelegate.institution = Institution.objects.get(shortName=institution)
 	newDelegate.save()
 
 	print("Created new delegate.")

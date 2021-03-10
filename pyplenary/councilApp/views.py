@@ -33,11 +33,10 @@ def speakerList(request):
     return render(request, 'councilApp/index.html', {'active_tab':'speaker_list', 'config':config})
 
 def delegates(request):
-    allDelegates = Delegates.objects.all()
-    allDelegates = sorted(allDelegates, key=lambda x:x.speakerNum)
+    allDelegates = sorted(Delegate.objects.all(), key=lambda x:x.speakerNum)
     thisDelegateId = None
     if request.user.is_authenticated:
-        thisDelegateId = Delegates.objects.get(authClone=request.user).id
+        thisDelegateId = Delegate.objects.get(authClone=request.user).id
     return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates, 'thisDelegateId':thisDelegateId, 
         'active_tab':'delegates', 'config':config})
 
@@ -50,25 +49,27 @@ def vote(request):
 
 @login_required
 def poll(request):
-    delegate = Delegates.objects.get(authClone = request.user)
+    delegate = Delegate.objects.get(authClone = request.user)
     if not delegate.superadmin:
         raise Http404()
 
-    allPolls = Polls.objects.all()
+    allPolls = Poll.objects.all()
     active = sum([i.active for i in allPolls])
 
     if not active:
         if request.method == 'POST':
             pollForm = StartPollForm(request.POST)
             if pollForm.is_valid():
-                for i in Polls.objects.all():
+                for i in Poll.objects.all():
                     i.active = False
                     i.save()
 
-                newPoll = Polls()
+                newPoll = Poll()
                 newPoll.title = pollForm.cleaned_data.get('title')
                 newPoll.anonymous = pollForm.cleaned_data.get('anonymous')
                 newPoll.repsOnly = pollForm.cleaned_data.get('repsOnly')
+                newPoll.weighted = pollForm.cleaned_data.get('weighted')
+                newPoll.supermajority = pollForm.cleaned_data.get('majority') == 'super'
                 newPoll.active = True
                 newPoll.save()
 
@@ -80,7 +81,7 @@ def poll(request):
         return render(request, 'councilApp/poll.html', {'pollForm':pollForm, 'active':False, 'active_tab':'poll', 'config':config})
     
     else:
-        activePoll = Polls.objects.get(active = True)
+        activePoll = Poll.objects.get(active = True)
         return render(request, 'councilApp/poll.html', {'activePoll':activePoll, 'active':True, 'active_tab':'poll', 'config':config})
 
 

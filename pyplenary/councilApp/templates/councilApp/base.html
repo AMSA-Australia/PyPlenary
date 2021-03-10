@@ -36,7 +36,7 @@
               <a class="nav-link {% if active_tab == 'speaker_list' %}active{% endif %}" href="/speaker_list/">Speaker List</a>
             </li>
 
-            {% if user.is_authenticated and user.delegates.superadmin %}
+            {% if user.is_authenticated and user.delegate.superadmin %}
               <li class="nav-item">
                 <a class="nav-link {% if active_tab == 'poll' %}active{% endif %}"  href="/poll/">Poll Centre</a>
               </li>
