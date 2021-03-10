@@ -48,6 +48,7 @@ class Poll(models.Model):
     repsOnly = models.BooleanField(default=False)
     weighted = models.BooleanField(default=False)
     supermajority = models.BooleanField(default=False) #False for simple, True for super
+    outcome = models.BooleanField(default=False, null=True)
 
     class Meta:
         db_table = 'Poll'
@@ -62,6 +63,7 @@ class Vote(models.Model):
     voter = models.ForeignKey(Delegate, models.CASCADE, related_name='voter')
     proxy = models.ForeignKey(Delegate, models.CASCADE, null=True, related_name='proxy')
     vote = models.IntegerField(default=0) # 2 for Yes, 1 for No, 0 for Abstain
+    voteWeight = models.IntegerField(default=1)
     voteTime = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:

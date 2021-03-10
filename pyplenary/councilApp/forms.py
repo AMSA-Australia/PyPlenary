@@ -21,3 +21,4 @@ class StartPollForm(forms.Form):
 		widget=forms.CheckboxInput(attrs={'class': 'centred-checkbox', 'id':'check_weighted', 'disabled':True}))
 	majority = forms.ChoiceField(required = True, label="Majority", choices=[('simple','Simple majority (1/2 of votes)'),('super','Supermajority (2/3 of votes)')],
 		widget=forms.RadioSelect(), initial='simple')
+	

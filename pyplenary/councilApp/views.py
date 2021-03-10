@@ -11,9 +11,11 @@ from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.html import strip_tags
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import last_modified
+from datetime import datetime
 
 from .forms import *
 from .models import *
@@ -63,7 +65,6 @@ def poll(request):
                 for i in Poll.objects.all():
                     i.active = False
                     i.save()
-
                 newPoll = Poll()
                 newPoll.title = pollForm.cleaned_data.get('title')
                 newPoll.anonymous = pollForm.cleaned_data.get('anonymous')
@@ -72,17 +73,50 @@ def poll(request):
                 newPoll.supermajority = pollForm.cleaned_data.get('majority') == 'super'
                 newPoll.active = True
                 newPoll.save()
-
                 return redirect('/poll/')
         else:
             pollForm = StartPollForm()
             
-
         return render(request, 'councilApp/poll.html', {'pollForm':pollForm, 'active':False, 'active_tab':'poll', 'config':config})
     
     else:
         activePoll = Poll.objects.get(active = True)
         return render(request, 'councilApp/poll.html', {'activePoll':activePoll, 'active':True, 'active_tab':'poll', 'config':config})
+
+def closePoll(request):
+    activePoll = Poll.objects.get(active = True)
+    if not activePoll:
+        raise Http404()
+    
+    activePoll.endTime = timezone.now()
+
+    votesInPoll = Vote.objects.filter(poll = activePoll)
+    activePoll.yesVotes = sum([i.voteWeight for i in votesInPoll if i.vote == 2])
+    activePoll.noVotes = sum([i.voteWeight for i in votesInPoll if i.vote == 1])
+    activePoll.abstainVotes = sum([i.voteWeight for i in votesInPoll if i.vote == 0])
+    activePoll.outcome = False
+    if activePoll.supermajority:
+        if activePoll.yesVotes > 2*activePoll.noVotes:
+            activePoll.outcome = True
+    else:
+        if activePoll.yesVotes > activePoll.noVotes:
+            activePoll.outcome = True
+        
+    activePoll.active = False
+    activePoll.save()
+
+    for i in Poll.objects.all():
+        i.active = False
+        i.save()
+    
+    return redirect(f'/poll/{activePoll.id}/')
+
+def endedPollInfo(request, pollId):
+    poll = Poll.objects.get(id=pollId)
+    if not poll:
+        raise Http404()
+
+    return render(request, 'councilApp/pollInfo.html', {'poll':poll, 'active_tab':'poll', 'config':config})
 
 
 def loginCustom(request):
