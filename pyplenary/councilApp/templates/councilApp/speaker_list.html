@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'councilApp/base.html' %}
 
-{#
-    Copyright © 2021  Lee Yingtong Li (RunasSudo)
+{% comment %}
+    Copyright © 2021  Lee Yingtong Li (RunasSudo), Allen Gu
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -15,10 +15,65 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#}
+{% endcomment %}
 
 {% block title %}Speaker List{% endblock %}
 
 {% block content %}
-	Hello World!
+  <div style="max-width: 600px; margin: 0 auto;">
+    <h2 class="mb-3">Speaker List</h2>
+
+    <div class="row mb-3">
+      <div class="col-12 col-md-6 mb-2 mb-md-0">
+        <button type="button" class="btn btn-primary w-100">Add yourself to the speaker list</button>
+      </div>
+      <div class="col-12 col-md-6">
+        <button type="button" class="btn btn-danger w-100">Raise a point of order</button>
+      </div>
+    </div>
+    
+    <div class="list-group" id="speaker-list">
+      <div class="list-group-item list-group-item-primary">
+        <div class="h5 d-flex mb-0">
+          <span style="flex-grow:1;">Adam Smith</span>
+          <i class="bi bi-star" data-toggle="tooltip" title="First time attendee"></i>
+        </div>
+        <small>Speaker 101. Role Title.</small>
+      </div>
+      <div class="list-group-item">
+        <div class="h5 d-flex mb-0">
+          <span style="flex-grow:1;">Barbara Bloggs</span>
+        </div>
+        <small>Speaker 102. Role Title.</small>
+      </div>
+      <div class="list-group-item list-group-item-danger">
+        <div class="h5 d-flex mb-0">
+          <span style="flex-grow:1;">Charlie Citizen</span>
+          <i class="bi bi-exclamation-triangle-fill" data-toggle="tooltip" title="Point of order"></i>
+        </div>
+        <small>Speaker 103. Role Title.</small>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dragula@3.7.3/dist/dragula.min.css" integrity="sha256-kbjOP63kZCB+lxhssN+h5qDCLSLI7EhP3/r2S/jPCd4=" crossorigin="anonymous">
+{% endblock %}
+
+{% block script %}
+  {{ block.super }}
+  <script src="https://cdn.jsdelivr.net/npm/dragula@3.7.3/dist/dragula.min.js" integrity="sha256-egj5xxtj40Ds0GUbObVZ7m2LEOsnvu9i5Ogtmd1I+jk=" crossorigin="anonymous"></script>
+  <script>
+    $(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    var dragulaSL = dragula([document.querySelector('#speaker-list')]);
+
+    dragulaSL.on("drop", function(el, target, source, sibling) {
+      alert("Dragged and dropped!");
+    });
+  </script>
 {% endblock %}
