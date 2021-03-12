@@ -16,6 +16,7 @@ urlpatterns = [
 	path('delegates/', views.delegates),
 	path('profile/', views.profile),
 	path('poll/', views.poll),
+	path('poll/create/', views.createPoll),
 	path('poll/close/', views.closePoll),
 	path('poll/<int:pollId>/', views.endedPollInfo),
 	path('vote/', views.vote),

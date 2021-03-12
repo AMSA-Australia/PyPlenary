@@ -49,8 +49,11 @@ def profile(request):
 def vote(request):
     return render(request, 'councilApp/vote.html', {'active_tab':'vote', 'config':config})
 
-@login_required
 def poll(request):
+    pass
+
+@login_required
+def createPoll(request):
     delegate = Delegate.objects.get(authClone = request.user)
     if not delegate.superadmin:
         raise Http404()
@@ -80,10 +83,14 @@ def poll(request):
         return render(request, 'councilApp/poll.html', {'pollForm':pollForm, 'active':False, 'active_tab':'poll', 'config':config})
     
     else:
-        activePoll = Poll.objects.get(active = True)
-        return render(request, 'councilApp/poll.html', {'activePoll':activePoll, 'active':True, 'active_tab':'poll', 'config':config})
+        return redirect('/poll/')
 
+
+
+@login_required
 def closePoll(request):
+    if not Delegate.objects.get(authClone = request.user).superadmin:
+        raise Http404()
     activePoll = Poll.objects.get(active = True)
     if not activePoll:
         raise Http404()
