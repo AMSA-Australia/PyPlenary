@@ -11,5 +11,10 @@
 <p>{{ poll.abstainVotes }}</p>
 <p>{{ poll.outcome }}</p>
 
+<a href="/poll/" class="btn btn-primary">Return to polls</a>
+{% if superadmin and poll.active %}
+  <a href="/poll/close/{{poll.id}}" class="btn btn-danger">Close poll</a>
+{% endif %}
+
 
 {% endblock %}

@@ -8,26 +8,103 @@
 <h2>Poll Centre</h2>
 <br>
 
-{% if not active %}
-  <div>
-    <form method="post">
-      <div class="form">
-        {% csrf_token %}
-        {{ pollForm|crispy }}  
-        <br>
-        <button type="submit" class="btn btn-success btn-block">Create poll</button>
-      </div>
-    </form>
+{% if activePolls|length > 0 %}
+  <div class="alert alert-warning" role="alert">
+    There are active polls available for voting.
   </div>
 
-  <script src="{% static 'councilApp/js/polls.js' %}" type="text/javascript"></script>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for poll in activePolls %}
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">{{poll.title}}</h5>
+            <p class="card-text">
+              {% if poll.rep %}
+                AMSA Reps only, 
+              {% else %}
+                Voting open to all, 
+              {% endif %}
+
+              {% if poll.anonymous %}
+                Anonymous voting, 
+              {% endif %}
+
+              {% if poll.supermajority %}
+                Requires ⅔ majority
+              {% else %}
+                Requires ½ majority
+              {% endif %}
+            </p>
+          </div>
+          <a href="/vote/{{poll.id}}/" class="btn btn-primary card-btn stretched-link">Vote</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 
 {% else %}
-  <div>
-    <h3>{{activePoll.title}}</h3>
-    <br>
-    <a href="/poll/close/" class="btn btn-danger" role="button">Close poll</a>
+  <div class="alert alert-primary" role="alert">
+    There are no current polls available for you to vote.
   </div>
 {% endif %}
+
+<br>
+
+{% if superadmin %}
+  <a href="/poll/create/" class="btn btn-primary">Create poll</a>
+  <br>
+  <br>
+{% endif %}
+
+<div class="accordion" id="pollsAccordion">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="accordionHeading">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePolls" aria-expanded="false" aria-controls="collapsePolls">
+        Show/hide all polls
+      </button>
+    </h2>
+    <div id="collapsePolls" class="accordion-collapse collapse" aria-labelledby="accordionHeading" data-bs-parent="#pollsAccordion">
+      <div class="accordion-body">
+        <div class="table-responsive">
+          <table class="table table-hover" id="pollsTable">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" style="width: 15%">Time</th>
+                <th scope="col" style="width: 45%">Title</th>
+                <th scope="col" style="width: 15%">Result</th>
+                <th scope="col" style="width: 25%">Votes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for poll in allPolls %}
+                {% if poll.active %}
+                  <tr style="background:lightgreen">
+                {% else %}
+                  <tr>
+                {% endif %}
+                  <td>{{ poll.startTime | date:"H:i d/m" }}</td>
+                  <td><a href='/poll/{{ poll.id }}/'>{{ poll.title }}</a></td>
+                  <td>
+                    {% if poll.outcome == 0 %}
+                      -
+                    {% elif poll.outcome == 1 %}
+                      Passed
+                    {% elif poll.outcome == 2 %}
+                      Failed
+                    {% elif poll.outcome == 3 %}
+                      Chair's vote
+                    {% endif %}
+                  </td>
+                  <td>0</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

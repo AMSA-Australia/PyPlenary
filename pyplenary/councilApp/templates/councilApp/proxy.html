@@ -1,0 +1,86 @@
+{% extends 'councilApp/base.html' %}
+
+{% block content %}
+{% load static %}
+
+<h2>Proxy Control Panel</h2>
+<br>
+
+<h4>Your nominated proxy</h4>
+{% if proxiesForMe|length == 0 %}
+  <div class="alert alert-primary" role="alert">
+    You have not nominated a proxy.
+  </div>
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#proxyCollapse" aria-expanded="false" aria-controls="proxyCollapse">
+    Click to nominate a proxy
+  </button>
+  <br>
+  <br>
+  <div class="collapse" id="proxyCollapse">
+    <input type="text" class="form-control" id="delegateSearchInput" onkeyup="searchDelegateTable()" placeholder="Search within delegate table...">
+    <br>
+    <div class="table-responsive">
+      <table class="table table-hover" id="delegateTable">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" style="width: 15%">Nominate</th>
+            <th scope="col" style="width: 10%">Speaker #</th>
+            <th scope="col" style="width: 25%">Name</th>
+            <th scope="col" style="width: 25%">Role</th>
+            <th scope="col" style="width: 25%">Institution</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for proxyCandidate in allDelegates %}
+            {% if proxyCandidate.id != thisDelegateId %}
+              <tr>
+                <td><a onclick="nominateProxyAJAX({{ proxyCandidate.id }})" href="javascript:void(0)">Nominate</a></td>
+                <td>{{ proxyCandidate.speakerNum }}</th>
+                <td>{{ proxyCandidate.name }}</td>
+                <td>{{ proxyCandidate.role }}</td>
+                <td>{{ proxyCandidate.institution }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% else %}
+  <div class="alert alert-warning" role="alert">
+    <strong>{{ proxiesForMe.0.holder.name }} ({{proxiesForMe.0.holder.institution.shortName}})</strong> currently holds your proxy vote.
+  </div>
+  <a class="btn btn-primary" type="button" onclick="retractProxyAJAX()" href="javascript:void(0)">
+    Click to retract your proxy.
+  <a>
+{% endif %}
+
+<hr/>
+<h4>Proxies you hold</h4>
+
+{% if proxiesIHold|length == 0 %}
+  <div class="alert alert-primary" role="alert">
+    You do not hold any proxies.
+  </div>
+{% else %}
+  
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for proxyIHold in proxiesIHold %}
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Proxy</h5>
+            <p class="card-text">
+              You hold a proxy for <strong>{{ proxyIHold.voter.name }} ({{proxyIHold.voter.institution.shortName}})</strong>.
+          </div>
+          <a onclick="resignProxyAJAX({{proxyIHold.id}})" href="javascript:void(0)" class="btn btn-primary card-btn stretched-link">Click to relinquish this proxy.</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endif %}
+
+<script src="{% static 'councilApp/js/proxy.js' %}" type="text/javascript"></script>
+
+{% endblock %}

@@ -48,7 +48,7 @@ class Poll(models.Model):
     repsOnly = models.BooleanField(default=False)
     weighted = models.BooleanField(default=False)
     supermajority = models.BooleanField(default=False) #False for simple, True for super
-    outcome = models.BooleanField(default=False, null=True)
+    outcome = models.IntegerField(default=0) # 0 for no result, 1 for pass, 2 for fail, 3 for chair's call
 
     class Meta:
         db_table = 'Poll'
@@ -60,9 +60,9 @@ class Poll(models.Model):
 class Vote(models.Model):
     id = models.AutoField(primary_key=True)
     poll = models.ForeignKey(Poll, models.CASCADE)
-    voter = models.ForeignKey(Delegate, models.CASCADE, related_name='voter')
-    proxy = models.ForeignKey(Delegate, models.CASCADE, null=True, related_name='proxy')
-    vote = models.IntegerField(default=0) # 2 for Yes, 1 for No, 0 for Abstain
+    voter = models.ForeignKey(Delegate, models.CASCADE, related_name='Vote_voter')
+    proxy = models.ForeignKey(Delegate, models.CASCADE, null=True, related_name='Vote_proxy')
+    vote = models.IntegerField(default=0) # 0 for abstain, 1 for Yes, 2 for No 
     voteWeight = models.IntegerField(default=1)
     voteTime = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -71,4 +71,19 @@ class Vote(models.Model):
 
     def __str__(self):
         output = f'{self.poll.title} - {self.rep.institution} - {self.vote}'
+        return output
+
+class Proxy(models.Model):
+    id = models.AutoField(primary_key=True)
+    voter = models.ForeignKey(Delegate, models.CASCADE, related_name='Proxy_voter')
+    holder = models.ForeignKey(Delegate, models.CASCADE, related_name='Proxy_holder')
+    active = models.BooleanField(default=True)
+    activeTime = models.DateTimeField(auto_now_add=True, null=True)
+    expiryTime = models.DateTimeField(null=True)
+
+    class Meta:
+        db_table = 'Proxy'
+
+    def __str__(self):
+        output = f'{self.holder.name}: proxy for {self.voter.name}'
         return output

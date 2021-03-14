@@ -36,14 +36,8 @@
               <a class="nav-link {% if active_tab == 'speaker_list' %}active{% endif %}" href="/speaker_list/">Speaker List</a>
             </li>
 
-            {% if user.is_authenticated and user.delegate.superadmin %}
-              <li class="nav-item">
-                <a class="nav-link {% if active_tab == 'poll' %}active{% endif %}"  href="/poll/">Poll Centre</a>
-              </li>
-            {% endif %} 
-
             <li class="nav-item">
-              <a class="nav-link {% if active_tab == 'vote' %}active{% endif %}"  href="/vote/">Vote</a>
+              <a class="nav-link {% if active_tab == 'poll' %}active{% endif %}"  href="/poll/">Poll Centre</a>
             </li>
 
             <li class="nav-item">
@@ -52,7 +46,7 @@
 
             {% if user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link {% if active_tab == 'profile' %}active{% endif %}"  href="/profile/">Profile</a>
+                <a class="nav-link {% if active_tab == 'proxy' %}active{% endif %}"  href="/proxy/">Proxy</a>
               </li>
             {% endif %}
         </ul>

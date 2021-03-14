@@ -19,6 +19,7 @@ from datetime import datetime
 
 from .forms import *
 from .models import *
+from .utils import *
 import toml
 import os
 
@@ -36,63 +37,119 @@ def speakerList(request):
 
 def delegates(request):
     allDelegates = sorted(Delegate.objects.all(), key=lambda x:x.speakerNum)
-    thisDelegateId = None
-    if request.user.is_authenticated:
-        thisDelegateId = Delegate.objects.get(authClone=request.user).id
+    thisDelegateId = Delegate.objects.get(authClone=request.user).id if request.user.is_authenticated else None
     return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates, 'thisDelegateId':thisDelegateId, 
         'active_tab':'delegates', 'config':config})
 
-def profile(request):
-    return render(request, 'councilApp/profile.html', {'active_tab':'profile', 'config':config})
+@login_required
+def proxy(request):
+    delegate = Delegate.objects.get(authClone=request.user)
+
+    proxiesForMe = Proxy.objects.filter(voter=delegate, active=True)
+    proxiesIHold = Proxy.objects.filter(holder=delegate, active=True)
+
+    allDelegates = sorted(Delegate.objects.exclude(id=delegate.id), key=lambda x:x.speakerNum)
+
+    return render(request, 'councilApp/proxy.html', {'delegate':delegate, 'proxiesForMe':proxiesForMe, 'proxiesIHold':proxiesIHold,
+        'allDelegates':allDelegates, 'active_tab':'proxy', 'config':config})
+
+def proxyNominate(request):
+    try:
+        delegate = Delegate.objects.get(authClone=request.user)
+        candidateId = request.GET.get('candidateId', None)
+        holder = Delegate.objects.get(id=candidateId)
+    except:
+        return JsonResponse({'raise404':True, 'newProxy':None})
+    
+    proxiesForMe = Proxy.objects.filter(voter=delegate, active=True)
+    if proxiesForMe:
+        return JsonResponse({'raise404':True, 'newProxy':None})
+
+    newProxy = Proxy()
+    newProxy.voter = delegate
+    newProxy.holder = holder
+    newProxy.save()
+
+    data = {'raise404':False, 'newProxy':[holder.name, holder.institution.shortName]}
+    return JsonResponse(data)
+
+def proxyRetract(request):
+    try:
+        delegate = Delegate.objects.get(authClone=request.user)
+        proxiesForMe = Proxy.objects.filter(voter=delegate, active=True)
+    except:
+        return JsonResponse({'raise404':True, 'oldProxy':None})
+    if len(proxiesForMe) != 1:
+        return JsonResponse({'raise404':True, 'oldProxy':None})
+    activeProxy = proxiesForMe[0]
+    activeProxy.active = False
+    activeProxy.expiryTime = timezone.now()
+    activeProxy.save()
+
+    data = {'raise404':False, 'oldProxy':[activeProxy.holder.name, activeProxy.holder.institution.shortName]}
+    return JsonResponse(data)
+
+def proxyResign(request):
+    try:
+        delegate = Delegate.objects.get(authClone=request.user)
+        proxyId = request.GET.get('proxyId', None)
+        activeProxy = Proxy.objects.get(id=proxyId)
+    except:
+        return JsonResponse({'raise404':True, 'oldProxy':None})
+    if not activeProxy.active:
+        return JsonResponse({'raise404':True, 'oldProxy':None})
+
+    activeProxy.active = False
+    activeProxy.expiryTime = timezone.now()
+    activeProxy.save()
+
+    data = {'raise404':False, 'oldProxy':[activeProxy.holder.name, activeProxy.holder.institution.shortName]}
+    return JsonResponse(data)
 
 @login_required
 def vote(request):
     return render(request, 'councilApp/vote.html', {'active_tab':'vote', 'config':config})
 
+@login_required
 def poll(request):
-    pass
+    allPolls = sorted(Poll.objects.all(), key=lambda x:-x.id)
+    delegate = Delegate.objects.get(authClone=request.user) if request.user.is_authenticated else None
+    superadmin = delegate.superadmin if delegate is not None else False
+    rep = delegate.rep if delegate is not None else False
+    activePolls = [i for i in allPolls if i.active and eligibleToVote(delegate, i)]
+    print(activePolls)
+    return render(request, 'councilApp/poll.html', {'allPolls':allPolls, 'superadmin':superadmin, 'rep':rep, 'activePolls':activePolls,
+        'active_tab':'poll', 'config':config})
 
 @login_required
 def createPoll(request):
-    delegate = Delegate.objects.get(authClone = request.user)
-    if not delegate.superadmin:
+    if not Delegate.objects.get(authClone = request.user):
         raise Http404()
 
-    allPolls = Poll.objects.all()
-    active = sum([i.active for i in allPolls])
-
-    if not active:
-        if request.method == 'POST':
-            pollForm = StartPollForm(request.POST)
-            if pollForm.is_valid():
-                for i in Poll.objects.all():
-                    i.active = False
-                    i.save()
-                newPoll = Poll()
-                newPoll.title = pollForm.cleaned_data.get('title')
-                newPoll.anonymous = pollForm.cleaned_data.get('anonymous')
-                newPoll.repsOnly = pollForm.cleaned_data.get('repsOnly')
-                newPoll.weighted = pollForm.cleaned_data.get('weighted')
-                newPoll.supermajority = pollForm.cleaned_data.get('majority') == 'super'
-                newPoll.active = True
-                newPoll.save()
-                return redirect('/poll/')
-        else:
-            pollForm = StartPollForm()
-            
-        return render(request, 'councilApp/poll.html', {'pollForm':pollForm, 'active':False, 'active_tab':'poll', 'config':config})
-    
+    if request.method == 'POST':
+        pollForm = StartPollForm(request.POST)
+        if pollForm.is_valid():
+            newPoll = Poll()
+            newPoll.title = pollForm.cleaned_data.get('title')
+            newPoll.anonymous = pollForm.cleaned_data.get('anonymous')
+            newPoll.repsOnly = pollForm.cleaned_data.get('repsOnly')
+            newPoll.weighted = pollForm.cleaned_data.get('weighted')
+            newPoll.supermajority = pollForm.cleaned_data.get('majority') == 'super'
+            newPoll.active = True
+            newPoll.save()
+            return redirect(f'/poll/{newPoll.id}')
     else:
-        return redirect('/poll/')
-
-
-
+        pollForm = StartPollForm()
+        
+    return render(request, 'councilApp/pollCreate.html', {'pollForm':pollForm, 'active':False, 'active_tab':'poll', 'config':config})
+    
 @login_required
-def closePoll(request):
+def closePoll(request, pollId):
     if not Delegate.objects.get(authClone = request.user).superadmin:
         raise Http404()
-    activePoll = Poll.objects.get(active = True)
-    if not activePoll:
+    try:
+        activePoll = Poll.objects.filter(id = pollId)[0]
+    except:
         raise Http404()
     
     activePoll.endTime = timezone.now()
@@ -101,29 +158,32 @@ def closePoll(request):
     activePoll.yesVotes = sum([i.voteWeight for i in votesInPoll if i.vote == 2])
     activePoll.noVotes = sum([i.voteWeight for i in votesInPoll if i.vote == 1])
     activePoll.abstainVotes = sum([i.voteWeight for i in votesInPoll if i.vote == 0])
-    activePoll.outcome = False
-    if activePoll.supermajority:
-        if activePoll.yesVotes > 2*activePoll.noVotes:
-            activePoll.outcome = True
+    multiplier = 2 if activePoll.supermajority else 1
+    if activePoll.yesVotes > multiplier*activePoll.noVotes:
+        activePoll.outcome = 1
+    elif activePoll.yesVotes == multiplier*activePoll.noVotes:
+        activePoll.outcome = 3
     else:
-        if activePoll.yesVotes > activePoll.noVotes:
-            activePoll.outcome = True
-        
+        activePoll.outcome = 2
+
     activePoll.active = False
     activePoll.save()
-
-    for i in Poll.objects.all():
-        i.active = False
-        i.save()
     
     return redirect(f'/poll/{activePoll.id}/')
 
-def endedPollInfo(request, pollId):
-    poll = Poll.objects.get(id=pollId)
-    if not poll:
+def pollInfo(request, pollId):
+    try:
+        poll = Poll.objects.filter(id = pollId)[0]
+    except:
         raise Http404()
 
-    return render(request, 'councilApp/pollInfo.html', {'poll':poll, 'active_tab':'poll', 'config':config})
+    superadmin = True if request.user.is_authenticated and Delegate.objects.get(authClone=request.user).superadmin else False
+
+    return render(request, 'councilApp/pollInfo.html', {'poll':poll, 'superadmin':superadmin, 'active_tab':'poll', 'config':config})
+
+@login_required
+def voteOnPoll(request, pollId):
+    pass
 
 
 def loginCustom(request):

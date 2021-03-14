@@ -60,3 +60,14 @@
     border-color: #ffffff;
     border-bottom-style: solid;
 }
+
+
+
+.footer {
+    position: fixed;
+    bottom: 5pt;
+    width: 100%;
+    color: grey;
+    text-align: center;
+    font-size:9pt ;
+}
