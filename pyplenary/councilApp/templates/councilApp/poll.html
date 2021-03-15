@@ -87,11 +87,11 @@
             {% if poll.outcome == 0 %}
               -
             {% elif poll.outcome == 1 %}
-              Passed
+              Carried
             {% elif poll.outcome == 2 %}
-              Failed
+              Lost
             {% elif poll.outcome == 3 %}
-              Chair's vote
+              Tied
             {% endif %}
           </td>
           <td>

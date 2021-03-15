@@ -37,11 +37,11 @@
   {% if poll.outcome == 0 or poll.active %}
     Not available
   {% elif poll.outcome == 1 %}
-    <span style="color:green;">Passed</span>
+    <span style="color:green;">Carried</span>
   {% elif poll.outcome == 2 %}
-    <span style="color:red;">Failed</span>
+    <span style="color:red;">Lost</span>
   {% elif poll.outcome == 3 %}
-    <span style="color:blue;">Chair's call</span>
+    <span style="color:blue;">Tied</span>
   {% endif %}
 </h4>
 {% if not poll.active %}
