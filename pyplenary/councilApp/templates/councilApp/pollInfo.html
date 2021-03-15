@@ -33,8 +33,11 @@
     {% endif %}
   </li>
 </ul>
+{% if poll.active %}
+<a href="/vote/{{poll.id}}/" class="btn btn-primary mb-2">Open poll: Vote now</a>
+{% else %}
 <h4>Result:
-  {% if poll.outcome == 0 or poll.active %}
+  {% if poll.outcome == 0 %}
     Not available
   {% elif poll.outcome == 1 %}
     <span style="color:green;">Carried</span>
@@ -44,13 +47,12 @@
     <span style="color:blue;">Tied</span>
   {% endif %}
 </h4>
-{% if not poll.active %}
   <h4>Time closed: {{poll.endTime}}</h4>
 {% endif %}
 
 <br>
 
-<a href="/poll/" class="btn btn-primary">Return to polls</a>
+<a href="/poll/" class="btn btn-outline-primary">Return to polls</a>
 {% if superadmin and poll.active %}
   <a href="/poll/close/{{poll.id}}" class="btn btn-danger">Close poll</a>
 {% endif %}
