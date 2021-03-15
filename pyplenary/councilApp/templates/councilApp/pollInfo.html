@@ -60,6 +60,12 @@
 <br>
 <br>
 
+{% if poll.active and superadmin %}
+<div class="alert alert-info" role="alert">
+  As this poll is active, the votes are visible only to you.
+</div>
+{% endif %}
+
 {% if not poll.active or superadmin %}
   <h4>Total ballots cast: {{ allVotes|length }}</h4>
   {% if poll.weighted %}
