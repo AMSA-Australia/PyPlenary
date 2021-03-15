@@ -97,6 +97,9 @@
           <td>
             {% if poll.active %}
               -
+            {% elif poll.weighted %}
+              {% comment %}TODO: Make this configurable!{% endcomment %}
+              Hidden {% if superadmin %}– Open to reveal{% endif %}
             {% else %}
               {{poll.yesVotes}} / {{poll.noVotes}}
             {% endif %}

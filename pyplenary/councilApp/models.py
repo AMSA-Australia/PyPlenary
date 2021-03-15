@@ -50,6 +50,8 @@ class Poll(models.Model):
     supermajority = models.BooleanField(default=False) #False for simple, True for super
     outcome = models.IntegerField(default=0) # 0 for no result, 1 for pass, 2 for fail, 3 for chair's call
 
+    # TODO: Separately store number of ballots and number of votes
+
     class Meta:
         db_table = 'Poll'
 

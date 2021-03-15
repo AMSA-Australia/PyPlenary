@@ -69,14 +69,22 @@
 {% if not poll.active or superadmin %}
   <h4>Total ballots cast: {{ allVotes|length }}</h4>
   {% if poll.weighted %}
-    <h4>Total weighted votes: {{ sumResults }}</h4>
+    {% if superadmin %}
+      <h4>Total weighted votes: {{ sumResults }}</h4>
+      <div class="alert alert-info" role="alert">
+        As this poll is weighted, the number of weighted votes is visible only to you.
+      </div>
+    {% else %}
+      {% comment %}TODO: Make this configurable!{% endcomment %}
+      <h4>Total weighted votes: Hidden</h4>
+    {% endif %}
   {% endif %}
   <br>
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col">
       <div class="card h-100">
         <div class="card-header" style="background-color: #80ff80">
-          <h5 class="card-title">Votes for: {{ pollResults.1 }}</h5>
+          <h5 class="card-title">Votes for: {% if poll.weighted and not superadmin %}Hidden{% else %}{{ pollResults.1 }}{% endif %}</h5>
         </div>
         <div class="card-body">
           {% if poll.anonymous and not superadmin%}
@@ -95,7 +103,7 @@
     <div class="col">
       <div class="card h-100">
         <div class="card-header" style="background-color: #ff8080">
-          <h5 class="card-title">Votes against: {{ pollResults.2 }}</h5>
+          <h5 class="card-title">Votes against: {% if poll.weighted and not superadmin %}Hidden{% else %}{{ pollResults.2 }}{% endif %}</h5>
         </div>
         <div class="card-body">
           {% if poll.anonymous and not superadmin %}
@@ -114,7 +122,7 @@
     <div class="col">
       <div class="card h-100">
         <div class="card-header" style="background-color: #80bfff">
-          <h5 class="card-title">Abstentions: {{ pollResults.0 }}</h5>
+          <h5 class="card-title">Abstentions: {% if poll.weighted and not superadmin %}Hidden{% else %}{{ pollResults.0 }}{% endif %}</h5>
         </div>
         <div class="card-body">
           {% if poll.anonymous and not superadmin %}
