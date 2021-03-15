@@ -154,13 +154,22 @@ def closePoll(request, pollId):
 
     pollResults = calculateResults(activePoll)
     (activePoll.abstainVotes, activePoll.yesVotes, activePoll.noVotes) = pollResults
-    multiplier = 2 if activePoll.supermajority else 1
-    if activePoll.yesVotes > multiplier*activePoll.noVotes:
-        activePoll.outcome = 1
-    elif activePoll.yesVotes == multiplier*activePoll.noVotes:
-        activePoll.outcome = 3
+
+    if not activePoll.supermajority:
+        # Ordinary majority
+        if activePoll.yesVotes > activePoll.noVotes:
+            activePoll.outcome = 1
+        elif activePoll.yesVotes < activePoll.noVotes:
+            activePoll.outcome = 2
+        else:
+            activePoll.outcome = 3
     else:
-        activePoll.outcome = 2
+        # 2/3 supermajority
+        if activePoll.yesVotes >= 2*activePoll.noVotes:
+            activePoll.outcome = 1
+        else:
+            activePoll.outcome = 2
+        # NB: A casting vote is not exercisable on a supermajority - Renton 2005, para 8.16
 
     activePoll.active = False
     activePoll.save()
