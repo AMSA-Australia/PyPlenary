@@ -47,8 +47,15 @@
     background-color: #1b1c1d;
 }
 
-.card-btn {
+.card-btn{
     background-color: #ff9133;
+    border-color: #de9800;
+
+}
+
+.orange-btn{
+    background-color: #ff9133;
+    border-color: #de9800;
 }
 
 .nav-item {
@@ -61,10 +68,7 @@
     border-bottom-style: solid;
 }
 
-
-
 .footer {
-    position: fixed;
     bottom: 5pt;
     width: 100%;
     color: grey;

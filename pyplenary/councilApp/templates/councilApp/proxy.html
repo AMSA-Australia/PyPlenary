@@ -11,7 +11,7 @@
   <div class="alert alert-primary" role="alert">
     You have not nominated a proxy.
   </div>
-  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#proxyCollapse" aria-expanded="false" aria-controls="proxyCollapse">
+  <button class="btn btn-primary orange-btn" type="button" data-bs-toggle="collapse" data-bs-target="#proxyCollapse" aria-expanded="false" aria-controls="proxyCollapse">
     Click to nominate a proxy
   </button>
   <br>
@@ -48,9 +48,9 @@
   </div>
 {% else %}
   <div class="alert alert-warning" role="alert">
-    <strong>{{ proxiesForMe.0.holder.name }} ({{proxiesForMe.0.holder.institution.shortName}})</strong> currently holds your proxy vote.
+    <strong>{{ proxiesForMe.0.holder}}</strong> currently holds your proxy vote.
   </div>
-  <a class="btn btn-primary" type="button" onclick="retractProxyAJAX()" href="javascript:void(0)">
+  <a class="btn btn-primary orange-btn" type="button" onclick="retractProxyAJAX()" href="javascript:void(0)">
     Click to retract your proxy.
   <a>
 {% endif %}
@@ -71,7 +71,7 @@
           <div class="card-body">
             <h5 class="card-title">Proxy</h5>
             <p class="card-text">
-              You hold a proxy for <strong>{{ proxyIHold.voter.name }} ({{proxyIHold.voter.institution.shortName}})</strong>.
+              You hold a proxy for <strong>{{ proxyIHold.voter}}</strong>.
           </div>
           <a onclick="resignProxyAJAX({{proxyIHold.id}})" href="javascript:void(0)" class="btn btn-primary card-btn stretched-link">Click to relinquish this proxy.</a>
         </div>
