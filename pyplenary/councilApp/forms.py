@@ -1,8 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .helperFunctions import *
-from .models import *
 
 class LoginForm(forms.Form):
 	username = forms.CharField(label='Email', help_text='Please enter the email you signed up with.')

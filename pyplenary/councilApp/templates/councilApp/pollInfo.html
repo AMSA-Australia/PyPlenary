@@ -2,14 +2,144 @@
 
 {% block content %}
 
-<h2>Poll Centre</h2>
+<h2>Poll: "{{ poll.title }}"</h2>
+<ul>
+  <li>
+  {% if poll.repsOnly %}
+    AMSA Reps only
+  {% else %}
+    Voting open to all 
+  {% endif %}
+  </li>
+  <li>
+    {% if poll.anonymous %}
+      Anonymous voting
+    {% else %}
+      Non-anonymous
+    {% endif %}
+  </li>
+  <li>
+    {% if poll.supermajority %}
+      Requires ⅔ supermajority
+    {% else %}
+      Requires ½ simple majority
+    {% endif %}
+  </li>
+  <li>
+    {% if poll.weighted %}
+      Institutional-weighted votes
+    {% else %}
+      Votes not weighted
+    {% endif %}
+  </li>
+</ul>
+<h4>Result:
+  {% if poll.outcome == 0 or poll.active %}
+    Not available
+  {% elif poll.outcome == 1 %}
+    <span style="color:green;">Passed</span>
+  {% elif poll.outcome == 2 %}
+    <span style="color:red;">Failed</span>
+  {% elif poll.outcome == 3 %}
+    <span style="color:blue;">Chair's call</span>
+  {% endif %}
+</h4>
+{% if not poll.active %}
+  <h4>Time closed: {{poll.endTime}}</h4>
+{% endif %}
+
 <br>
 
-<p>{{ poll.title }}</p>
-<p>{{ poll.yesVotes }}</p>
-<p>{{ poll.noVotes }}</p>
-<p>{{ poll.abstainVotes }}</p>
-<p>{{ poll.outcome }}</p>
+<a href="/poll/" class="btn btn-primary">Return to polls</a>
+{% if superadmin and poll.active %}
+  <a href="/poll/close/{{poll.id}}" class="btn btn-danger">Close poll</a>
+{% endif %}
+
+<br>
+<br>
+
+{% if not poll.active or superadmin %}
+  <h4>Total ballots cast: {{ allVotes|length }}</h4>
+  {% if poll.weighted %}
+    <h4>Total weighted votes: {{ sumResults }}</h4>
+  {% endif %}
+  <br>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-header" style="background-color: #80ff80">
+          <h5 class="card-title">Votes for: {{ pollResults.1 }}</h5>
+        </div>
+        <div class="card-body">
+          {% if poll.anonymous and not superadmin%}
+            <p>Names hidden</p>
+          {% else %}
+            {% for vote in allVotes %}
+              {% if vote.vote == 1 %}
+                <p>{{vote.voter.name}} ({{vote.voter.institution.shortName}})</p>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-header" style="background-color: #ff8080">
+          <h5 class="card-title">Votes against: {{ pollResults.2 }}</h5>
+        </div>
+        <div class="card-body">
+          {% if poll.anonymous and not superadmin %}
+            <p>Names hidden</p>
+          {% else %}
+            {% for vote in allVotes %}
+              {% if vote.vote == 2 %}
+                <p>{{vote.voter.name}} ({{vote.voter.institution.shortName}})</p>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-header" style="background-color: #80bfff">
+          <h5 class="card-title">Abstentions: {{ pollResults.0 }}</h5>
+        </div>
+        <div class="card-body">
+          {% if poll.anonymous and not superadmin %}
+            <p>Names hidden</p>
+          {% else %}
+            {% for vote in allVotes %}
+              {% if vote.vote == 0 %}
+                <p>{{vote.voter.name}} ({{vote.voter.institution.shortName}})</p>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if poll.repsOnly%}
+    <br>
+    <h4>AMSA Reps not voted:</h4>
+    <ul>
+      {% if yetToVote|length == 0%}
+        <li>All voted</li>
+      {% else %}
+        {% for uni in yetToVote %}
+          <li>{{uni}}</li>
+        {% endfor %}
+      {% endif %}
+    </ul>
+  {% endif %}
+{% endif %}
+
+
+
+
 
 
 {% endblock %}
