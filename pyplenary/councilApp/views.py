@@ -27,7 +27,6 @@ from .utils import *
 
 # Load config
 os.chdir(settings.BASE_DIR)
-print(os.getcwd())
 with open('../config.toml', 'r', encoding='utf8') as f:
 	config = toml.load(f)
 
@@ -115,7 +114,6 @@ def poll(request):
     superadmin = delegate.superadmin if delegate is not None else False
     rep = delegate.rep if delegate is not None else False
     activePolls = [i for i in allPolls if i.active and eligibleToVote(delegate, i)]
-    print(activePolls)
     return render(request, 'councilApp/poll.html', {'allPolls':allPolls, 'superadmin':superadmin, 'rep':rep, 'activePolls':activePolls,
         'active_tab':'poll', 'config':config})
 
