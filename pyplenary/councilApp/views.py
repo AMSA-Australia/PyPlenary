@@ -289,6 +289,9 @@ def ajaxSubmitVotes(request):
 
     return JsonResponse({'raise404':False})
 
+def agenda(request):
+    return render(request, 'councilApp/agenda.html', {'active_tab':'agenda', 'config':config})
+
 def loginCustom(request):
     if request.user.is_authenticated:
         return redirect('/')

@@ -1,5 +1,5 @@
 /*
-    Copyright © 2021  Lee Yingtong Li (RunasSudo)
+    Copyright © 2021  Lee Yingtong Li (RunasSudo), Allen Gu
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -74,4 +74,35 @@
     color: grey;
     text-align: center;
     font-size:9pt ;
+}
+
+/* Timeline CSS */
+
+.timeline {
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 80px;
+    height: 100%;
+    width: 4px;
+    background: #e9ecef;
+    border-radius: .25rem;
+}
+
+.timeline .content {
+    position: relative;
+    margin-left: 100px;
+}
+
+.timeline .time {
+    display: block;
+    position: absolute;
+    right: 100%;
+    margin-right: -64px;
+    top: 0;
+    text-align: right;
 }

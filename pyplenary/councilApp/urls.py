@@ -25,7 +25,7 @@ urlpatterns = [
 	path('vote/<int:pollId>/', views.voteOnPoll),
 	path('ajax/getActiveVotes/', views.ajaxGetCastVotes),
 	path('ajax/submitVotes/', views.ajaxSubmitVotes),
-	# path('/ajax/vote/', )
+	path('agenda/', views.agenda),
 	path('login/', views.loginCustom),
 	path('logout/', views.logoutCustom),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

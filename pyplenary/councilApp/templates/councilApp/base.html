@@ -49,6 +49,10 @@
                 <a class="nav-link {% if active_tab == 'proxy' %}active{% endif %}"  href="/proxy/">Proxy</a>
               </li>
             {% endif %}
+
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'agenda' %}active{% endif %}" href="/agenda/">Agenda</a>
+            </li>
         </ul>
         <ul class="navbar-nav ms-auto">
           {% if user.is_authenticated %}
