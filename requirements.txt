@@ -4,6 +4,4 @@ django-crispy-forms==1.11.1
 django-extensions==3.1.1
 pytz==2021.1
 sqlparse==0.4.1
-toml==0.10.2
 crispy-forms-semantic-ui==0.2.0
-

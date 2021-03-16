@@ -57,6 +57,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'pyplenary.context_processors.pyplenary_settings'
             ],
         },
     },
@@ -123,3 +124,9 @@ CSRF_USE_SESSIONS = True
 
 #CRISPY_TEMPLATE_PACK = 'semantic-ui'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+# PYPLENARY SETTINGS
+
+PYPLENARY_SITE_NAME = 'AMSA National Council 1 2021'
+PYPLENARY_SITE_TAGLINE = '26-28 March 2021 🍊'

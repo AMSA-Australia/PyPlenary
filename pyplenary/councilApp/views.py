@@ -21,26 +21,20 @@ from datetime import datetime
 
 from .forms import *
 from .models import *
-import toml
 import os
 from .utils import *
 
-# Load config
-os.chdir(settings.BASE_DIR)
-with open('../config.toml', 'r', encoding='utf8') as f:
-	config = toml.load(f)
-
 def index(request):
-    return render(request, 'councilApp/index.html', {'active_tab':'index', 'config':config})
+    return render(request, 'councilApp/index.html', {'active_tab':'index'})
 
 def speakerList(request):
-    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'config':config})
+    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list'})
 
 def delegates(request):
     allDelegates = sorted(Delegate.objects.all(), key=lambda x:x.speakerNum)
     thisDelegateId = Delegate.objects.get(authClone=request.user).id if request.user.is_authenticated else None
     return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates, 'thisDelegateId':thisDelegateId, 
-        'active_tab':'delegates', 'config':config})
+        'active_tab':'delegates'})
 
 @login_required
 def proxy(request):
@@ -52,7 +46,7 @@ def proxy(request):
     allDelegates = sorted(Delegate.objects.exclude(id=delegate.id), key=lambda x:x.speakerNum)
 
     return render(request, 'councilApp/proxy.html', {'delegate':delegate, 'proxiesForMe':proxiesForMe, 'proxiesIHold':proxiesIHold,
-        'allDelegates':allDelegates, 'active_tab':'proxy', 'config':config})
+        'allDelegates':allDelegates, 'active_tab':'proxy'})
 
 def proxyNominate(request):
     try:
@@ -115,7 +109,7 @@ def poll(request):
     rep = delegate.rep if delegate is not None else False
     activePolls = [i for i in allPolls if i.active and eligibleToVote(delegate, i)]
     return render(request, 'councilApp/poll.html', {'allPolls':allPolls, 'superadmin':superadmin, 'rep':rep, 'activePolls':activePolls,
-        'active_tab':'poll', 'config':config})
+        'active_tab':'poll'})
 
 @login_required
 def createPoll(request):
@@ -137,7 +131,7 @@ def createPoll(request):
     else:
         pollForm = StartPollForm()
         
-    return render(request, 'councilApp/pollCreate.html', {'pollForm':pollForm, 'active':False, 'active_tab':'poll', 'config':config})
+    return render(request, 'councilApp/pollCreate.html', {'pollForm':pollForm, 'active':False, 'active_tab':'poll'})
     
 @login_required
 def closePoll(request, pollId):
@@ -192,7 +186,7 @@ def pollInfo(request, pollId):
                 yetToVote.append(institution)
 
     return render(request, 'councilApp/pollInfo.html', {'poll':poll, 'superadmin':superadmin, 'allVotes':allVotes, 'pollResults':pollResults, 
-        'sumResults':sum(pollResults[1:3]), 'yetToVote':yetToVote, 'active_tab':'poll', 'config':config})
+        'sumResults':sum(pollResults[1:3]), 'yetToVote':yetToVote, 'active_tab':'poll'})
 
 @login_required
 def voteOnPoll(request, pollId):
@@ -225,7 +219,7 @@ def voteOnPoll(request, pollId):
     HTMLIdsJSON = json.dumps(activeVoteHTMLIds, cls=DjangoJSONEncoder)
 
     return render(request, 'councilApp/vote.html', {'activePoll':activePoll, 'delegateInfo':delegateInfo, 'proxiesInfo':proxiesInfo,
-        'active_tab':'vote', 'config':config})
+        'active_tab':'vote'})
 
 def ajaxGetCastVotes(request):
     try:
@@ -290,7 +284,7 @@ def ajaxSubmitVotes(request):
     return JsonResponse({'raise404':False})
 
 def agenda(request):
-    return render(request, 'councilApp/agenda.html', {'active_tab':'agenda', 'config':config})
+    return render(request, 'councilApp/agenda.html', {'active_tab':'agenda'})
 
 def loginCustom(request):
     if request.user.is_authenticated:
@@ -305,7 +299,7 @@ def loginCustom(request):
             
             if user == None:
                 loginForm = LoginForm()
-                return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':True, 'active_tab':'login', 'config':config})
+                return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':True, 'active_tab':'login'})
             else:
                 login(request, user)
                 try:
@@ -315,7 +309,7 @@ def loginCustom(request):
     else:
         loginForm = LoginForm()
 
-    return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':False, 'active_tab':'login', 'config':config})
+    return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':False, 'active_tab':'login'})
 
 def logoutCustom(request):
     logout(request)
