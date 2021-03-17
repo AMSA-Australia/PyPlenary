@@ -22,7 +22,10 @@ from datetime import datetime
 from .forms import *
 from .models import *
 import os
+import yaml
 from .utils import *
+
+os.chdir(settings.BASE_DIR) # For loading agenda.yaml, etc.
 
 def index(request):
     return render(request, 'councilApp/index.html', {'active_tab':'index'})
@@ -284,7 +287,12 @@ def ajaxSubmitVotes(request):
     return JsonResponse({'raise404':False})
 
 def agenda(request):
-    return render(request, 'councilApp/agenda.html', {'active_tab':'agenda'})
+    # TODO: Cache the agenda
+    
+    with open('agenda.yaml', 'r') as f:
+        agenda = yaml.load(f)
+    
+    return render(request, 'councilApp/agenda.html', {'active_tab':'agenda', 'agenda':agenda})
 
 def loginCustom(request):
     if request.user.is_authenticated:

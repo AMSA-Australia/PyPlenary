@@ -1,0 +1,264 @@
+Tuesday:
+- time: '19:30'
+  color: success
+  badge: Workshop
+  title: What is AMSA Council?
+  location: <https://uws.zoom.us/j/84006611852?pwd=Tk13VlNFK1BMVGM2K0ZZZnZiaFVmQT09>
+  content: Introductory workshop to AMSA Council for new attendees, led by Sophie Keen (President), Deyan Momirovski (National Coordinator) and Lee Yingtong Li (Council Chair).
+Friday:
+- time: '14:00'
+  color: success
+  badge: Workshop
+  title: 'Upskilling Session 1: Communication Skills'
+  content: Led by Jasmine Davis.
+- time: '15:00'
+  title: Break
+- time: '16:00–17:00'
+  color: success
+  badge: Workshop
+  title: 'Upskilling Session 2: Organisation'
+  content: Led by Erica.
+Saturday:
+- time: '08:30'
+  color: success
+  badge: Workshop
+  title: Yoga
+  location: <https://unimelb.zoom.us/j/89474431925?pwd=cndHc1V6QWpPMjNDVTNFWlpSQWgydz09>
+  content: Led by Erica Musgrove.
+- time: '09:00'
+  title: Break
+- time: '10:00'
+  color: secondary
+  title: Opening of Council
+  location: Main Council Zoom (TBA)
+- time: '10:15'
+  color: danger
+  badge: Address
+  title: President's Address
+  content: Sophie Keen (President) to deliver the Council opening address.
+- time: '10:30'
+  color: danger
+  badge: Address
+  title: What is Council 101 & Adoption of Sessional Orders
+  links: ['[Proposed Sessional Orders](#TODO)']
+  content: |
+    Lee Yingtong Li (Council Chair) to deliver a brief refresher/introduction for new delegates to Council.
+    
+    Lee to seek leave (Council's unanimous consent) to present from the chair proposed changes to the AMSA *Standing Orders* to be trialled at this meeting.
+    
+    *Motion: To suspend all Standing Orders, and adopt the circulated Sessional Orders (temporary rules), for the duration of Council 1, 2021 (excluding the General Meeting).*
+    
+    *Motion: To confirm the minutes of Council 3, 2020.*
+- time: '10:45'
+  color: info
+  badge: Report
+  title: 'Executive Reports: President'
+  links: ['[Written report](#TODO)']
+  content: Sophie Keen (President) to deliver a report and accept questions.
+- time: '11:00'
+  color: info
+  badge: Report
+  title: 'Executive Reports: Finance & Internal'
+  links: ['[Written reports](#TODO)']
+  content: |
+    Alexander Ho (National Treasurer) and Erica Musgrove (Vice-President Internal) to deliver reports and accept questions.
+    
+    *Motion: To accept the President, Finance and Internal Reports.*
+- time: '11:15'
+  color: primary
+  badge: Policy
+  title: Access to Safe Termination of Pregnancy
+  links: ['[Proposed policy](#TODO)']
+  content: |
+    Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
+    
+    *Motion: (1) To repeal the Access to Safe Termination of Pregnancy policy (2017); (2) To adopt the Access to Safe Termination of Pregnancy policy (2021).*
+- time: '11:30'
+  color: danger
+  badge: Sponsor
+  title: Bank of Queensland Specialist
+  content: Bank of Queensland Specialist to address Council.
+- time: '11:45'
+  title: Break
+  content: '*Motion: To adjourn Council to 12:45.*'
+- time: '12:45'
+  color: primary
+  badge: Policy
+  title: Conscientious Objection and Access to Care
+  links: ['[Proposed policy](#TODO)']
+  content: |
+    Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
+    
+    *Motion: TODO.*
+- time: '13:15'
+  color: info
+  badge: Report
+  title: Special Interest Group Reports
+  links: ['[Written reports](#TODO)']
+  content: AMSA Special Interest Groups to deliver reports and accept questions.
+- time: '14:00'
+  color: info
+  badge: Report
+  title: Project Reports & Vampire Cup
+  links: ['[Written reports](#TODO)']
+  content: |
+    AMSA Projects and Vampire Cup to deliver reports and accept questions.
+    
+    *Motion: To accept the Special Interest Group, Project and Vampire Cup Reports.*
+- time: '14:30'
+  title: Break
+  content: '*Motion: To adjourn Council to 16:00.*'
+- time: '15:00'
+  color: success
+  badge: Breakout
+  title: Breakout 1 (TBA)
+- time: '16:00'
+  color: primary
+  badge: Policy
+  title: Medical Schools and Medical Student Numbers
+  links: ['[Proposed policy](#TODO)']
+  content: |
+    Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
+    
+    *Motion: TODO.*
+- time: '16:30'
+  color: primary
+  badge: Policy
+  title: Overseas Medical Placements
+  links: ['[Proposed policy](#TODO)']
+  content: |
+    Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
+    
+    *Motion: TODO.*
+- time: '17:00'
+  color: info
+  badge: Report
+  title: 'Executive Reports: Engagement & Events'
+  links: ['[Written reports](#TODO)']
+  content: |
+    Elizabeth Hu (Student Engagement Officer) and Olivia Lindsay (Events Officer) to deliver reports and accept questions.
+    
+    *Motion: To accept the Engagement and Events Reports.*
+- time: '17:15'
+  color: primary
+  badge: Policy
+  title: Policy Repeals
+  content: Fergus Stafford (National Policy Officer) to propose the repeal of certain policies which are considered superfluous.
+- time: '17:45'
+  color: info
+  title: General Meeting
+  links: ['[Notice of general meeting](https://mailchi.mp/64428a570b77/notice-of-general-meeting-1-2021)']
+  content: |
+    Council to adjourn for the AMSA general meeting, chaired by the Kathryn Woodward (Chair of the Board). The business of the meeting includes, *inter alia*, to receive the Board Report, and to elect a Non-Executive Director to the Board.
+- color: primary
+  title: General & Adjourned Business
+  content: |
+    Council to resume, while the general meeting is adjourned, and after its conclusion, for the transaction of general business, and any business adjourned (postponed) from earlier in the day. Adjourned business will receive priority over general business.
+    
+    **All general business for Saturday must be emailed to <yingtong.li@amsa.org.au> to be received by 15:00 on Saturday.**
+- time: 'By 18:45'
+  color: secondary
+  title: Adjournment
+  content: '*Motion: To adjourn Council to 11:00 tomorrow.*'
+Sunday:
+- time: '09:30'
+  color: success
+  badge: Breakout
+  title: Presidents' Breakout
+- time: '11:00'
+  color: secondary
+  title: Resumption of Council
+  location: Main Council Zoom (TBA)
+- color: danger
+  title: Crossing Borders Virtual Rally
+  content: AMSA Crossing Borders to address Council on support for its Virtual Rally.
+- time: '11:10'
+  color: primary
+  badge: Policy
+  title: Global Health and the Medical Curriculum (with AGH Forum)
+  links: ['[Proposed policy](#TODO)']
+  content: |
+    AMSA Global Health Forum delegates to join Council for the consideration of this policy.
+    
+    Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
+    
+    *Motion: TODO.*
+- time: '11:40'
+  color: primary
+  badge: Policy
+  title: Unemployment and Health (with AGH Forum)
+  links: ['[Proposed policy](#TODO)']
+  content: |
+    AMSA Global Health Forum delegates to join Council for the consideration of this policy.
+    
+    Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
+    
+    *Motion: TODO.*
+- time: '12:30'
+  color: danger
+  badge: Address
+  title: Addresses from External Organisations
+  content: Council to receive addresses from external organisations.
+- time: '13:00'
+  color: danger
+  badge: Address
+  title: Australian Medical Association Address
+  content: Council to receive an address from the Australian Medical Association.
+- time: '13:30'
+  title: Break
+  content: '*Motion: To adjourn Council to 14:30.*'
+- time: '14:30'
+  color: info
+  badge: Report
+  title: Event Reports
+  links: ['[Written reports](#TODO)']
+  content: Event teams to deliver reports. Questions regarding the Event Reports are to be directed in writing to Olivia Lindsay (Events Officer).
+- time: '15:00'
+  color: info
+  badge: Report
+  title: Advocacy Report
+  links: ['[Written report](#TODO)']
+  content: |
+    Sophie Keen (President), Jeremy Fernando (Vice-President External) and advocacy team to deliver reports, including on the 2021 National Advocacy Priorities, and accept questions.
+    
+    *Motion: To accept the Event and Advocacy Reports.*
+    
+    *Motion: To adjourn Council to 16:15.*
+- time: '15:15'
+  color: success
+  badge: Breakout
+  title: Breakout 3 (TBA)
+- time: '16:15'
+  color: danger
+  badge: Address
+  title: AIDA & AMSA Indigenous
+  content: Council to receive an address from AIDA and AMSA Indigenous.
+- time: '16:45'
+  color: info
+  badge: Report
+  title: Medical Student Councils
+  links: ['[Written reports](#TODO)']
+  content: Council to receive reports from state Medical Student Council chairs.
+- time: '17:15'
+  color: primary
+  title: General & Adjourned Business
+  content: |
+    Council to transact general business, and any business adjourned (postponed) from earlier in the day. Adjourned business will receive priority over general business.
+    
+    For the consideration of general business comprising joke motions and policies – *Motion: To resolve Council into a committee of the whole.*
+    
+    **All general business for Sunday must be emailed to <yingtong.li@amsa.org.au> to be received by 15:15 on Saturday.**
+- time: 'By 17:30'
+  color: danger
+  badge: Address
+  title: President's Closing Address
+  content: Sophie Keen (President) to deliver the Council closing address.
+- time: 'By 17:45'
+  color: danger
+  badge: Address
+  title: Vice-President Internal's Closing Address
+  content: Erica Musgrove (Vice-President Internal) to deliver the Council closing address.
+- time: 'By 18:00'
+  color: secondary
+  title: Close of Council
+  content: '*Motion: To close Council 1, 2021.*'
