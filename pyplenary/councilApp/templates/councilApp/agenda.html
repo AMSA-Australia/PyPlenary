@@ -43,7 +43,7 @@
               <div>
                 {% if item.color %}<span class="badge badge-dot bg-{{ item.color }}"><i></i></span>{% endif %}
                 <div class="content">
-                  <div class="h5">{% if item.badge %}<span class="badge bg-{{ item.color }}">{{ item.badge }}</span> {% endif %}{{ item.title }}</div>
+                  <div class="h5">{{ item.title }}{% if item.badge %} <span class="badge bg-{{ item.color }}">{{ item.badge }}</span>{% endif %}</div>
                   {% if item.location %}<p class="location small text-muted"><i class="bi bi-geo-alt"></i> {{ item.location|markdown|nopar }}</p>{% endif %}
                   {% for link in item.links %}<p class="small text-muted"><i class="bi bi-link-45deg"></i> {{ link|markdown|nopar }}</p>{% endfor %}
                   {% if item.content %}{{ item.content|markdown }}{% endif %}
