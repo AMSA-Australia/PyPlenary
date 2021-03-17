@@ -32,4 +32,4 @@ jobs:
       with:
         app-name: 'amsa-council-app'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_3fa391da14e4487a8b78c05d0a8336d9 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_74cc8d2650f242359b2483c5b074ebf9 }}
