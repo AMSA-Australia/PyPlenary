@@ -3,7 +3,7 @@ Tuesday:
   color: success
   badge: Workshop
   title: What is AMSA Council?
-  location: <https://uws.zoom.us/j/84006611852?pwd=Tk13VlNFK1BMVGM2K0ZZZnZiaFVmQT09>
+  location: <https://uws.zoom.us/j/84006611852?pwd=Tk13VlNFK1BMVGM2K0ZZZnZiaFVmQT09> (passcode 428879)
   content: Introductory workshop to AMSA Council for new attendees, led by Sophie Keen (President), Deyan Momirovski (National Coordinator) and Lee Yingtong Li (Council Chair).
 Friday:
 - time: '14:00'
@@ -23,7 +23,7 @@ Saturday:
   color: success
   badge: Workshop
   title: Yoga
-  location: <https://unimelb.zoom.us/j/89474431925?pwd=cndHc1V6QWpPMjNDVTNFWlpSQWgydz09>
+  location: <https://unimelb.zoom.us/j/89474431925?pwd=cndHc1V6QWpPMjNDVTNFWlpSQWgydz09> (passcode 487221)
   content: Led by Erica Musgrove.
 - time: '09:00'
   title: Break
@@ -40,7 +40,7 @@ Saturday:
   color: danger
   badge: Address
   title: What is Council 101 & Adoption of Sessional Orders
-  links: ['[Proposed Sessional Orders](#TODO)']
+  links: ['[Proposed Sessional Orders](https://drive.google.com/file/d/1OkTteDA7F83QRur4jRKddFgn59EY7P1j/view)']
   content: |
     Lee Yingtong Li (Council Chair) to deliver a brief refresher/introduction for new delegates to Council.
     
@@ -68,7 +68,7 @@ Saturday:
   color: primary
   badge: Policy
   title: Access to Safe Termination of Pregnancy
-  links: ['[Proposed policy](#TODO)']
+  links: ['[Proposed policy](https://docs.google.com/document/d/107y25x9ixBuHG117ej75bHOzfb5yPYzmDzZLRHbMVio/edit)']
   content: |
     Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
     
@@ -85,11 +85,11 @@ Saturday:
   color: primary
   badge: Policy
   title: Conscientious Objection and Access to Care
-  links: ['[Proposed policy](#TODO)']
+  links: ['[Proposed policy](https://docs.google.com/document/d/1Zxxbh727lrnGEFucCXxWGY9oiBSkIGPVS0aVl6DwFVk/edit)']
   content: |
     Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
     
-    *Motion: TODO.*
+    *Motion: (1) To repeal the Conscientious Objection and Access to Care policy (2017); (2) To adopt the Conscientious Objection and Access to Care policy (2021).*
 - time: '13:15'
   color: info
   badge: Report
@@ -111,25 +111,32 @@ Saturday:
 - time: '15:00'
   color: success
   badge: Breakout
-  title: Breakout 1 (TBA)
+  title: Breakout 1
+  location: Various – see below
+  content: |
+    **AMSA Representatives**: AMSA Representative breakout – Zoom link TBA
+    
+    **MedSoc Presidents**: MedSoc Presidents breakout – Zoom link TBA
+    
+    **All other delegates**: Workshop by Dr Sally Cockburn and Naty Guerrero-Diaz – <a href="https://monash.zoom.us/j/83915801248?pwd=NkVEVDB2UjhnL0VCTExmSlI0NGo4QT09" style="word-break:break-all;">https://monash.zoom.us/j/83915801248?pwd=NkVEVDB2UjhnL0VCTExmSlI0NGo4QT09</a> (passcode 392513)
 - time: '16:00'
   color: primary
   badge: Policy
   title: Medical Schools and Medical Student Numbers
-  links: ['[Proposed policy](#TODO)']
+  links: ['[Proposed policy](https://docs.google.com/document/d/1c8BgH60hi-4jxwtpnscrD7t2qGk5pZOFBP9EjLxjs0c/edit)']
   content: |
     Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
     
-    *Motion: TODO.*
+    *Motion: (1) To repeal the Increased Student Numbers policy (2019) and the New Medical Schools policy (2017); (2) To adopt the Medical Schools and Medical Student Numbers policy (2021).*
 - time: '16:30'
   color: primary
   badge: Policy
   title: Overseas Medical Placements
-  links: ['[Proposed policy](#TODO)']
+  links: ['[Proposed policy](https://docs.google.com/document/d/1Zxxbh727lrnGEFucCXxWGY9oiBSkIGPVS0aVl6DwFVk/edit)']
   content: |
     Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
     
-    *Motion: TODO.*
+    *Motion: (1) To repeal the Overseas Medical Placements policy (2017); (2) To adopt the Overseas Medical Placements policy (2021).*
 - time: '17:00'
   color: info
   badge: Report
@@ -149,11 +156,11 @@ Saturday:
   title: General Meeting
   links: ['[Notice of general meeting](https://mailchi.mp/64428a570b77/notice-of-general-meeting-1-2021)']
   content: |
-    Council to adjourn for the AMSA general meeting, chaired by the Kathryn Woodward (Chair of the Board). The business of the meeting includes, *inter alia*, to receive the Board Report, and to elect a Non-Executive Director to the Board.
+    Council to adjourn for the AMSA general meeting, chaired by Kathryn Woodward (Chair of the Board). The business of the meeting includes, *inter alia*, to receive the Board Report, and to elect a Non-Executive Director to the Board.
 - color: primary
   title: General & Adjourned Business
   content: |
-    Council to resume, while the general meeting is adjourned, and after its conclusion, for the transaction of general business, and any business adjourned (postponed) from earlier in the day. Adjourned business will receive priority over general business.
+    Council to resume – while the general meeting is adjourned, and after its conclusion – to transact general business, and any business adjourned (postponed) from earlier in the day. Adjourned business will receive priority over general business.
     
     **All general business for Saturday must be emailed to <yingtong.li@amsa.org.au> to be received by 15:00 on Saturday.**
 - time: 'By 18:45'
@@ -164,7 +171,11 @@ Sunday:
 - time: '09:30'
   color: success
   badge: Breakout
-  title: Presidents' Breakout
+  title: Breakout 2
+  content: |
+    **MedSoc Presidents**: MedSoc Presidents breakout – Zoom link TBA
+    
+    **All other delegates**: Sleep in! – Council resumes at 11:00
 - time: '11:00'
   color: secondary
   title: Resumption of Council
@@ -176,34 +187,34 @@ Sunday:
   color: primary
   badge: Policy
   title: Global Health and the Medical Curriculum (with AGH Forum)
-  links: ['[Proposed policy](#TODO)']
+  links: ['[Proposed policy](https://docs.google.com/document/d/1VjshlRQLodV1_agmY1wJ45l97XVxpIxR1WXKc6fVB8A/edit)']
   content: |
     AMSA Global Health Forum delegates to join Council for the consideration of this policy.
     
     Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
     
-    *Motion: TODO.*
+    *Motion: (1) To repeal the Global Health and the Medical Curriculum policy (2017); (2) To adopt the Global Health and the Medical Curriculum policy (2021).*
 - time: '11:40'
   color: primary
   badge: Policy
   title: Unemployment and Health (with AGH Forum)
-  links: ['[Proposed policy](#TODO)']
+  links: ['[Proposed policy](https://docs.google.com/document/d/1jz9qBkroUq13Ucw388MXuBplSv30ybBgbmDr81PzrRk/edit)']
   content: |
     AMSA Global Health Forum delegates to join Council for the consideration of this policy.
     
     Policy authors to present the proposed policy for Council's consideration. Informal discussion to follow before motion and formal debate.
     
-    *Motion: TODO.*
+    *Motion: (1) To repeal the Unemployment and Health policy (2017); (2) To adopt the Unemployment and Health policy (2021).*
 - time: '12:30'
   color: danger
   badge: Address
   title: Addresses from External Organisations
-  content: Council to receive addresses from external organisations.
+  content: External organisations to address Council.
 - time: '13:00'
   color: danger
   badge: Address
   title: Australian Medical Association Address
-  content: Council to receive an address from the Australian Medical Association.
+  content: The Australian Medical Association to address Council.
 - time: '13:30'
   title: Break
   content: '*Motion: To adjourn Council to 14:30.*'
@@ -232,13 +243,13 @@ Sunday:
   color: danger
   badge: Address
   title: AIDA & AMSA Indigenous
-  content: Council to receive an address from AIDA and AMSA Indigenous.
+  content: AIDA and AMSA Indigenous to address Council.
 - time: '16:45'
   color: info
   badge: Report
   title: Medical Student Councils
   links: ['[Written reports](#TODO)']
-  content: Council to receive reports from state Medical Student Council chairs.
+  content: State Medical Student Council chairs to deliver reports.
 - time: '17:15'
   color: primary
   title: General & Adjourned Business
@@ -247,7 +258,7 @@ Sunday:
     
     For the consideration of general business comprising joke motions and policies – *Motion: To resolve Council into a committee of the whole.*
     
-    **All general business for Sunday must be emailed to <yingtong.li@amsa.org.au> to be received by 15:15 on Saturday.**
+    **All general business for Sunday must be emailed to <yingtong.li@amsa.org.au> to be received by 15:15 on Sunday.**
 - time: 'By 17:30'
   color: danger
   badge: Address
