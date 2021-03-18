@@ -2,23 +2,25 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Login</h2>
-<p>If you have forgotten your password or username, <a href='password_change/'>click here</a>. If you have further issues logging in, email <a href="mailto:secretary@amsa.org.au" target="_top">secretary@amsa.org.au</a> with an email account that you have registered.</p>
-{% if wrong %}
-  <div class="alert alert-danger" role="alert">
-    Invalid username or password.
-  </div>
-{% endif %}
-
-<div>
-  <form method="post">
-    <div class="form">
-      {% csrf_token %}
-      {{ loginForm|crispy }}  
-      <br>
-      <button type="submit" class="btn btn-success btn-block">Submit</button>
+<div style="max-width: 600px; margin: 0 auto;">
+  <h2>Login</h2>
+  <p>If you have forgotten your password or wish to change it, <a href='/password_change_request/'>click here</a>. If you have further issues logging in, email <a href="mailto:secretary@amsa.org.au" target="_top">secretary@amsa.org.au</a> from the email address you registered for Council with.</p>
+  {% if wrong %}
+    <div class="alert alert-danger" role="alert">
+      Invalid username or password.
     </div>
-  </form>
+  {% endif %}
+
+  <div>
+    <form method="post">
+      <div class="form">
+        {% csrf_token %}
+        {{ loginForm|crispy }}  
+        <br>
+        <button type="submit" class="btn btn-success btn-block">Submit</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 {% endblock %}

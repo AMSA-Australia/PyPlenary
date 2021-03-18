@@ -162,6 +162,18 @@ if all(x in os.environ for x in ['DBHOST', 'DBNAME', 'DBUSER', 'DBPASS']):
         'PASSWORD': os.environ['DBPASS'] 
     }
 
+WEB_DOMAIN = "https://council.amsa.org.au"
+
+PASSWORD_RESET_GOOGLE_APP_URL = "https://script.google.com/a/macros/amsa.org.au/s/AKfycbzywzyRh8C0fp41E27KvftMR2dfGHB3OmYvQrB0i5fY02DemCaUwBhc_oqs5rfNETCNYw/exec"
+
+#auto email stuff
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_SSL = True
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+
 
 # LOAD DEVELOPMENT SETTINGS IF ENVIRON SET
 if os.environ.get('DJANGO_DEVELOPMENT'):

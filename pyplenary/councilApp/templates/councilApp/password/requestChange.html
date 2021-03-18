@@ -1,0 +1,27 @@
+{% extends 'councilApp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+  <h2>Password Change Request</h2>
+  {% if done %}
+    <div class="alert alert-success" role="alert">
+      If the email address you provided is in our system, you will shortly receive an email containing the password reset link. Follow the instructions there. Please contact <a href="mailto:secretary@amsa.org.au" class="alert-link">secretary@amsa.org.au</a> if you have any further concerns.
+    </div>
+  {% else %}
+    <p>Enter your email below. If you have registered for Council, a password reset link will be sent to you.</p>
+
+    <div>
+      <form method="post">
+        <div class="form">
+          {% csrf_token %}
+          {{ emailForm|crispy }}  
+          <br>
+          <button type="submit" class="btn btn-success btn-block">Submit</button>
+        </div>
+      </form>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}
