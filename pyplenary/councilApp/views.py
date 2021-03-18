@@ -330,7 +330,7 @@ def passwordResetLinkRequest(request):
     if request.method == 'POST':
         emailForm = PasswordChangeEmail(request.POST)
         if emailForm.is_valid():
-            email = emailForm.cleaned_data.get('email')
+            email = emailForm.cleaned_data.get('email').lower()
 
             userList = User.objects.filter(email=email)
 
