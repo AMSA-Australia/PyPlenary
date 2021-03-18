@@ -326,6 +326,7 @@ def logoutCustom(request):
     return redirect('/')
 
 def passwordResetLinkRequest(request):
+    logout(request)
     if request.method == 'POST':
         emailForm = PasswordChangeEmail(request.POST)
         if emailForm.is_valid():
