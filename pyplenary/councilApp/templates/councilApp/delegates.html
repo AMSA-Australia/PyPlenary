@@ -18,7 +18,7 @@
     </thead>
     <tbody>
       {% for delegate in allDelegates %}
-        {% if delegate.id == thisDelegateId %}
+        {% if user.is_authenticated and delegate == user.delegate %}
           <tr style="background:lightgreen">
         {% else %}
           <tr>

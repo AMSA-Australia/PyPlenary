@@ -37,13 +37,12 @@ def speakerList(request):
 
 def delegates(request):
     allDelegates = sorted(Delegate.objects.all(), key=lambda x:x.speakerNum)
-    thisDelegateId = Delegate.objects.get(authClone=request.user).id if request.user.is_authenticated else None
-    return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates, 'thisDelegateId':thisDelegateId, 
+    return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates, 
         'active_tab':'delegates'})
 
 @login_required
 def proxy(request):
-    delegate = Delegate.objects.get(authClone=request.user)
+    delegate = request.user.delegate
 
     proxiesForMe = Proxy.objects.filter(voter=delegate, active=True)
     proxiesIHold = Proxy.objects.filter(holder=delegate, active=True)
@@ -55,7 +54,7 @@ def proxy(request):
 
 def proxyNominate(request):
     try:
-        delegate = Delegate.objects.get(authClone=request.user)
+        delegate = request.user.delegate
         candidateId = request.GET.get('candidateId', None)
         holder = Delegate.objects.get(id=candidateId)
     except:
@@ -75,7 +74,7 @@ def proxyNominate(request):
 
 def proxyRetract(request):
     try:
-        delegate = Delegate.objects.get(authClone=request.user)
+        delegate = request.user.delegate
         proxiesForMe = Proxy.objects.filter(voter=delegate, active=True)
     except:
         return JsonResponse({'raise404':True, 'oldProxy':None})
@@ -91,7 +90,7 @@ def proxyRetract(request):
 
 def proxyResign(request):
     try:
-        delegate = Delegate.objects.get(authClone=request.user)
+        delegate = request.user.delegate
         proxyId = request.GET.get('proxyId', None)
         activeProxy = Proxy.objects.get(id=proxyId, active=True)
     except:
@@ -109,7 +108,7 @@ def proxyResign(request):
 @login_required
 def poll(request):
     allPolls = sorted(Poll.objects.all(), key=lambda x:-x.id)
-    delegate = Delegate.objects.get(authClone=request.user) if request.user.is_authenticated else None
+    delegate = request.user.delegate if request.user.is_authenticated else None
     superadmin = delegate.superadmin if delegate is not None else False
     rep = delegate.rep if delegate is not None else False
     activePolls = [i for i in allPolls if i.active and eligibleToVote(delegate, i)]
@@ -118,7 +117,7 @@ def poll(request):
 
 @login_required
 def createPoll(request):
-    if not Delegate.objects.get(authClone = request.user):
+    if not request.user.delegate:
         raise Http404()
 
     if request.method == 'POST':
@@ -140,7 +139,7 @@ def createPoll(request):
     
 @login_required
 def closePoll(request, pollId):
-    if not Delegate.objects.get(authClone = request.user).superadmin:
+    if not request.user.delegate.superadmin:
         raise Http404()
     try:
         activePoll = Poll.objects.filter(id = pollId, active=True)[0]
@@ -181,7 +180,7 @@ def pollInfo(request, pollId):
 
     allVotes = Vote.objects.filter(poll=poll)
     pollResults = calculateResults(poll)
-    superadmin = True if request.user.is_authenticated and Delegate.objects.get(authClone=request.user).superadmin else False
+    superadmin = True if request.user.is_authenticated and request.user.delegate.superadmin else False
 
     yetToVote = []
     if poll.repsOnly:
@@ -202,7 +201,7 @@ def voteOnPoll(request, pollId):
 
     activeVoteHTMLIds = []
 
-    delegate = Delegate.objects.get(authClone=request.user)
+    delegate = request.user.delegate
     delegateHasProxy = Proxy.objects.filter(voter=delegate, active=True)
     delegateProxy = delegateHasProxy[0] if delegateHasProxy else None
     delegateHasVote = Vote.objects.filter(voter=delegate, poll=activePoll)
@@ -230,7 +229,7 @@ def ajaxGetCastVotes(request):
     try:
         pollId = request.GET.get('pollId', None)
         activePoll = Poll.objects.filter(id = pollId, active=True)[0]
-        delegate = Delegate.objects.get(authClone=request.user)
+        delegate = request.user.delegate
     except:
         return JsonResponse({'raise404':True})
 
@@ -257,7 +256,7 @@ def ajaxSubmitVotes(request):
     try:
         pollId = request.GET.get('pollId', None)
         activePoll = Poll.objects.filter(id = pollId, active=True)[0]
-        delegate = Delegate.objects.get(authClone=request.user)
+        delegate = request.user.delegate
         checkedIds = request.GET.getlist('checkedIds[]', None)
     except:
         return JsonResponse({'raise404':True})
