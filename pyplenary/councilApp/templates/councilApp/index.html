@@ -80,5 +80,17 @@
       </div>
     </div>
 
+    {% if user.is_authenticated %}
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">My Details</h5>
+            <p class="card-text">Update your name, pronouns, displayed role, and whether you are a first-time attendee</p>
+          </div>
+          <a href="/profile/" class="btn btn-primary card-btn stretched-link">Enter</a>
+        </div>
+      </div>
+    {% endif %}
+
   </div>
 {% endblock %}

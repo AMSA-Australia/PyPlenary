@@ -30,4 +30,5 @@ urlpatterns = [
 	path('logout/', views.logoutCustom),
 	path('password_change_request/', views.passwordResetLinkRequest),
 	path('password_reset/<str:token>', views.passwordReset)
+	path('profile/', views.profile),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

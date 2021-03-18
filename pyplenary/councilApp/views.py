@@ -388,3 +388,5 @@ def passwordReset(request, token):
 
     return render(request, 'councilApp/password/passwordReset.html', {'changeForm':changeForm, 'linkExpired':False, 'done':False, 'user':user})
 
+def profile(request):
+    return render(request, 'councilApp/profile.html', {'active_tab':'profile'})
