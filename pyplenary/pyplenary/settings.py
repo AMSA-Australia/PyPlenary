@@ -19,6 +19,7 @@ DEBUG = True
 
 # ALLOWED_HOSTS = ['*']
 
+SECURE_SSL_REDIRECT = True
 
 # Application definition
 
@@ -137,8 +138,8 @@ PYPLENARY_SITE_TAGLINE = '26-28 March 2021 🍊'
 
 # Configure the domain name using the environment variable
 # that Azure automatically creates for us.
-ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
-
+# ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
+ALLOWED_HOSTS = [*]
 
 # whitenoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
