@@ -1,4 +1,5 @@
 {% extends 'councilApp/base.html' %}
+{% load static %}
 
 {% comment %}
     Copyright © 2021  Lee Yingtong Li (RunasSudo), Allen Gu
@@ -40,19 +41,7 @@
     </form>
 
     <div class="list-group" id="speaker-list">
-      {% for speaker in speakers %}
-        <div class="list-group-item{% if speaker.point_of_order %} list-group-item-danger{% elif speaker.delegate.first_time %} list-group-item-primary{% endif %}">
-          <div class="h5 d-flex mb-0">
-            <span style="flex-grow:1;">{{ speaker.delegate.name }}</span>
-            {% if speaker.point_of_order %}<i class="bi bi-exclamation-triangle-fill" data-toggle="tooltip" title="Point of order"></i>{% elif speaker.delegate.first_time %}<i class="bi bi-star" data-toggle="tooltip" title="First time attendee"></i>{% endif %}
-          </div>
-          <small>Speaker {{ speaker.delegate.speakerNum }}. {{ speaker.delegate.role }}.</small>
-        </div>
-      {% empty %}
-        <div class="alert alert-secondary" role="alert">
-          No delegates are currently on the speaker list.
-        </div>
-      {% endfor %}
+      {% include 'councilApp/speaker_list_inner.html' %}
     </div>
   </div>
 {% endblock %}
@@ -65,6 +54,7 @@
 {% block script %}
   {{ block.super }}
   <script src="https://cdn.jsdelivr.net/npm/dragula@3.7.3/dist/dragula.min.js" integrity="sha256-egj5xxtj40Ds0GUbObVZ7m2LEOsnvu9i5Ogtmd1I+jk=" crossorigin="anonymous"></script>
+  <script src="{% static 'councilApp/js/speakerList-refresh.js' %}"></script>
   <script>
     $(function() {
       $('[data-toggle="tooltip"]').tooltip();

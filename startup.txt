@@ -1,1 +1,1 @@
-gunicorn --bind=0.0.0.0 --timeout 600 --chdir pyplenary pyplenary.wsgi
+cd pyplenary; daphne pyplenary.asgi:application -b 0.0.0.0

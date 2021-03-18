@@ -24,6 +24,7 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -66,7 +67,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pyplenary.wsgi.application'
-
+ASGI_APPLICATION = "pyplenary.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -77,6 +78,15 @@ WSGI_APPLICATION = 'pyplenary.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [os.environ['REDIS_URL']],
+        },
+    },
+}
 
 # Login
 LOGIN_URL = '/login/'

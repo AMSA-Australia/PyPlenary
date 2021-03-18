@@ -1,4 +1,6 @@
 import json
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
@@ -30,14 +32,22 @@ import requests
 
 os.chdir(settings.BASE_DIR) # For loading agenda.yaml, etc.
 
+channel_layer = get_channel_layer()
+
 def index(request):
     return render(request, 'councilApp/index.html', {'active_tab':'index'})
 
+@login_required
 def speakerList(request):
     speakers = Speaker.objects.all()
     on_list = Speaker.objects.filter(delegate=request.user.delegate).exists()
     return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'speakers':speakers,
         'on_list':on_list})
+
+@login_required
+def speakerListInner(request):
+    speakers = Speaker.objects.all()
+    return render(request, 'councilApp/speaker_list_inner.html', {'speakers':speakers})
 
 @login_required
 def speakerAdd(request):
@@ -46,6 +56,7 @@ def speakerAdd(request):
     Speaker.objects.filter(delegate=request.user.delegate).delete()
 
     if request.POST['action'] == 'remove':
+        async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated'})
         return redirect('/speaker_list/')
 
     speaker = Speaker()
@@ -60,6 +71,8 @@ def speakerAdd(request):
         return HttpResponseBadRequest('Unknown action')
 
     speaker.save()
+
+    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated'})
     return redirect('/speaker_list/')
 
 def delegates(request):

@@ -14,6 +14,7 @@ urlpatterns = [
 	path('index.html', views.index),
 	path('speaker_list/', views.speakerList),
 	path('speaker_list/add', views.speakerAdd),
+	path('speaker_list/inner', views.speakerListInner),
 	path('delegates/', views.delegates),
 	path('proxy/', views.proxy),
 	path('ajax/nominateProxy/', views.proxyNominate),
@@ -30,6 +31,6 @@ urlpatterns = [
 	path('login/', views.loginCustom),
 	path('logout/', views.logoutCustom),
 	path('password_change_request/', views.passwordResetLinkRequest),
-	path('password_reset/<str:token>', views.passwordReset)
+	path('password_reset/<str:token>', views.passwordReset),
 	path('profile/', views.profile),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
