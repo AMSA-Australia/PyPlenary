@@ -14,9 +14,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'ubfxhi$qrj&9$s&^g5lmru3l03h5azq&w@mfso0+*beq71x!8t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_extensions',
     'crispy_forms_semantic_ui',
-]
+] + ['whitenoise.runserver_nostatic']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -42,7 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+] + ['whitenoise.middleware.WhiteNoiseMiddleware']
 
 ROOT_URLCONF = 'pyplenary.urls'
 
@@ -69,12 +69,12 @@ WSGI_APPLICATION = 'pyplenary.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Login
 LOGIN_URL = '/login/'
@@ -130,3 +130,37 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 PYPLENARY_SITE_NAME = 'AMSA National Council 1 2021'
 PYPLENARY_SITE_TAGLINE = '26-28 March 2021 🍊'
+
+
+# PRODUCTION SETTINGS
+
+# Configure the domain name using the environment variable
+# that Azure automatically creates for us.
+ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
+
+
+# whitenoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
+DATABASES = {}
+
+if all(x in os.environ for x in ['DBHOST', 'DBNAME', 'DBUSER', 'DBPASS']):
+    # DBHOST is only the server name, not the full URL
+    hostname = os.environ['DBHOST']
+
+    # Configure Postgres database; the full username is username@servername,
+    # which we construct using the DBHOST value.
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['DBNAME'],
+        'HOST': hostname + ".postgres.database.azure.com",
+        'USER': os.environ['DBUSER'] + "@" + hostname,
+        'PASSWORD': os.environ['DBPASS'] 
+    }
+
+
+# LOAD DEVELOPMENT SETTINGS IF ENVIRON SET
+if os.environ.get('DJANGO_DEVELOPMENT'):
+    from .settingsDev import *

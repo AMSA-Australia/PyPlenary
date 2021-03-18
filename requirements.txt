@@ -7,3 +7,4 @@ sqlparse==0.4.1
 crispy-forms-semantic-ui==0.2.0
 PyYAML==5.4.1
 markdown==3.3.4
+whitenoise==5.2.0
