@@ -109,4 +109,4 @@ class Speaker(models.Model):
     
     class Meta:
         db_table = 'Speaker'
-        ordering = ['index']
+        ordering = ['-point_of_order', 'index']
