@@ -23,36 +23,36 @@
   <div style="max-width: 600px; margin: 0 auto;">
     <h2 class="mb-3">Speaker List</h2>
 
-    <div class="row mb-3">
-      <div class="col-12 col-md-6 mb-2 mb-md-0">
-        <button type="button" class="btn btn-primary w-100">Add yourself to the speaker list</button>
+    <form action="/speaker_list/add" method="POST">
+      <div class="row mb-3">
+        <div class="col-12 col-md-6 mb-2 mb-md-0">
+          {% if on_list %}
+            <button type="submit" name="action" value="remove" class="btn btn-secondary w-100">Remove yourself from the list</a>
+          {% else %}
+            <button type="submit" name="action" value="add" class="btn btn-primary w-100">Add yourself to the speaker list</a>
+          {% endif %}
+        </div>
+        <div class="col-12 col-md-6">
+          <button type="submit" name="action" value="point_order" class="btn btn-danger w-100"><i class="bi bi-exclamation-triangle-fill"></i> Raise a point of order</a>
+        </div>
       </div>
-      <div class="col-12 col-md-6">
-        <button type="button" class="btn btn-danger w-100">Raise a point of order</button>
-      </div>
-    </div>
-    
+      {% csrf_token %}
+    </form>
+
     <div class="list-group" id="speaker-list">
-      <div class="list-group-item list-group-item-primary">
-        <div class="h5 d-flex mb-0">
-          <span style="flex-grow:1;">Adam Smith</span>
-          <i class="bi bi-star" data-toggle="tooltip" title="First time attendee"></i>
+      {% for speaker in speakers %}
+        <div class="list-group-item{% if speaker.point_of_order %} list-group-item-danger{% elif speaker.delegate.first_time %} list-group-item-primary{% endif %}">
+          <div class="h5 d-flex mb-0">
+            <span style="flex-grow:1;">{{ speaker.delegate.name }}</span>
+            {% if speaker.point_of_order %}<i class="bi bi-exclamation-triangle-fill" data-toggle="tooltip" title="Point of order"></i>{% elif speaker.delegate.first_time %}<i class="bi bi-star" data-toggle="tooltip" title="First time attendee"></i>{% endif %}
+          </div>
+          <small>Speaker {{ speaker.delegate.speakerNum }}. {{ speaker.delegate.role }}.</small>
         </div>
-        <small>Speaker 101. Role Title.</small>
-      </div>
-      <div class="list-group-item">
-        <div class="h5 d-flex mb-0">
-          <span style="flex-grow:1;">Barbara Bloggs</span>
+      {% empty %}
+        <div class="alert alert-secondary" role="alert">
+          No delegates are currently on the speaker list.
         </div>
-        <small>Speaker 102. Role Title.</small>
-      </div>
-      <div class="list-group-item list-group-item-danger">
-        <div class="h5 d-flex mb-0">
-          <span style="flex-grow:1;">Charlie Citizen</span>
-          <i class="bi bi-exclamation-triangle-fill" data-toggle="tooltip" title="Point of order"></i>
-        </div>
-        <small>Speaker 103. Role Title.</small>
-      </div>
+      {% endfor %}
     </div>
   </div>
 {% endblock %}

@@ -27,6 +27,7 @@ class Delegate(models.Model):
     role = models.CharField(max_length=200, null=True)
     speakerNum = models.IntegerField(default=0)
     pronouns = models.CharField(max_length=100, null=True)
+    first_time = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'Delegate'
@@ -98,3 +99,14 @@ class ResetToken(models.Model):
     
     class Meta:
         db_table = 'ResetTokens'
+
+class Speaker(models.Model):
+    """An entry on the Speaker List"""
+    id = models.AutoField(primary_key=True)
+    delegate = models.ForeignKey(Delegate, models.CASCADE)
+    index = models.IntegerField()
+    point_of_order = models.BooleanField()
+    
+    class Meta:
+        db_table = 'Speaker'
+        ordering = ['index']

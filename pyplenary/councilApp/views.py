@@ -8,8 +8,9 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Max
 from django.forms import formset_factory, ValidationError
-from django.http import JsonResponse, FileResponse, Http404, HttpResponse
+from django.http import JsonResponse, FileResponse, Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -33,7 +34,33 @@ def index(request):
     return render(request, 'councilApp/index.html', {'active_tab':'index'})
 
 def speakerList(request):
-    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list'})
+    speakers = Speaker.objects.all()
+    on_list = Speaker.objects.filter(delegate=request.user.delegate).exists()
+    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'speakers':speakers,
+        'on_list':on_list})
+
+@login_required
+def speakerAdd(request):
+    # FIXME: Acquire lock to prevent race conditions
+
+    Speaker.objects.filter(delegate=request.user.delegate).delete()
+
+    if request.POST['action'] == 'remove':
+        return redirect('/speaker_list/')
+
+    speaker = Speaker()
+    speaker.delegate = request.user.delegate
+    speaker.index = (Speaker.objects.all().aggregate(Max('index'))['index__max'] or 0) + 1
+
+    if request.POST['action'] == 'add':
+        speaker.point_of_order = False
+    elif request.POST['action'] == 'point_order':
+        speaker.point_of_order = True
+    else:
+        return HttpResponseBadRequest('Unknown action')
+
+    speaker.save()
+    return redirect('/speaker_list/')
 
 def delegates(request):
     allDelegates = sorted(Delegate.objects.all(), key=lambda x:x.speakerNum)

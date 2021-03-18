@@ -13,6 +13,7 @@ urlpatterns = [
 	path('', views.index),
 	path('index.html', views.index),
 	path('speaker_list/', views.speakerList),
+	path('speaker_list/add', views.speakerAdd),
 	path('delegates/', views.delegates),
 	path('proxy/', views.proxy),
 	path('ajax/nominateProxy/', views.proxyNominate),
