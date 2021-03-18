@@ -19,11 +19,13 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import last_modified
 from datetime import datetime
 
+
 from .forms import *
 from .models import *
 import os
 import yaml
 from .utils import *
+import requests
 
 os.chdir(settings.BASE_DIR) # For loading agenda.yaml, etc.
 
@@ -301,7 +303,7 @@ def loginCustom(request):
     if request.method == 'POST':
         loginForm = LoginForm(request.POST)
         if loginForm.is_valid():
-            username = loginForm.cleaned_data.get('username')
+            username = loginForm.cleaned_data.get('username').lower()
             password = loginForm.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             
@@ -322,3 +324,67 @@ def loginCustom(request):
 def logoutCustom(request):
     logout(request)
     return redirect('/')
+
+def passwordResetLinkRequest(request):
+    if request.method == 'POST':
+        emailForm = PasswordChangeEmail(request.POST)
+        if emailForm.is_valid():
+            email = emailForm.cleaned_data.get('email')
+
+            userList = User.objects.filter(email=email)
+
+            if len(userList) == 0:
+                return render(request, 'councilApp/password/requestChange.html', {'emailForm':emailForm, 'done':True})
+            
+            user = userList[0]
+
+            for oldToken in ResetToken.objects.filter(user=user):
+                oldToken.active = False
+                oldToken.save()
+
+            token = generateToken()
+            while len(ResetToken.objects.filter(token=token)) > 0:
+                token = generateToken()
+            ResetToken.objects.create(token = token, user = user)
+
+            try:
+                resetLink = f'{settings.WEB_DOMAIN}/password_reset/{token}'
+                subject = 'Council Webapp Password Change Request'
+                html_message = render_to_string('councilApp/password/passwordEmail.html', {'domain':settings.WEB_DOMAIN, 'resetLink':resetLink})
+                plain_message = strip_tags(html_message)
+                email_from = 'AMSA Council Webmaster'
+
+                send_mail(subject, plain_message, email_from, [email], html_message=html_message)
+
+                return render(request, 'councilApp/password/requestChange.html', {'emailForm':emailForm, 'done':True})
+
+            except:
+                return render(request, 'councilApp/password/requestChange.html', {'emailForm':emailForm, 'done':True})
+    else:
+        emailForm = PasswordChangeEmail()
+    
+    return render(request, 'councilApp/password/requestChange.html', {'emailForm':emailForm, 'done':False})
+
+
+def passwordReset(request, token):
+    logout(request)
+    try:
+        tokenObj = ResetToken.objects.get(token=token)
+        user = tokenObj.user
+        if not tokenObj.active:
+            return render(request, 'councilApp/password/passwordReset.html', {'linkExpired':True, 'done':False})
+    except:
+        return render(request, 'councilApp/password/passwordReset.html', {'linkExpired':True, 'done':False})
+
+    if request.method == 'POST':
+        changeForm = SetPasswordForm(user, request.POST)
+        if changeForm.is_valid():
+            changeForm.save()
+            tokenObj.active = False
+            tokenObj.save()
+            return render(request, 'councilApp/password/passwordReset.html', {'linkExpired':False, 'done':True})
+    else:
+        changeForm = SetPasswordForm(user)
+
+    return render(request, 'councilApp/password/passwordReset.html', {'changeForm':changeForm, 'linkExpired':False, 'done':False, 'user':user})
+

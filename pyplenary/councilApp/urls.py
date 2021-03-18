@@ -28,4 +28,6 @@ urlpatterns = [
 	path('agenda/', views.agenda),
 	path('login/', views.loginCustom),
 	path('logout/', views.logoutCustom),
+	path('password_change_request/', views.passwordResetLinkRequest),
+	path('password_reset/<str:token>', views.passwordReset)
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

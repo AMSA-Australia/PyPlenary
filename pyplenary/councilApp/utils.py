@@ -1,6 +1,8 @@
 from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from .models import *
 import json
+import string
+import random
 
 def eligibleToVote(delegate, poll):
     if poll.repsOnly:
@@ -26,3 +28,10 @@ def calculateResults(poll):
     noVotes = sum([i.voteWeight for i in votesInPoll if i.vote == 2])
     abstainVotes = sum([i.voteWeight for i in votesInPoll if i.vote == 0])
     return (abstainVotes, yesVotes, noVotes)
+
+def generateToken():
+    choice = string.ascii_lowercase + string.ascii_uppercase + string.digits
+    token = ''
+    for i in range(64):
+        token += random.choice(choice)
+    return token
