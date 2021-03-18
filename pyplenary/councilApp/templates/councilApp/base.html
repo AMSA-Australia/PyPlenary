@@ -27,7 +27,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto">
+          <ul class="navbar-nav me-auto w-100">
             <li class="nav-item">
               <a class="nav-link {% if active_tab == 'index' %}active{% endif %}" aria-current="page" href="/">Home</a>
             </li>
@@ -47,9 +47,10 @@
             <li class="nav-item">
               <a class="nav-link {% if active_tab == 'agenda' %}active{% endif %}" href="/agenda/">Agenda</a>
             </li>
-        </ul>
-        <ul class="navbar-nav ms-auto">
-          {% if user.is_authenticated %}
+
+            <li style="flex-grow:1;"></li><!-- Force other items to the right -->
+
+            {% if user.is_authenticated %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{{ user.delegate.name }}</a>
               <ul class="dropdown-menu">
@@ -58,12 +59,12 @@
                 <li><a class="dropdown-item" href="/logout/">Logout</a></li>
               </ul>
             </li>
-          {% else %}
+            {% else %}
             <li class="nav-item">
               <a class="nav-link {% if active_tab == 'login' %}active{% endif %}" href="/login/">Login</a>
             </li>
-          {% endif %}
-        </ul>
+            {% endif %}
+          </ul>
         </div>
       </div>
     </nav>
