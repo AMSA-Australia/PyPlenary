@@ -349,7 +349,7 @@ def loginCustom(request):
             
             if user == None:
                 loginForm = LoginForm()
-                return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':True, 'active_tab':'login'})
+                return render(request, 'councilApp/authTemplates/login.html', {'loginForm':loginForm, 'wrong':True, 'active_tab':'login'})
             else:
                 login(request, user)
                 try:
@@ -359,7 +359,7 @@ def loginCustom(request):
     else:
         loginForm = LoginForm()
 
-    return render(request, 'councilApp/login.html', {'loginForm':loginForm, 'wrong':False, 'active_tab':'login'})
+    return render(request, 'councilApp/authTemplates/login.html', {'loginForm':loginForm, 'wrong':False, 'active_tab':'login'})
 
 def logoutCustom(request):
     logout(request)
@@ -375,7 +375,7 @@ def passwordResetLinkRequest(request):
             userList = User.objects.filter(email=email)
 
             if len(userList) == 0:
-                return render(request, 'councilApp/password/requestChange.html', {'emailForm':emailForm, 'done':True})
+                return render(request, 'councilApp/authTemplates/requestChange.html', {'emailForm':emailForm, 'done':True})
             
             user = userList[0]
 
@@ -386,25 +386,25 @@ def passwordResetLinkRequest(request):
             token = generateToken()
             while len(ResetToken.objects.filter(token=token)) > 0:
                 token = generateToken()
-            ResetToken.objects.create(token = token, user = user)
+            ResetToken.objects.create(token = token, user = user, active=True)
 
             try:
                 resetLink = f'{settings.WEB_DOMAIN}/password_reset/{token}'
                 subject = 'Council Webapp Password Change Request'
-                html_message = render_to_string('councilApp/password/passwordEmail.html', {'domain':settings.WEB_DOMAIN, 'resetLink':resetLink})
+                html_message = render_to_string('councilApp/authTemplates/passwordEmail.html', {'domain':settings.WEB_DOMAIN, 'resetLink':resetLink})
                 plain_message = strip_tags(html_message)
                 email_from = 'AMSA Council Webmaster'
 
                 send_mail(subject, plain_message, email_from, [email], html_message=html_message)
 
-                return render(request, 'councilApp/password/requestChange.html', {'emailForm':emailForm, 'done':True})
+                return render(request, 'councilApp/authTemplates/requestChange.html', {'emailForm':emailForm, 'done':True})
 
             except:
-                return render(request, 'councilApp/password/requestChange.html', {'emailForm':emailForm, 'done':True})
+                return render(request, 'councilApp/authTemplates/requestChange.html', {'emailForm':emailForm, 'done':True})
     else:
         emailForm = PasswordChangeEmail()
     
-    return render(request, 'councilApp/password/requestChange.html', {'emailForm':emailForm, 'done':False})
+    return render(request, 'councilApp/authTemplates/requestChange.html', {'emailForm':emailForm, 'done':False})
 
 
 def passwordReset(request, token):
@@ -413,9 +413,9 @@ def passwordReset(request, token):
         tokenObj = ResetToken.objects.get(token=token)
         user = tokenObj.user
         if not tokenObj.active:
-            return render(request, 'councilApp/password/passwordReset.html', {'linkExpired':True, 'done':False})
+            return render(request, 'councilApp/authTemplates/passwordReset.html', {'linkExpired':True, 'done':False})
     except:
-        return render(request, 'councilApp/password/passwordReset.html', {'linkExpired':True, 'done':False})
+        return render(request, 'councilApp/authTemplates/passwordReset.html', {'linkExpired':True, 'done':False})
 
     if request.method == 'POST':
         changeForm = SetPasswordForm(user, request.POST)
@@ -423,11 +423,103 @@ def passwordReset(request, token):
             changeForm.save()
             tokenObj.active = False
             tokenObj.save()
-            return render(request, 'councilApp/password/passwordReset.html', {'linkExpired':False, 'done':True})
+            return render(request, 'councilApp/authTemplates/passwordReset.html', {'linkExpired':False, 'done':True})
     else:
         changeForm = SetPasswordForm(user)
 
-    return render(request, 'councilApp/password/passwordReset.html', {'changeForm':changeForm, 'linkExpired':False, 'done':False, 'user':user})
+    return render(request, 'councilApp/authTemplates/passwordReset.html', {'changeForm':changeForm, 'linkExpired':False, 'done':False, 'user':user})
+
+def regoRequest(request):
+    logout(request)
+    if request.method == 'POST':
+        regoForm = RegoForm(request.POST)
+
+        if regoForm.is_valid():
+
+            [email, name, institution, role, pronouns, firstTime] = [regoForm.cleaned_data.get('email').lower(),
+                regoForm.cleaned_data.get('name'),
+                regoForm.cleaned_data.get('institution'),
+                regoForm.cleaned_data.get('role'),
+                regoForm.cleaned_data.get('pronouns'),
+                regoForm.cleaned_data.get('firstTime'),]
+
+            if User.objects.filter(username=email):
+                return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':None, 'email':None, 'done':True, 'error':1})
+
+            for oldToken in PendingRego.objects.filter(email=email):
+                oldToken.active = False
+                oldToken.save()
+
+            token = generateToken()
+            while len(PendingRego.objects.filter(token=token)) > 0:
+                token = generateToken()
+            PendingRego.objects.create(token=token, email=email, name=name, institution=institution, role=role, pronouns=pronouns, firstTime=firstTime)
+
+            try:
+                activateLink = f'{settings.WEB_DOMAIN}/activate/{token}'
+                subject = 'Council Webapp Acccount Ativation'
+                html_message = render_to_string('councilApp/authTemplates/activationEmail.html', {'activateLink':activateLink, 'name':name})
+                plain_message = strip_tags(html_message)
+                email_from = 'AMSA Council Webmaster'
+
+                send_mail(subject, plain_message, email_from, [email], html_message=html_message)
+
+                return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':None, 'email':email, 'done':True, 'error':0})
+
+            except:
+                return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':None, 'email':None, 'done':True, 'error':2})
+    else:
+        regoForm = RegoForm()
+    
+    return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':regoForm, 'email':None, 'done':False, 'error':0})
+
+def regoSetPassword(request, token):
+    logout(request)
+    try:
+        tokenObj = PendingRego.objects.get(token=token)
+        if not tokenObj.active:
+            return render(request, 'councilApp/authTemplates/regoPassword.html', {'error':2, 'done':False})
+    except:
+        return render(request, 'councilApp/authTemplates/regoPassword.html', {'error':1, 'done':False})
+
+    if not User.objects.filter(username=tokenObj.email):
+        user = User.objects.create(username=tokenObj.email, password="tempPassword", email=tokenObj.email)
+    else:
+        user = User.objects.get(username=tokenObj.email)
+
+    if request.method == 'POST':
+        pwdForm = SetPasswordForm(user, request.POST)
+        if pwdForm.is_valid():
+            pwdForm.save()
+
+            Delegate.objects.create(
+                authClone=user,
+                name=tokenObj.name,
+                email=tokenObj.email,
+                institution=tokenObj.institution,
+                role=tokenObj.role,
+                speakerNum=max([i.speakerNum for i in Delegate.objects.all()])+1,
+                pronouns=tokenObj.pronouns,
+                first_time=tokenObj.firstTime)
+            
+            tokenObj.active = False
+            tokenObj.save()
+
+            
+
+            return render(request, 'councilApp/authTemplates/regoPassword.html', {'error':0,  'done':True})
+    else:
+        pwdForm = SetPasswordForm(user)
+
+    return render(request, 'councilApp/authTemplates/regoPassword.html', {'pwdForm':pwdForm, 'email':tokenObj.email, 'error':0, 'done':False})
+
+
+
+
+
+
+
+
 
 def profile(request):
     return render(request, 'councilApp/profile.html', {'active_tab':'profile'})

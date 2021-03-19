@@ -1,0 +1,45 @@
+{% extends 'councilApp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+  <h2>Webapp Registration</h2>
+  {% if error == 1 %}
+    <div class="alert alert-danger" role="alert">
+      <h4>Error</h4>
+      <p>This email address already has been registered. Please <a href="/login/" class="alert-link">login</a> or <a href="/password_change_request/" class="alert-link">reset your password</a>.</p>
+    </div>
+  {% elif error == 2 %}
+    <div class="alert alert-danger" role="alert">
+      <h4>Error</h4>
+      <p>An error has occurred. Please contact <a href="mailto:secretary@amsa.org.au" class="alert-link">secretary@amsa.org.au</a> for assistance.</p>
+    </div>
+  {% else %}
+    {% if done %}
+      <div class="alert alert-success" role="alert">
+        <p>An email containing an activation link has been sent to <strong>{{email}}</strong>.</p>
+
+        <p>If you haven't received this email within five minutes, please check your spam folder. Contact <a href="mailto:secretary@amsa.org.au" class="alert-link">secretary@amsa.org.au</a> if you run into any further issues.</p>
+      </div>
+    {% else %}
+      <p>Enter your details below.</p>
+
+      <div>
+        <form method="post">
+          <div class="form">
+            {% csrf_token %}
+            {{ regoForm|crispy }}  
+            <br>
+            <button type="submit" class="btn btn-success btn-block">Submit</button>
+          </div>
+        </form>
+      </div>
+      <script>
+        $( ".form-group" ).after( "<br>" );form-select-sm
+        $( "#id_institution" ).addClass("form-select-sm");
+      </script>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% endblock %}
