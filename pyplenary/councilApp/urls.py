@@ -33,4 +33,6 @@ urlpatterns = [
 	path('password_change_request/', views.passwordResetLinkRequest),
 	path('password_reset/<str:token>', views.passwordReset),
 	path('profile/', views.profile),
+	path('registration/', views.regoRequest),
+	path('activate/<str:token>', views.regoSetPassword),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

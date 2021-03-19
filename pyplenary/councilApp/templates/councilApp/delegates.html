@@ -10,10 +10,11 @@
   <table class="table table-hover" id="delegateTable">
     <thead class="thead-dark">
       <tr>
-        <th scope="col" style="width: 15%">Speaker #</th>
+        <th scope="col" style="width: 10%">Speaker #</th>
         <th scope="col" style="width: 25%">Name</th>
         <th scope="col" style="width: 25%">Role</th>
-        <th scope="col" style="width: 35%">Institution</th>
+        <th scope="col" style="width: 30%">Institution</th>
+        <th scope="col" style="width: 10%">Pronouns</th>
       </tr>
     </thead>
     <tbody>
@@ -27,6 +28,11 @@
           <td>{{ delegate.name }}</td>
           <td>{{ delegate.role }}</td>
           <td>{{ delegate.institution }}</td>
+          {% if delegate.pronouns %}
+            <td>{{ delegate.pronouns }}</td>
+          {% else %}
+            <td>-</td>
+          {% endif %}
         </tr>
       {% endfor %}
     </tbody>

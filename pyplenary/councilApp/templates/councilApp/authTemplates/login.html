@@ -4,7 +4,9 @@
 {% block content %}
 <div style="max-width: 600px; margin: 0 auto;">
   <h2>Login</h2>
-  <p>If you have forgotten your password or wish to change it, <a href='/password_change_request/'>click here</a>. If you have further issues logging in, email <a href="mailto:secretary@amsa.org.au" target="_top">secretary@amsa.org.au</a> from the email address you registered for Council with.</p>
+  <p>If you have forgotten your password or wish to change it, <a href='/password_change_request/'>click here</a>. If you have further issues logging in, email <a href="mailto:secretary@amsa.org.au" target="_top">secretary@amsa.org.au</a> from the email address with which you registered for Council.</p>
+
+  <p>If you have not registered for a Webapp account, please <a href='/registration/'>register here</a>.
   {% if wrong %}
     <div class="alert alert-danger" role="alert">
       Invalid username or password.

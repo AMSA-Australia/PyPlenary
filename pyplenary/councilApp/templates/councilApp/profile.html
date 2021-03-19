@@ -4,5 +4,38 @@
 {% block title %}My Details{% endblock %}
 
 {% block content %}
-<h2>Profile: WIP</h2>
+<div style="max-width: 600px; margin: 0 auto;">
+  <h2>My Details</h2>
+  <p>View and update your details below.</p>
+  {% if error == 1 %}
+    <div class="alert alert-danger" role="alert">
+      <h5>Error</h5>
+      You attempted to change your email address, but that address already exists. Please try again.
+    </div>
+  {% else %}
+    {% if done %}
+      <div class="alert alert-success" role="alert">
+        Your details have been successfully updated.
+        {% if emailChanged %}
+          <br>
+          Note: your login email has been changed.
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endif %}
+  <div>
+    <form method="post">
+      <div class="form">
+        {% csrf_token %}
+        {{ changeDetailForm|crispy }}  
+        <button type="submit" class="btn btn-success btn-block">Update</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    $( ".form-group" ).after( "<br>" );form-select-sm
+    $( "#id_institution" ).addClass("form-select-sm");
+  </script>
+</div>
+
 {% endblock %}
