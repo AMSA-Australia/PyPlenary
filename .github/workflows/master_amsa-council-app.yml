@@ -9,6 +9,9 @@ on:
       - master
   workflow_dispatch:
 
+env:
+  POST_BUILD_COMMAND: 'azure_postbuild.sh'
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
