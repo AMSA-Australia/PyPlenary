@@ -31,6 +31,26 @@
     <div class="col">
       <div class="card h-100">
         <div class="card-body">
+          <h5 class="card-title">Agenda</h5>
+          <p class="card-text">View the scheduled order of business at Council.</p>
+        </div>
+        <a href="/agenda/" class="btn btn-primary card-btn stretched-link">Enter</a>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">View Delegates</h5>
+          <p class="card-text">View all delegates at this Council.</p>
+        </div>
+        <a href="/delegates/" class="btn btn-primary card-btn stretched-link">Enter</a>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
           <h5 class="card-title">Speaker List</h5>
           <p class="card-text">View the speaker list, or put yourself on the list to indicate you would like to speak.</p>
         </div>
@@ -48,16 +68,6 @@
       </div>
     </div>
 
-    <div class="col">
-      <div class="card h-100">
-        <div class="card-body">
-          <h5 class="card-title">View Delegates</h5>
-          <p class="card-text">View all delegates at this Council.</p>
-        </div>
-        <a href="/delegates/" class="btn btn-primary card-btn stretched-link">Enter</a>
-      </div>
-    </div>
-
     {% if user.is_authenticated %}
       <div class="col">
         <div class="card h-100">
@@ -70,24 +80,26 @@
       </div>
     {% endif %}
 
-    <div class="col">
-      <div class="card h-100">
-        <div class="card-body">
-          <h5 class="card-title">Agenda</h5>
-          <p class="card-text">View the scheduled order of business at Council.</p>
-        </div>
-        <a href="/agenda/" class="btn btn-primary card-btn stretched-link">Enter</a>
-      </div>
-    </div>
-
     {% if user.is_authenticated %}
       <div class="col">
         <div class="card h-100">
           <div class="card-body">
             <h5 class="card-title">My Details</h5>
-            <p class="card-text">Update your name, pronouns, displayed role, and whether you are a first-time attendee.</p>
+            <p class="card-text">Update your name, email, pronouns, displayed role, and whether you are a first-time attendee.</p>
           </div>
           <a href="/profile/" class="btn btn-primary card-btn stretched-link">Enter</a>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if not user.is_authenticated %}
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Login</h5>
+            <p class="card-text">Login to the Council Webapp. Some features may require you to login.</p>
+          </div>
+          <a href="/login/" class="btn btn-primary card-btn stretched-link">Enter</a>
         </div>
       </div>
     {% endif %}

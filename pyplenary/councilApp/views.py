@@ -501,11 +501,9 @@ def regoSetPassword(request, token):
                 speakerNum=max([i.speakerNum for i in Delegate.objects.all()])+1,
                 pronouns=tokenObj.pronouns,
                 first_time=tokenObj.firstTime)
-            
+
             tokenObj.active = False
             tokenObj.save()
-
-            
 
             return render(request, 'councilApp/authTemplates/regoPassword.html', {'error':0,  'done':True})
     else:
@@ -513,13 +511,43 @@ def regoSetPassword(request, token):
 
     return render(request, 'councilApp/authTemplates/regoPassword.html', {'pwdForm':pwdForm, 'email':tokenObj.email, 'error':0, 'done':False})
 
-
-
-
-
-
-
-
-
+@login_required
 def profile(request):
-    return render(request, 'councilApp/profile.html', {'active_tab':'profile'})
+    user = request.user
+    delegate = request.user.delegate
+    done = False
+    emailChanged = False
+
+    changeDetailForm = RegoForm({
+        'name': delegate.name,
+        'email': delegate.email,
+        'institution': delegate.institution,
+        'role': delegate.role,
+        'pronouns': delegate.pronouns,
+        'firstTime': delegate.first_time})
+
+    if request.method == 'POST':
+        changeDetailForm = RegoForm(request.POST)
+
+        if changeDetailForm.is_valid():
+            [delegate.email, delegate.name, delegate.institution, delegate.role, delegate.pronouns, delegate.first_time] = [
+                changeDetailForm.cleaned_data.get('email').lower(),
+                changeDetailForm.cleaned_data.get('name'),
+                changeDetailForm.cleaned_data.get('institution'),
+                changeDetailForm.cleaned_data.get('role'),
+                changeDetailForm.cleaned_data.get('pronouns'),
+                changeDetailForm.cleaned_data.get('firstTime'),]
+
+            if delegate.email != user.username:
+                if User.objects.filter(username=delegate.email):
+                    return render(request, 'councilApp/profile.html', {'changeDetailForm':changeDetailForm, 'error':1, 'active_tab':'profile'})
+                user.username = delegate.email
+                user.email = delegate.email
+                emailChanged = True
+
+            delegate.save()
+            user.save()
+
+            done = True
+
+    return render(request, 'councilApp/profile.html', {'changeDetailForm':changeDetailForm, 'emailChanged': emailChanged, 'done':done, 'error':0, 'active_tab':'profile'})
