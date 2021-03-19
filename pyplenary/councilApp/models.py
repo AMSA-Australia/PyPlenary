@@ -91,14 +91,15 @@ class Vote(models.Model):
         output = f'{self.poll.title} - {self.rep.institution} - {self.vote}'
         return output
 
-class ResetToken(models.Model):
+class Token(models.Model):
     id = models.AutoField(primary_key=True)
     token = models.CharField(max_length=100, null=True)
     active = models.BooleanField(default = True)
     user = models.ForeignKey(User, models.DO_NOTHING, db_column = 'user', null=True)
+    isRegToken = models.BooleanField(null=True)
     
     class Meta:
-        db_table = 'ResetTokens'
+        db_table = 'Token'
 
 class Speaker(models.Model):
     """An entry on the Speaker List"""
