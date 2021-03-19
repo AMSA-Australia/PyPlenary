@@ -327,13 +327,14 @@ def ajaxSubmitVotes(request):
 
     return JsonResponse({'raise404':False})
 
+cached_agenda = None
+
 def agenda(request):
-    # TODO: Cache the agenda
-    
-    with open('agenda.yaml', 'r') as f:
-        agenda = yaml.load(f)
-    
-    return render(request, 'councilApp/agenda.html', {'active_tab':'agenda', 'agenda':agenda})
+    global cached_agenda
+    if cached_agenda is None:
+        cached_agenda = yaml.load(requests.get(settings.PYPLENARY_AGENDA_URI).text)
+
+    return render(request, 'councilApp/agenda.html', {'active_tab':'agenda', 'agenda':cached_agenda})
 
 def loginCustom(request):
     if request.user.is_authenticated:
