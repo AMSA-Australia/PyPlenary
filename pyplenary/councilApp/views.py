@@ -443,8 +443,10 @@ def regoRequest(request):
                 regoForm.cleaned_data.get('pronouns'),
                 regoForm.cleaned_data.get('firstTime'),]
 
+            role = role if role else 'Delegate'
+
             if User.objects.filter(username=email):
-                return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':None, 'email':None, 'done':True, 'error':1})
+                return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':None, 'email':None, 'done':True, 'error':1, 'active_tab':'registration'})
 
             for oldToken in PendingRego.objects.filter(email=email):
                 oldToken.active = False
@@ -464,14 +466,14 @@ def regoRequest(request):
 
                 send_mail(subject, plain_message, email_from, [email], html_message=html_message)
 
-                return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':None, 'email':email, 'done':True, 'error':0})
+                return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':None, 'email':email, 'done':True, 'error':0, 'active_tab':'registration'})
 
             except:
-                return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':None, 'email':None, 'done':True, 'error':2})
+                return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':None, 'email':None, 'done':True, 'error':2, 'active_tab':'registration'})
     else:
         regoForm = RegoForm()
     
-    return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':regoForm, 'email':None, 'done':False, 'error':0})
+    return render(request, 'councilApp/authTemplates/rego.html', {'regoForm':regoForm, 'email':None, 'done':False, 'error':0, 'active_tab':'registration'})
 
 def regoSetPassword(request, token):
     logout(request)
@@ -537,6 +539,8 @@ def profile(request):
                 changeDetailForm.cleaned_data.get('role'),
                 changeDetailForm.cleaned_data.get('pronouns'),
                 changeDetailForm.cleaned_data.get('firstTime'),]
+
+            delegate.role = delegate.role if delegate.role else 'Delegate'
 
             if delegate.email != user.username:
                 if User.objects.filter(username=delegate.email):

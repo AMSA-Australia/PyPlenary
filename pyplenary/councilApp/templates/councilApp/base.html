@@ -61,6 +61,9 @@
             </li>
             {% else %}
             <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'registration' %}active{% endif %}" href="/registration/">Register</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link {% if active_tab == 'login' %}active{% endif %}" href="/login/">Login</a>
             </li>
             {% endif %}

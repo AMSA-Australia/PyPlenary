@@ -7,7 +7,8 @@
   {% if error == 1 %}
     <div class="alert alert-danger" role="alert">
       <h4>Error</h4>
-      This email address already has been registered. Please <a href="/login/" class="alert-link">login</a> or <a href="/password_change_request/" class="alert-link">reset your password</a>.
+      <p>This email address already has been registered. Please <a href="/login/" class="alert-link">login</a> or <a href="/password_change_request/" class="alert-link">reset your password</a>.</p>
+      Alternatively, try <a href="/registration/" class="alert-link">registering again</a> with a different email adress. 
     </div>
   {% elif error == 2 %}
     <div class="alert alert-danger" role="alert">
@@ -17,8 +18,7 @@
   {% else %}
     {% if done %}
       <div class="alert alert-success" role="alert">
-        An email containing an activation link has been sent to <strong>{{email}}</strong>.
-        <br>
+        <p>An email containing an activation link has been sent to <strong>{{email}}</strong>.</p>
         If you haven't received this email within five minutes, please check your spam folder. Contact <a href="mailto:secretary@amsa.org.au" class="alert-link">secretary@amsa.org.au</a> if you run into any further issues.
       </div>
     {% else %}
