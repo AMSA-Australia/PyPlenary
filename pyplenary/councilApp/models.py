@@ -91,15 +91,30 @@ class Vote(models.Model):
         output = f'{self.poll.title} - {self.rep.institution} - {self.vote}'
         return output
 
-class Token(models.Model):
+class ResetToken(models.Model):
     id = models.AutoField(primary_key=True)
     token = models.CharField(max_length=100, null=True)
     active = models.BooleanField(default = True)
     user = models.ForeignKey(User, models.DO_NOTHING, db_column = 'user', null=True)
-    isRegToken = models.BooleanField(null=True)
     
     class Meta:
-        db_table = 'Token'
+        db_table = 'ResetToken'
+
+class PendingRego(models.Model):
+    id = models.AutoField(primary_key=True)
+    token = models.CharField(max_length=100, null=True)
+    active = models.BooleanField(default = True)
+    user = models.ForeignKey(User, models.DO_NOTHING, db_column = 'user', null=True)
+    name = models.CharField(max_length=100, null=True)
+    email = models.EmailField(max_length=254, null=True, blank=True, unique=True)
+    institution = models.ForeignKey(Institution, models.CASCADE, null=True)
+    role = models.CharField(max_length=200, null=True)
+    pronouns = models.CharField(max_length=100, null=True)
+    first_time = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'PendingRego'
+
 
 class Speaker(models.Model):
     """An entry on the Speaker List"""
