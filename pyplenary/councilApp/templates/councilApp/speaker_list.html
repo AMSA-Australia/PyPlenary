@@ -43,6 +43,10 @@
     <div class="list-group" id="speaker-list">
       {% include 'councilApp/speaker_list_inner.html' %}
     </div>
+
+    <div id="loading-spinner" class="text-muted text-end small mt-2" style="display:none;">
+      <div class="spinner-border spinner-border-sm" role="status"></div> Updating…
+    </div>
   </div>
 {% endblock %}
 
