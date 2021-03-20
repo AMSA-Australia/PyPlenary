@@ -32,6 +32,7 @@
     </li>
   {% endif %}
 </ul>
+<p>If you need to appoint or manage proxies, <a href="/proxy/">click here</a>.</p>
 <p>Note: To submit your votes, click the green "Submit" button at the bottom of the screen. Please ensure you have selected voted on all ballots (including proxies). <strong>You may amend your vote after you have submitted it.</strong></p>
 
 <hr/>
@@ -95,27 +96,36 @@
         <div class="card-header">
           <h5 class="card-title">Proxy ballot for <strong>{{proxyInfo.proxyObj.voter}}</strong></h5>
         </div>
-        <div class="card-body">
-          <p class="card-text">
-            Vote on behalf of <strong>{{proxyInfo.proxyObj.voter}}</strong>.
-          </p>
-        </div>
-        <div class="btn-group" role="group">
-          <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_1_{{proxyInfo.proxyObj.id}}" autocomplete="off">
-          <label class="btn btn-outline-success" for="proxyRadio_1_{{proxyInfo.proxyObj.id}}">Yes</label>
+        
+        {% if activePoll.repsOnly and not proxyInfo.proxyObj.voter.rep %}
+          <div class="card-body" style="background-color: lightgray">
+            <p class="card-text">
+              <strong>{{proxyInfo.proxyObj.voter}}</strong> is not an AMSA representative, so you may not vote for them on this poll.
+            </p>
+          </div>
+        {% else %}
+          <div class="card-body">
+            <p class="card-text">
+              Vote on behalf of <strong>{{proxyInfo.proxyObj.voter}}</strong>.
+            </p>
+          </div>
+          <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_1_{{proxyInfo.proxyObj.id}}" autocomplete="off">
+            <label class="btn btn-outline-success" for="proxyRadio_1_{{proxyInfo.proxyObj.id}}">Yes</label>
 
-          <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_2_{{proxyInfo.proxyObj.id}}" autocomplete="off">
-          <label class="btn btn-outline-danger" for="proxyRadio_2_{{proxyInfo.proxyObj.id}}">No</label>
+            <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_2_{{proxyInfo.proxyObj.id}}" autocomplete="off">
+            <label class="btn btn-outline-danger" for="proxyRadio_2_{{proxyInfo.proxyObj.id}}">No</label>
 
-          <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_0_{{proxyInfo.proxyObj.id}}" autocomplete="off">
-          <label class="btn btn-outline-primary" for="proxyRadio_0_{{proxyInfo.proxyObj.id}}">Abstain</label>
+            <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_0_{{proxyInfo.proxyObj.id}}" autocomplete="off">
+            <label class="btn btn-outline-primary" for="proxyRadio_0_{{proxyInfo.proxyObj.id}}">Abstain</label>
+          </div>
+        {% endif %}
         </div>
-      </div>
     </div>
   {% endfor %}
 </div>
 <br>
-<button type="button" class="btn btn-success btn-lg w-100" onclick="voteSubmit({{ activePoll.id }})">Submit</button>
+<button type="button" class="btn btn-success w-100" onclick="voteSubmit({{ activePoll.id }})">Submit</button>
 
 <script src="{% static 'councilApp/js/vote.js' %}" type="text/javascript"></script>
 <script type="text/javascript">

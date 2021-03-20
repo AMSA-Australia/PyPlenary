@@ -532,8 +532,16 @@ def profile(request):
         changeDetailForm = RegoForm(request.POST)
 
         if changeDetailForm.is_valid():
+            email = changeDetailForm.cleaned_data.get('email').lower()
+
+            if email != user.username:
+                if User.objects.filter(username=email):
+                    return render(request, 'councilApp/profile.html', {'changeDetailForm':changeDetailForm, 'error':1, 'active_tab':'profile'})
+                [delegate.email, user.username, user.email] = [email, email, email]
+                emailChanged = True
+
             [delegate.email, delegate.name, delegate.institution, delegate.role, delegate.pronouns, delegate.first_time] = [
-                changeDetailForm.cleaned_data.get('email').lower(),
+                email,
                 changeDetailForm.cleaned_data.get('name'),
                 changeDetailForm.cleaned_data.get('institution'),
                 changeDetailForm.cleaned_data.get('role'),
@@ -542,16 +550,22 @@ def profile(request):
 
             delegate.role = delegate.role if delegate.role else 'Delegate'
 
-            if delegate.email != user.username:
-                if User.objects.filter(username=delegate.email):
-                    return render(request, 'councilApp/profile.html', {'changeDetailForm':changeDetailForm, 'error':1, 'active_tab':'profile'})
-                user.username = delegate.email
-                user.email = delegate.email
-                emailChanged = True
-
             delegate.save()
             user.save()
 
             done = True
 
     return render(request, 'councilApp/profile.html', {'changeDetailForm':changeDetailForm, 'emailChanged': emailChanged, 'done':done, 'error':0, 'active_tab':'profile'})
+
+@login_required
+def passwordResetLoggedIn(request):
+    user = request.user
+    if request.method == 'POST':
+        changeForm = SetPasswordForm(user, request.POST)
+        if changeForm.is_valid():
+            changeForm.save()
+            return render(request, 'councilApp/authTemplates/passwordResetLoggedIn.html', {'done':True})
+    else:
+        changeForm = SetPasswordForm(user)
+
+    return render(request, 'councilApp/authTemplates/passwordResetLoggedIn.html', {'changeForm':changeForm, 'done':False, 'user':user})
