@@ -22,7 +22,6 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import last_modified
 from datetime import datetime
 
-
 from .forms import *
 from .models import *
 import os
