@@ -32,8 +32,15 @@
               <a class="nav-link {% if active_tab == 'index' %}active{% endif %}" aria-current="page" href="/">Home</a>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link {% if active_tab == 'agenda' %}active{% endif %}" href="/agenda/">Agenda</a>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {% if active_tab2 == 'info' %}active{% endif %}" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Council Info</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item {% if active_tab == 'agenda' %}active{% endif %}" href="/agenda/">Agenda</a></li>
+                <li><a class="dropdown-item {% if active_tab == 'socials' %}active{% endif %}" href="/socials/">Social Events</a></li>
+                <li><a class="dropdown-item {% if active_tab == 'reports' %}active{% endif %}" href="/reports/">Reports</a></li>
+                <li><a class="dropdown-item {% if active_tab == 'presentations' %}active{% endif %}" href="/presentations/">Presentations</a></li>
+              </ul>
             </li>
 
             <li class="nav-item">

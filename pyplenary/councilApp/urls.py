@@ -28,6 +28,7 @@ urlpatterns = [
 	path('ajax/getActiveVotes/', views.ajaxGetCastVotes),
 	path('ajax/submitVotes/', views.ajaxSubmitVotes),
 	path('agenda/', views.agenda),
+	path('reports/', views.reports),
 	path('login/', views.loginCustom),
 	path('logout/', views.logoutCustom),
 	path('password_change_request/', views.passwordResetLinkRequest),

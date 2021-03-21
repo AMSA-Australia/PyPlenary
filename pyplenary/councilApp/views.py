@@ -333,7 +333,16 @@ def agenda(request):
     if cached_agenda is None:
         cached_agenda = yaml.load(requests.get(settings.PYPLENARY_AGENDA_URI).text)
 
-    return render(request, 'councilApp/agenda.html', {'active_tab':'agenda', 'agenda':cached_agenda})
+    return render(request, 'councilApp/councilInfo/agenda.html', {'active_tab':'agenda', 'active_tab2': 'info', 'agenda':cached_agenda})
+
+cached_reports = None
+def reports(request):
+    global cached_reports
+    if cached_reports is None:
+        cached_reports = yaml.load(requests.get(settings.PYPLENARY_REPORTS_URI).text)
+        print(cached_reports)
+
+    return render(request, 'councilApp/councilInfo/reports.html', {'active_tab':'reports', 'active_tab2': 'info', 'allGroups':cached_reports})
 
 def loginCustom(request):
     if request.user.is_authenticated:

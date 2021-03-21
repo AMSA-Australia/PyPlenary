@@ -143,6 +143,7 @@ PYPLENARY_NAVBAR_NAME = 'AMSA Council 1 2021'
 PYPLENARY_SITE_NAME = 'AMSA National Council 1 2021'
 PYPLENARY_SITE_TAGLINE = '26-28 March 2021 🍊'
 PYPLENARY_AGENDA_URI = 'https://drive.google.com/uc?id=1dP1j0mX7OVNnjB1p1XP1ZxJV0MxI9T33'
+PYPLENARY_REPORTS_URI = 'https://drive.google.com/uc?id=1HciBoCsCMPA3sIEV83WRE3pnZGSGCE8V'
 
 # PRODUCTION SETTINGS
 
@@ -174,8 +175,6 @@ if all(x in os.environ for x in ['DBHOST', 'DBNAME', 'DBUSER', 'DBPASS']):
 
 WEB_DOMAIN = "https://council.amsa.org.au"
 
-PASSWORD_RESET_GOOGLE_APP_URL = "https://script.google.com/a/macros/amsa.org.au/s/AKfycbzywzyRh8C0fp41E27KvftMR2dfGHB3OmYvQrB0i5fY02DemCaUwBhc_oqs5rfNETCNYw/exec"
-
 #auto email stuff
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -190,7 +189,7 @@ if not os.environ.get('USER_TEMP_PASSWORD'):
     USER_TEMP_PASSWORD = 'tempPassword'
 
 # OPEN REGO
-REGO_OPEN = True if os.environ.get('REGO_CLOSED') and os.environ.get('REGO_CLOSED') == "1" else False
+REGO_OPEN = True if os.environ.get('REGO_OPEN') and os.environ.get('REGO_OPEN') == "1" else False
 
 # LOAD DEVELOPMENT SETTINGS IF ENVIRON SET
 if os.environ.get('DJANGO_DEVELOPMENT'):
