@@ -30,6 +30,6 @@ class RegoForm(forms.Form):
         queryset=Institution.objects.all(), required=True)
     role = forms.CharField(max_length=200, label='Role/Position(s) (Optional)', help_text='Please enter your role/position(s) within AMSA or MedSoc, if applicable.', 
         widget=forms.TextInput(attrs={'placeholder': 'Role/Position(s)'}), required=False)
-    pronouns = forms.CharField(max_length=100, label='Pronouns (Optional)', help_text='Please enter your preferred pronouns if you wish. This will be publicly displayed.', 
+    pronouns = forms.CharField(max_length=100, label='Pronouns (Optional)', help_text='Please enter your pronouns if you wish. This will be publicly displayed.', 
         widget=forms.TextInput(attrs={'placeholder': 'Pronouns'}), required=False)
     firstTime = forms.BooleanField(required = False, label='First-time Council attendee', help_text='Is this your first time at Council?')

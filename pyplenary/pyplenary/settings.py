@@ -189,6 +189,9 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 if not os.environ.get('USER_TEMP_PASSWORD'):
     USER_TEMP_PASSWORD = 'tempPassword'
 
+# OPEN REGO
+REGO_OPEN = True if os.environ.get('REGO_CLOSED') and os.environ.get('REGO_CLOSED') == "1" else False
+
 # LOAD DEVELOPMENT SETTINGS IF ENVIRON SET
 if os.environ.get('DJANGO_DEVELOPMENT'):
     from .settingsDev import *

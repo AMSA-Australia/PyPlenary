@@ -1,0 +1,15 @@
+{% extends 'councilApp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Registration closed{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+  <h2>Webapp Registration</h2>
+  <div class="alert alert-danger" role="alert">
+    <h4>Error</h4>
+    Unfortunately, registration on the webapp is not open right now. Please check back later.
+  </div>
+</div>
+
+{% endblock %}

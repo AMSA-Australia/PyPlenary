@@ -429,6 +429,9 @@ def passwordReset(request, token):
     return render(request, 'councilApp/authTemplates/passwordReset.html', {'changeForm':changeForm, 'linkExpired':False, 'done':False, 'user':user})
 
 def regoRequest(request):
+    if not settings.REGO_OPEN:
+        return render(request, 'councilApp/authTemplates/noRego.html', {'active_tab':'registration'})
+
     logout(request)
     if request.method == 'POST':
         regoForm = RegoForm(request.POST)
