@@ -157,7 +157,7 @@ def poll(request):
 
 @login_required
 def createPoll(request):
-    if not request.user.delegate:
+    if not request.user.delegate.superadmin:
         raise Http404()
 
     if request.method == 'POST':
