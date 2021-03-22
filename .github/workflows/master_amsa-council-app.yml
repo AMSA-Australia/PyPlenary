@@ -3,6 +3,9 @@
 
 name: Build and deploy Python app to Azure Web App - amsa-council-app
 
+env:
+  POST_BUILD_COMMAND: 'azure_postbuild.sh'
+
 on:
   push:
     branches:
