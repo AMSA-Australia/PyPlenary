@@ -120,7 +120,7 @@
     word-break: break-all;
 }
 
-.timeline .content p {
+.timeline .content p, .timeline .content ul {
     font-size: 0.875rem;
     margin-bottom: 0.5em;
 }
