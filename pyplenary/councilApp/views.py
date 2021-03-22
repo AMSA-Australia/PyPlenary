@@ -470,7 +470,7 @@ def regoRequest(request):
 
             try:
                 activateLink = f'{settings.WEB_DOMAIN}/activate/{token}'
-                subject = 'Council Webapp Acccount Ativation'
+                subject = 'Council Webapp Acccount Activation'
                 html_message = render_to_string('councilApp/authTemplates/activationEmail.html', {'activateLink':activateLink, 'name':name})
                 plain_message = strip_tags(html_message)
                 email_from = 'AMSA Council Webmaster'
