@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.core import mail
+from django.core.cache import caches
 from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Max
@@ -326,12 +327,13 @@ def ajaxSubmitVotes(request):
 
     return JsonResponse({'raise404':False})
 
-cached_agenda = None
-
 def agenda(request):
-    global cached_agenda
-    if cached_agenda is None:
+    # Check cache for agenda
+    cache1 = caches['default']
+    cached_agenda = cache1.get('agenda')
+    if cached_agenda is None or request.GET.get('refresh', '0') == '1':
         cached_agenda = yaml.load(requests.get(settings.PYPLENARY_AGENDA_URI).text)
+        cache1.set('agenda', cached_agenda, timeout=None)
 
     return render(request, 'councilApp/councilInfo/agenda.html', {'active_tab':'agenda', 'active_tab2': 'info', 'agenda':cached_agenda})
 

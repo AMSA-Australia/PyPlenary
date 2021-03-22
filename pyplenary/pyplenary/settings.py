@@ -173,6 +173,13 @@ if all(x in os.environ for x in ['DBHOST', 'DBNAME', 'DBUSER', 'DBPASS']):
         'PASSWORD': os.environ['DBPASS'] 
     }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache',
+    }
+}
+
 WEB_DOMAIN = "https://council.amsa.org.au"
 
 #auto email stuff
