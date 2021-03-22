@@ -1,6 +1,8 @@
 {% extends 'councilApp/base.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}Login{% endblock %}
+
 {% block content %}
 <div style="max-width: 600px; margin: 0 auto;">
   <h2>Login</h2>
@@ -9,7 +11,7 @@
   <p>If you have not registered for a Webapp account, please <a href='/registration/'>register here</a>.
   {% if wrong %}
     <div class="alert alert-danger" role="alert">
-      Invalid username or password.
+      Invalid email or password.
     </div>
   {% endif %}
 

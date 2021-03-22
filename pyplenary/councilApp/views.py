@@ -22,7 +22,6 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import last_modified
 from datetime import datetime
 
-
 from .forms import *
 from .models import *
 import os
@@ -334,7 +333,16 @@ def agenda(request):
     if cached_agenda is None:
         cached_agenda = yaml.load(requests.get(settings.PYPLENARY_AGENDA_URI).text)
 
-    return render(request, 'councilApp/agenda.html', {'active_tab':'agenda', 'agenda':cached_agenda})
+    return render(request, 'councilApp/councilInfo/agenda.html', {'active_tab':'agenda', 'active_tab2': 'info', 'agenda':cached_agenda})
+
+cached_reports = None
+def reports(request):
+    global cached_reports
+    if cached_reports is None:
+        cached_reports = yaml.load(requests.get(settings.PYPLENARY_REPORTS_URI).text)
+        print(cached_reports)
+
+    return render(request, 'councilApp/councilInfo/reports.html', {'active_tab':'reports', 'active_tab2': 'info', 'allGroups':cached_reports})
 
 def loginCustom(request):
     if request.user.is_authenticated:
@@ -430,6 +438,9 @@ def passwordReset(request, token):
     return render(request, 'councilApp/authTemplates/passwordReset.html', {'changeForm':changeForm, 'linkExpired':False, 'done':False, 'user':user})
 
 def regoRequest(request):
+    if not settings.REGO_OPEN:
+        return render(request, 'councilApp/authTemplates/noRego.html', {'active_tab':'registration'})
+
     logout(request)
     if request.method == 'POST':
         regoForm = RegoForm(request.POST)
@@ -485,7 +496,7 @@ def regoSetPassword(request, token):
         return render(request, 'councilApp/authTemplates/regoPassword.html', {'error':1, 'done':False})
 
     if not User.objects.filter(username=tokenObj.email):
-        user = User.objects.create(username=tokenObj.email, password="tempPassword", email=tokenObj.email)
+        user = User.objects.create(username=tokenObj.email, password=os.environ.get('USER_TEMP_PASSWORD'), email=tokenObj.email)
     else:
         user = User.objects.get(username=tokenObj.email)
 
@@ -532,8 +543,16 @@ def profile(request):
         changeDetailForm = RegoForm(request.POST)
 
         if changeDetailForm.is_valid():
+            email = changeDetailForm.cleaned_data.get('email').lower()
+
+            if email != user.username:
+                if User.objects.filter(username=email):
+                    return render(request, 'councilApp/profile.html', {'changeDetailForm':changeDetailForm, 'error':1, 'active_tab':'profile'})
+                [delegate.email, user.username, user.email] = [email, email, email]
+                emailChanged = True
+
             [delegate.email, delegate.name, delegate.institution, delegate.role, delegate.pronouns, delegate.first_time] = [
-                changeDetailForm.cleaned_data.get('email').lower(),
+                email,
                 changeDetailForm.cleaned_data.get('name'),
                 changeDetailForm.cleaned_data.get('institution'),
                 changeDetailForm.cleaned_data.get('role'),
@@ -542,16 +561,22 @@ def profile(request):
 
             delegate.role = delegate.role if delegate.role else 'Delegate'
 
-            if delegate.email != user.username:
-                if User.objects.filter(username=delegate.email):
-                    return render(request, 'councilApp/profile.html', {'changeDetailForm':changeDetailForm, 'error':1, 'active_tab':'profile'})
-                user.username = delegate.email
-                user.email = delegate.email
-                emailChanged = True
-
             delegate.save()
             user.save()
 
             done = True
 
     return render(request, 'councilApp/profile.html', {'changeDetailForm':changeDetailForm, 'emailChanged': emailChanged, 'done':done, 'error':0, 'active_tab':'profile'})
+
+@login_required
+def passwordResetLoggedIn(request):
+    user = request.user
+    if request.method == 'POST':
+        changeForm = SetPasswordForm(user, request.POST)
+        if changeForm.is_valid():
+            changeForm.save()
+            return render(request, 'councilApp/authTemplates/passwordResetLoggedIn.html', {'done':True})
+    else:
+        changeForm = SetPasswordForm(user)
+
+    return render(request, 'councilApp/authTemplates/passwordResetLoggedIn.html', {'changeForm':changeForm, 'done':False, 'user':user})

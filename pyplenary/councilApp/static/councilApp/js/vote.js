@@ -21,7 +21,10 @@ function getActiveVotes(pollId) {
 function toggleOn(alreadyVoted) {
   for (var i = 0; i < alreadyVoted.length; i++) {
     console.log(alreadyVoted[i]);
-    document.getElementById(alreadyVoted[i]).checked = true;
+    var toCheck = document.getElementById(alreadyVoted[i]);
+    if (toCheck){
+      toCheck.checked = true;
+    }
   }
 }
 
