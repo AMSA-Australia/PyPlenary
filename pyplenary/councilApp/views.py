@@ -76,8 +76,11 @@ def speakerAdd(request):
     return redirect('/speaker_list/')
 
 def delegates(request):
-    allDelegates = sorted(Delegate.objects.all(), key=lambda x:x.speakerNum)
-    return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates, 
+    if request.user.is_authenticated:
+        allDelegates = [request.user.delegate] + sorted(Delegate.objects.exclude(authClone=request.user), key=lambda x:x.speakerNum)
+    else:
+        allDelegates = sorted(Delegate.objects.all(), key=lambda x:x.speakerNum)
+    return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates,
         'active_tab':'delegates'})
 
 @login_required
