@@ -356,7 +356,7 @@ def socials(request):
         cached_socials = yaml.load(requests.get(settings.PYPLENARY_SOCIALS_URI).text)
         cache1.set('socials', cached_socials, timeout=None)
 
-    return render(request, 'councilApp/councilInfo/socials.html', {'active_tab':'reports', 'active_tab2': 'info', 'allCities':cached_socials})
+    return render(request, 'councilApp/councilInfo/socials.html', {'active_tab':'socials', 'active_tab2': 'info', 'allCities':cached_socials})
 
 def loginCustom(request):
     if request.user.is_authenticated:
