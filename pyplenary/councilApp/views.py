@@ -585,3 +585,6 @@ def passwordResetLoggedIn(request):
         changeForm = SetPasswordForm(user)
 
     return render(request, 'councilApp/authTemplates/passwordResetLoggedIn.html', {'changeForm':changeForm, 'done':False, 'user':user})
+
+def loaderio_token(request):
+    return HttpResponse('loaderio-' + settings.LOADERIO_TOKEN, content_type='text/plain')

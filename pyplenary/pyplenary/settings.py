@@ -205,6 +205,8 @@ if not os.environ.get('USER_TEMP_PASSWORD'):
 # OPEN REGO
 REGO_OPEN = True if os.environ.get('REGO_OPEN') and os.environ.get('REGO_OPEN') == "1" else False
 
+LOADERIO_TOKEN = '71c1d90d203bf7dd2d56ce4203cb238f' # For https://loader.io/
+
 # LOAD DEVELOPMENT SETTINGS IF ENVIRON SET
 if os.environ.get('DJANGO_DEVELOPMENT'):
     from .settingsDev import *
