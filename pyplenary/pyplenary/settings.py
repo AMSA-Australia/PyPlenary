@@ -191,12 +191,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
-if os.environ.get('EMAIL_HOST_USER') and os.environ.get('EMAIL_HOST_PASSWORD'):
-    EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
-    EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
-else:
-    EMAIL_HOST_USER = None
-    EMAIL_HOST_PASSWORD = None
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', None)
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
 
 # TEMP PASSWORD FOR NEW USERS
 
@@ -204,7 +200,7 @@ if not os.environ.get('USER_TEMP_PASSWORD'):
     USER_TEMP_PASSWORD = 'tempPassword'
 
 # OPEN REGO
-REGO_OPEN = True if os.environ.get('REGO_OPEN') and os.environ.get('REGO_OPEN') == "1" else False
+REGO_OPEN = True if os.environ.get('REGO_OPEN', '0') == "1" else False
 
 LOADERIO_TOKEN = '71c1d90d203bf7dd2d56ce4203cb238f' # For https://loader.io/
 
