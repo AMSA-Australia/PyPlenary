@@ -77,7 +77,7 @@ def speakerAdd(request):
 
 def delegates(request):
     if request.user.is_authenticated:
-        allDelegates = [request.user.delegate] + Delegate.objects.exclude(authClone=request.user).order_by('speakerNum')
+        allDelegates = [request.user.delegate] + list(Delegate.objects.exclude(authClone=request.user).order_by('speakerNum'))
     else:
         allDelegates = Delegate.objects.order_by('speakerNum')
     return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates,
