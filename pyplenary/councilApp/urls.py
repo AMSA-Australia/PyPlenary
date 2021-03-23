@@ -13,7 +13,7 @@ urlpatterns = [
 	path('', views.index),
 	path('index.html', views.index),
 	path('speaker_list/', views.speakerList),
-	path('speaker_list/add', views.speakerAdd),
+	path('ajax/speakerAdd', views.ajaxSpeakerAdd),
 	path('speaker_list/inner', views.speakerListInner),
 	path('delegates/', views.delegates),
 	path('proxy/', views.proxy),

@@ -50,22 +50,22 @@ def speakerListInner(request):
     return render(request, 'councilApp/speaker_list_inner.html', {'speakers':speakers})
 
 @login_required
-def speakerAdd(request):
+def ajaxSpeakerAdd(request):
     # FIXME: Acquire lock to prevent race conditions
 
     Speaker.objects.filter(delegate=request.user.delegate).delete()
 
-    if request.POST['action'] == 'remove':
+    if request.GET['action'] == 'remove':
         async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated'})
-        return redirect('/speaker_list/')
+        return JsonResponse({'btnstate': 'add'})
 
     speaker = Speaker()
     speaker.delegate = request.user.delegate
     speaker.index = (Speaker.objects.all().aggregate(Max('index'))['index__max'] or 0) + 1
 
-    if request.POST['action'] == 'add':
+    if request.GET['action'] == 'add':
         speaker.point_of_order = False
-    elif request.POST['action'] == 'point_order':
+    elif request.GET['action'] == 'point_order':
         speaker.point_of_order = True
     else:
         return HttpResponseBadRequest('Unknown action')
@@ -73,7 +73,7 @@ def speakerAdd(request):
     speaker.save()
 
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated'})
-    return redirect('/speaker_list/')
+    return JsonResponse({'btnstate': 'remove'})
 
 def delegates(request):
     if request.user.is_authenticated:
