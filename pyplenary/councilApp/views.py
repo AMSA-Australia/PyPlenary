@@ -340,14 +340,23 @@ def agenda(request):
 
     return render(request, 'councilApp/councilInfo/agenda.html', {'active_tab':'agenda', 'active_tab2': 'info', 'agenda':cached_agenda})
 
-cached_reports = None
 def reports(request):
-    global cached_reports
-    if cached_reports is None:
+    cache1 = caches['default']
+    cached_reports = cache1.get('reports')
+    if cached_reports is None or request.GET.get('refresh', '0') == '1':
         cached_reports = yaml.load(requests.get(settings.PYPLENARY_REPORTS_URI).text)
-        print(cached_reports)
+        cache1.set('reports', cached_reports, timeout=None)
 
     return render(request, 'councilApp/councilInfo/reports.html', {'active_tab':'reports', 'active_tab2': 'info', 'allGroups':cached_reports})
+
+def socials(request):
+    cache1 = caches['default']
+    cached_socials = cache1.get('socials')
+    if cached_socials is None or request.GET.get('refresh', '0') == '1':
+        cached_socials = yaml.load(requests.get(settings.PYPLENARY_SOCIALS_URI).text)
+        cache1.set('socials', cached_socials, timeout=None)
+
+    return render(request, 'councilApp/councilInfo/socials.html', {'active_tab':'reports', 'active_tab2': 'info', 'allCities':cached_socials})
 
 def loginCustom(request):
     if request.user.is_authenticated:

@@ -32,15 +32,14 @@
               <a class="nav-link {% if active_tab == 'index' %}active{% endif %}" aria-current="page" href="/">Home</a>
             </li>
 
-
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle {% if active_tab2 == 'info' %}active{% endif %}" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Council Info</a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu dropdown-menu-dark">
                 <li><a class="dropdown-item {% if active_tab == 'agenda' %}active{% endif %}" href="/agenda/">Agenda</a></li>
                 <li><a class="dropdown-item {% if active_tab == 'socials' %}active{% endif %}" href="/socials/">Social Events</a></li>
                 <li><a class="dropdown-item {% if active_tab == 'reports' %}active{% endif %}" href="/reports/">Reports</a></li>
                 <li><a class="dropdown-item {% if active_tab == 'presentations' %}active{% endif %}" href="/presentations/">Presentations</a></li>
-                <li><a class="dropdown-item" href="https://docs.google.com/document/d/1FcWAf-8e4lg5cXwrwZcYzxiowM2NtUufyEKN-DYlCjQ/edit">Policies</a></li>{% comment %}TODO: Make configurable{% endcomment %}
+                <li><a class="dropdown-item" href="https://docs.google.com/document/d/1FcWAf-8e4lg5cXwrwZcYzxiowM2NtUufyEKN-DYlCjQ/edit" target="_blank">Policies</a></li>{% comment %}TODO: Make configurable{% endcomment %}
                 <li><a class="dropdown-item" href="https://www.facebook.com/groups/186138569749966/">Facebook Group</a></li>{% comment %}TODO: Make configurable{% endcomment %}
               </ul>
             </li>

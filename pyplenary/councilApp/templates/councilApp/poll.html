@@ -9,18 +9,23 @@
 <h2>Poll Centre</h2>
 <br>
 
-{% if activePolls|length > 0 %}
-  <div class="alert alert-warning" role="alert">
-    There are active polls available for voting.
-  </div>
+{% if activePolls|length > 0 %} 
+  <a href="/proxy/" class="btn btn-primary orange-btn">
+    Click here to view and manage your proxies.
+  </a>
+  <hr/>
   <h4>Active polls</h4>
-  <br>
+  <div class="alert alert-warning" role="alert">
+    There are active polls available for voting, in which you are eligible to vote.
+  </div>
   <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for poll in activePolls %}
       <div class="col">
         <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title"><strong>Motion:</strong> {{poll.title}}</h5>
+          </div>
           <div class="card-body">
-            <h5 class="card-title">{{poll.title}}</h5>
             <p class="card-text">
               {% if poll.repsOnly %}
                 AMSA Reps only, 
@@ -55,15 +60,16 @@
   </div>
 {% endif %}
 
-<br>
+<hr/>
 
 {% if superadmin %}
+  <h4>Create poll</h4>
+  <br>
   <a href="/poll/create/" class="btn btn-primary">Create poll</a>
-  <br>
-  <br>
+  <hr/>
 {% endif %}
 
-<hr/>
+
 <h4>All previous polls</h4>
 <div class="table-responsive">
   <table class="table table-hover" id="pollsTable">
@@ -88,11 +94,11 @@
             {% if poll.outcome == 0 %}
               -
             {% elif poll.outcome == 1 %}
-              Carried
+              <strong style="color:green">Carried</strong>
             {% elif poll.outcome == 2 %}
-              Lost
+              <strong style="color:red">Lost</strong>
             {% elif poll.outcome == 3 %}
-              Tied
+              <strong style="color:blue">Tied</strong>
             {% endif %}
           </td>
           <td>
