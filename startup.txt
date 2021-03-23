@@ -1,1 +1,1 @@
-cd pyplenary; gunicorn pyplenary.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0 -w 4
+cd pyplenary; gunicorn pyplenary.wsgi:application -k gevent -w 4 -b 0.0.0.0
