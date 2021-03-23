@@ -1,1 +1,1 @@
-cd pyplenary; daphne pyplenary.asgi:application -b 0.0.0.0
+cd pyplenary; gunicorn pyplenary.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0 -w 4
