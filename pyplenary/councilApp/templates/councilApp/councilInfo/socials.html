@@ -1,0 +1,62 @@
+{% extends 'councilApp/base.html' %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+  <div style="max-width: 600px; margin: 0 auto;">
+    <h2 class="mb-3">Socials</h2>
+
+    <div class="accordion" id="socialsAccordion">
+      {% for city, items in allCities.items %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{city}}" aria-expanded="false" aria-controls="collapse{{city.id}}">
+              <h5>{{city}}</h5>
+            </button>
+          </h2>
+          <div id="{{city}}" class="accordion-collapse collapse" data-bs-parent="#socialsAccordion">
+            <div class="accordion-body">
+              <div class="row row-cols-1 row-cols-md-2 g-4">
+                {% for item in items %}
+                  <div class="col">
+                    <div class="card h-100">
+                      <div class="card-header">
+                        <h5 class="card-title">{{item.day}}: {{city}}</h5>
+                      </div>
+                      <div class="card-body">
+                        {% if item.event %}
+                          <div class="table-responsive">
+                            <table class="table table-borderless">
+                              <tbody>
+                                <tr>
+                                  <th scope="row">Place:</th>
+                                  <td>{{item.place}}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Address:</th>
+                                  <td>{{item.address}}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Time:</th>
+                                  <td>{{item.time}}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                        <a href="{{item.map}}" target="_blank" class="btn btn-primary card-btn stretched-link">View on Google Maps</a>
+                        {% else %}
+                          Unfortunately, there are no social events scheduled in {{city}} on {{item.day}}.
+                        </div>
+                        {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

@@ -147,6 +147,7 @@ PYPLENARY_SITE_NAME = 'AMSA National Council 1 2021'
 PYPLENARY_SITE_TAGLINE = '26-28 March 2021 🍊'
 PYPLENARY_AGENDA_URI = 'https://drive.google.com/uc?id=1dP1j0mX7OVNnjB1p1XP1ZxJV0MxI9T33'
 PYPLENARY_REPORTS_URI = 'https://drive.google.com/uc?id=1HciBoCsCMPA3sIEV83WRE3pnZGSGCE8V'
+PYPLENARY_SOCIALS_URI = 'https://drive.google.com/uc?id=1Qvw7y6uaWquAQ8osxprv0GIsm3ZWPGaY'
 
 # PRODUCTION SETTINGS
 
