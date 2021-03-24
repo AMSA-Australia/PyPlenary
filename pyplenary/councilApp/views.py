@@ -39,15 +39,8 @@ def index(request):
 
 @login_required
 def speakerList(request):
-    speakers = Speaker.objects.all()
     on_list = Speaker.objects.filter(delegate=request.user.delegate).exists()
-    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'speakers':speakers,
-        'on_list':on_list})
-
-@login_required
-def speakerListInner(request):
-    speakers = Speaker.objects.all()
-    return render(request, 'councilApp/speaker_list_inner.html', {'speakers':speakers})
+    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'on_list':on_list})
 
 @login_required
 def ajaxSpeakerAdd(request):
@@ -56,7 +49,8 @@ def ajaxSpeakerAdd(request):
     Speaker.objects.filter(delegate=request.user.delegate).delete()
 
     if request.GET['action'] == 'remove':
-        async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated'})
+        speakers = [s.to_json() for s in Speaker.objects.all()]
+        async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
         return JsonResponse({'btnstate': 'add'})
 
     speaker = Speaker()
@@ -72,7 +66,8 @@ def ajaxSpeakerAdd(request):
 
     speaker.save()
 
-    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated'})
+    speakers = [s.to_json() for s in Speaker.objects.all()]
+    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
     return JsonResponse({'btnstate': 'remove'})
 
 def delegates(request):
