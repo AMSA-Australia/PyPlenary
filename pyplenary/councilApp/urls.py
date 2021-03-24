@@ -15,6 +15,7 @@ urlpatterns = [
 	path('speaker_list/', views.speakerList),
 	path('ajax/speakerAdd', views.ajaxSpeakerAdd),
 	path('ajax/speakerRemove', views.ajaxSpeakerRemove),
+	path('ajax/reorderSpeakers', views.ajaxSpeakersReorder),
 	path('delegates/', views.delegates),
 	path('proxy/', views.proxy),
 	path('ajax/nominateProxy/', views.proxyNominate),

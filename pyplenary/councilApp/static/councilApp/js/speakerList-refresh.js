@@ -1,3 +1,5 @@
+var sl = document.getElementById('speaker-list');
+
 document.querySelectorAll('button[name="action"]').forEach(function(el) {
 	el.addEventListener('click', function(evt) {
 		var xhr = new XMLHttpRequest();
@@ -20,6 +22,19 @@ function removeSpeaker(evt) {
 	evt.preventDefault();
 }
 
+// Superadmin stuff
+
+if (is_superadmin) {
+	var dragulaSL = dragula([sl]);
+	
+	dragulaSL.on("drop", function(el, target, source, sibling) {
+		var order = Array.from(sl.querySelectorAll('.list-group-item'), (el) => el.dataset.delegateId).join(',');
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', '/ajax/reorderSpeakers?order=' + order);
+		xhr.send();
+	});
+}
+
 // Live refresh
 
 var ws = new WebSocket(
@@ -28,7 +43,6 @@ var ws = new WebSocket(
 	+ '/ws/speaker-list/'
 );
 
-var sl = document.getElementById('speaker-list');
 var delegate_id;
 
 ws.onmessage = function(event) {
@@ -37,6 +51,9 @@ ws.onmessage = function(event) {
 	
 	if (data.type === 'init') {
 		delegate_id = data.delegate_id;
+		
+		document.getElementById('speaker-controls').style.display = 'flex';
+		document.getElementById('adding-spinner').style.display = 'none';
 	}
 	
 	if (data.type === 'init' || data.type === 'speakerlist_updated') {
@@ -104,7 +121,5 @@ ws.onmessage = function(event) {
 			document.querySelector('button[name="action"][value="add"]').style.display = 'inline';
 			document.querySelector('button[name="action"][value="remove"]').style.display = 'none';
 		}
-		
-		document.getElementById('updating-spinner').style.display = 'none';
 	}
 };

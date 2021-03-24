@@ -49,7 +49,7 @@ def ajaxSpeakerAdd(request):
     Speaker.objects.filter(delegate=request.user.delegate).delete()
 
     if request.GET['action'] == 'remove':
-        speakers = [s.to_json() for s in Speaker.objects.all()]
+        speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
         async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
         return HttpResponse()
 
@@ -66,7 +66,7 @@ def ajaxSpeakerAdd(request):
 
     speaker.save()
 
-    speakers = [s.to_json() for s in Speaker.objects.all()]
+    speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
     return HttpResponse()
 
@@ -77,7 +77,21 @@ def ajaxSpeakerRemove(request):
     
     Speaker.objects.filter(delegate__id=request.GET['delegateId']).delete()
     
-    speakers = [s.to_json() for s in Speaker.objects.all()]
+    speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
+    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
+    return HttpResponse()
+
+@login_required
+def ajaxSpeakersReorder(request):
+    if not request.user.delegate.superadmin:
+        raise HttpResponseForbidden()
+    
+    order = [int(x) for x in request.GET['order'].split(',')]
+    for speaker in Speaker.objects.filter(delegate__id__in=order).select_related('delegate'):
+        speaker.index = order.index(speaker.delegate.id)
+        speaker.save()
+    
+    speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
     return HttpResponse()
 
