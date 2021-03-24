@@ -51,7 +51,7 @@ def ajaxSpeakerAdd(request):
     if request.GET['action'] == 'remove':
         speakers = [s.to_json() for s in Speaker.objects.all()]
         async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
-        return JsonResponse({'btnstate': 'add'})
+        return HttpResponse()
 
     speaker = Speaker()
     speaker.delegate = request.user.delegate
@@ -68,7 +68,7 @@ def ajaxSpeakerAdd(request):
 
     speakers = [s.to_json() for s in Speaker.objects.all()]
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
-    return JsonResponse({'btnstate': 'remove'})
+    return HttpResponse()
 
 def delegates(request):
     if request.user.is_authenticated:

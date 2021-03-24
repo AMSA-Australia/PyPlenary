@@ -4,15 +4,6 @@ document.querySelectorAll('button[name="action"]').forEach(function(el) {
 		xhr.addEventListener('load', function() {
 			document.getElementById('speaker-controls').style.display = 'flex';
 			document.getElementById('adding-spinner').style.display = 'none';
-			
-			var payload = JSON.parse(this.responseText);
-			if (payload.btnstate === 'add') {
-				document.querySelector('button[name="action"][value="add"]').style.display = 'inline';
-				document.querySelector('button[name="action"][value="remove"]').style.display = 'none';
-			} else if (payload.btnstate === 'remove') {
-				document.querySelector('button[name="action"][value="add"]').style.display = 'none';
-				document.querySelector('button[name="action"][value="remove"]').style.display = 'inline';
-			}
 		});
 		xhr.open('GET', '/ajax/speakerAdd?action=' + el.getAttribute('value'));
 		document.getElementById('speaker-controls').style.display = 'none';
@@ -31,11 +22,17 @@ var ws = new WebSocket(
 	+ '/ws/speaker-list/'
 );
 
+var delegate_id;
+
 ws.onmessage = function(event) {
 	//console.log("WebSocket message received:", event);
 	data = JSON.parse(event.data);
 	
-	if (data.type === 'speakerlist_updated') {
+	if (data.type === 'init') {
+		delegate_id = data.delegate_id;
+	}
+	
+	if (data.type === 'init' || data.type === 'speakerlist_updated') {
 		// Render speaker list
 		sl.innerHTML = '';
 		if (data.speakerlist.length === 0) {
@@ -80,5 +77,16 @@ ws.onmessage = function(event) {
 				elItem.appendChild(elL2);
 			}
 		}
+		
+		// Update button state
+		if (data.speakerlist.some((s) => s.delegate.id == delegate_id)) {
+			document.querySelector('button[name="action"][value="add"]').style.display = 'none';
+			document.querySelector('button[name="action"][value="remove"]').style.display = 'inline';
+		} else {
+			document.querySelector('button[name="action"][value="add"]').style.display = 'inline';
+			document.querySelector('button[name="action"][value="remove"]').style.display = 'none';
+		}
+		
+		document.getElementById('updating-spinner').style.display = 'none';
 	}
 };

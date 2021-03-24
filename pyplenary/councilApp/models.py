@@ -129,7 +129,7 @@ class Speaker(models.Model):
     # For speaker list websockets
     def to_json(self):
         return {
-            'delegate': {'name': self.delegate.name, 'role': self.delegate.role, 'speakerNum': self.delegate.speakerNum, 'first_time': self.delegate.first_time},
+            'delegate': {'id': self.delegate.id, 'name': self.delegate.name, 'role': self.delegate.role, 'speakerNum': self.delegate.speakerNum, 'first_time': self.delegate.first_time},
             'index': self.index,
             'point_of_order': self.point_of_order,
         }

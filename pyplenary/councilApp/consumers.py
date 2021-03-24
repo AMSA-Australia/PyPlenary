@@ -10,9 +10,9 @@ class SpeakerListConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)('speakerlist', self.channel_name)
         self.accept()
         
-        # Send speakers
+        delegate = self.scope['user'].delegate
         speakers = [s.to_json() for s in Speaker.objects.all()]
-        self.send(text_data=json.dumps({'type': 'speakerlist_updated', 'speakerlist': speakers}))
+        self.send(text_data=json.dumps({'type': 'init', 'delegate_id': delegate.id, 'speakerlist': speakers}))
 
     def disconnect(self, code):
         pass
