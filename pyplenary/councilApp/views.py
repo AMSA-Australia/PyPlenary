@@ -13,7 +13,7 @@ from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Max
 from django.forms import formset_factory, ValidationError
-from django.http import JsonResponse, FileResponse, Http404, HttpResponse, HttpResponseBadRequest
+from django.http import JsonResponse, FileResponse, Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -66,6 +66,17 @@ def ajaxSpeakerAdd(request):
 
     speaker.save()
 
+    speakers = [s.to_json() for s in Speaker.objects.all()]
+    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
+    return HttpResponse()
+
+@login_required
+def ajaxSpeakerRemove(request):
+    if not request.user.delegate.superadmin:
+        raise HttpResponseForbidden()
+    
+    Speaker.objects.filter(delegate__id=request.GET['delegateId']).delete()
+    
     speakers = [s.to_json() for s in Speaker.objects.all()]
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
     return HttpResponse()

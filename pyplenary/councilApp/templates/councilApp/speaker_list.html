@@ -53,7 +53,6 @@
 
 {% block script %}
   {{ block.super }}
-  <script src="{% static 'councilApp/js/speakerList-refresh.js' %}"></script>
   {% if user.delegate.superadmin %}
   <script src="https://cdn.jsdelivr.net/npm/dragula@3.7.3/dist/dragula.min.js" integrity="sha256-egj5xxtj40Ds0GUbObVZ7m2LEOsnvu9i5Ogtmd1I+jk=" crossorigin="anonymous"></script>
   <script>
@@ -66,6 +65,13 @@
     dragulaSL.on("drop", function(el, target, source, sibling) {
       alert("Dragged and dropped!");
     });
+    
+    var is_superadmin = true; // Also validated server side
+  </script>
+  {% else %}
+  <script>
+    var is_superadmin = false; // Also validated server side
   </script>
   {% endif %}
+  <script src="{% static 'councilApp/js/speakerList-refresh.js' %}"></script>
 {% endblock %}

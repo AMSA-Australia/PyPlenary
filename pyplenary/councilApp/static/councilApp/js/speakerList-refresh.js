@@ -12,7 +12,13 @@ document.querySelectorAll('button[name="action"]').forEach(function(el) {
 	});
 });
 
-var sl = document.getElementById('speaker-list');
+function removeSpeaker(evt) {
+	var elItem = evt.target.parentNode.parentNode.parentNode.parentNode;
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', '/ajax/speakerRemove?delegateId=' + elItem.dataset.delegateId);
+	xhr.send();
+	evt.preventDefault();
+}
 
 // Live refresh
 
@@ -22,6 +28,7 @@ var ws = new WebSocket(
 	+ '/ws/speaker-list/'
 );
 
+var sl = document.getElementById('speaker-list');
 var delegate_id;
 
 ws.onmessage = function(event) {
@@ -49,15 +56,26 @@ ws.onmessage = function(event) {
 				} else if (speaker.delegate.first_time) {
 					elItem.classList.add('list-group-item-primary');
 				}
+				elItem.dataset.delegateId = speaker.delegate.id;
 				sl.appendChild(elItem);
 				
 				var elL1 = document.createElement('div');
 				elL1.className = 'h5 d-flex mb-0';
 				elItem.appendChild(elL1);
+				
 				var elName = document.createElement('span');
 				elName.innerText = speaker.delegate.name;
 				elName.style.flexGrow = '1';
 				elL1.appendChild(elName);
+				if (is_superadmin) {
+					var elA = document.createElement('a');
+					elA.href = '#';
+					elA.className = 'text-muted';
+					elA.innerHTML = '<i class="bi bi-x-circle ms-1"></i>';
+					elA.addEventListener('click', removeSpeaker);
+					elName.appendChild(elA);
+				}
+				
 				if (speaker.point_of_order) {
 					var elIcon = document.createElement('i');
 					elIcon.className = 'bi bi-exclamation-triangle-fill';
