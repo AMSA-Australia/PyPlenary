@@ -120,16 +120,16 @@ class Speaker(models.Model):
     id = models.AutoField(primary_key=True)
     delegate = models.ForeignKey(Delegate, models.CASCADE)
     index = models.IntegerField()
-    point_of_order = models.BooleanField()
+    intention = models.IntegerField() # 0 = standard, 1 = point of order, 2 = for, 3 = against
     
     class Meta:
         db_table = 'Speaker'
-        ordering = ['-point_of_order', 'index']
+        ordering = ['index']
     
     # For speaker list websockets
     def to_json(self):
         return {
             'delegate': {'id': self.delegate.id, 'name': self.delegate.name, 'role': self.delegate.role, 'speakerNum': self.delegate.speakerNum, 'first_time': self.delegate.first_time},
             'index': self.index,
-            'point_of_order': self.point_of_order,
+            'intention': self.intention,
         }

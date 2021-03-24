@@ -39,8 +39,7 @@ def index(request):
 
 @login_required
 def speakerList(request):
-    on_list = Speaker.objects.filter(delegate=request.user.delegate).exists()
-    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'on_list':on_list})
+    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'mode': caches['default'].get('speaker_mode', 'standard')})
 
 @login_required
 def ajaxSpeakerAdd(request):
@@ -50,7 +49,7 @@ def ajaxSpeakerAdd(request):
 
     if request.GET['action'] == 'remove':
         speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
-        async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
+        async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': speakers})
         return HttpResponse()
 
     speaker = Speaker()
@@ -58,16 +57,20 @@ def ajaxSpeakerAdd(request):
     speaker.index = (Speaker.objects.all().aggregate(Max('index'))['index__max'] or 0) + 1
 
     if request.GET['action'] == 'add':
-        speaker.point_of_order = False
+        speaker.intention = 0
     elif request.GET['action'] == 'point_order':
-        speaker.point_of_order = True
+        speaker.intention = 1
+    elif request.GET['action'] == 'add-for':
+        speaker.intention = 2
+    elif request.GET['action'] == 'add-against':
+        speaker.intention = 3
     else:
         return HttpResponseBadRequest('Unknown action')
 
     speaker.save()
 
     speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
-    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
+    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': speakers})
     return HttpResponse()
 
 @login_required
@@ -78,7 +81,7 @@ def ajaxSpeakerRemove(request):
     Speaker.objects.filter(delegate__id=request.GET['delegateId']).delete()
     
     speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
-    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
+    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': speakers})
     return HttpResponse()
 
 @login_required
@@ -92,7 +95,18 @@ def ajaxSpeakersReorder(request):
         speaker.save()
     
     speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
-    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'speakerlist': speakers})
+    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': speakers})
+    return HttpResponse()
+
+@login_required
+def ajaxChangeSpeakingMode(request):
+    if not request.user.delegate.superadmin:
+        raise HttpResponseForbidden()
+    
+    caches['default'].set('speaker_mode', request.GET['mode'], timeout=None)
+    
+    speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
+    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': request.GET['mode'], 'speakerlist': speakers})
     return HttpResponse()
 
 def delegates(request):

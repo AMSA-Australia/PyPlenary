@@ -35,6 +35,12 @@ if (is_superadmin) {
 	});
 }
 
+function modeChanged() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', '/ajax/changeSpeakingMode?mode=' + document.getElementById('mode-dropdown').value);
+	xhr.send();
+}
+
 // Live refresh
 
 var ws = new WebSocket(
@@ -52,6 +58,7 @@ ws.onmessage = function(event) {
 	if (data.type === 'init') {
 		delegate_id = data.delegate_id;
 		
+		// Hide initial loading spinner
 		document.getElementById('speaker-controls').style.display = 'flex';
 		document.getElementById('adding-spinner').style.display = 'none';
 	}
@@ -68,8 +75,12 @@ ws.onmessage = function(event) {
 			for (var speaker of data.speakerlist) {
 				var elItem = document.createElement('div');
 				elItem.classList.add('list-group-item');
-				if (speaker.point_of_order) {
+				if (speaker.intention === 1) {
 					elItem.classList.add('list-group-item-danger');
+				} else if (speaker.intention === 2) {
+					elItem.style.borderLeft = '0.5em solid #198754';
+				} else if (speaker.intention === 3) {
+					elItem.style.borderLeft = '0.5em solid #ffc107';
 				} else if (speaker.delegate.first_time) {
 					elItem.classList.add('list-group-item-primary');
 				}
@@ -93,7 +104,19 @@ ws.onmessage = function(event) {
 					elName.appendChild(elA);
 				}
 				
-				if (speaker.point_of_order) {
+				// Intention text
+				if (speaker.intention === 2) {
+					var elIntention = document.createElement('span');
+					elIntention.innerText = 'FOR';
+					elL1.appendChild(elIntention);
+				} else if (speaker.intention === 3) {
+					var elIntention = document.createElement('span');
+					elIntention.innerText = 'AGAINST';
+					elL1.appendChild(elIntention);
+				}
+				
+				// Icon
+				if (speaker.intention === 1) {
 					var elIcon = document.createElement('i');
 					elIcon.className = 'bi bi-exclamation-triangle-fill';
 					elIcon.dataset.toggle = 'tooltip';
@@ -113,13 +136,38 @@ ws.onmessage = function(event) {
 			}
 		}
 		
-		// Update button state
-		if (data.speakerlist.some((s) => s.delegate.id == delegate_id)) {
-			document.querySelector('button[name="action"][value="add"]').style.display = 'none';
-			document.querySelector('button[name="action"][value="remove"]').style.display = 'inline';
-		} else {
-			document.querySelector('button[name="action"][value="add"]').style.display = 'inline';
-			document.querySelector('button[name="action"][value="remove"]').style.display = 'none';
+		var on_list = data.speakerlist.some((s) => s.delegate.id == delegate_id);
+		
+		// Update button states
+		document.querySelectorAll('.speaker-controls-mode').forEach(function(el) { el.style.display = 'none'; });
+		if (data.mode === 'standard') {
+			document.getElementById('controls-standard').style.display = 'flex';
+			if (on_list) {
+				document.querySelectorAll('button[name="action"][value="add"]').forEach(function(el) { el.style.display = 'none'; });
+				document.querySelectorAll('button[name="action"][value="remove"]').forEach(function(el) { el.style.display = 'inline'; });
+			} else {
+				document.querySelectorAll('button[name="action"][value="add"]').forEach(function(el) { el.style.display = 'inline'; });
+				document.querySelectorAll('button[name="action"][value="remove"]').forEach(function(el) { el.style.display = 'none'; });
+			}
+		} else if (data.mode === 'rollcall') {
+			document.getElementById('controls-rollcall').style.display = 'flex';
+			if (on_list) {
+				document.querySelectorAll('button[name="action"][value="add"]').forEach(function(el) { el.style.display = 'none'; });
+				document.querySelectorAll('button[name="action"][value="remove"]').forEach(function(el) { el.style.display = 'inline'; });
+			} else {
+				document.querySelectorAll('button[name="action"][value="add"]').forEach(function(el) { el.style.display = 'inline'; });
+				document.querySelectorAll('button[name="action"][value="remove"]').forEach(function(el) { el.style.display = 'none'; });
+			}
+		} else if (data.mode === 'formal') {
+			if (on_list) {
+				document.getElementById('controls-formal-remove').style.display = 'flex';
+				document.querySelectorAll('button[name="action"][value="remove"]').forEach(function(el) { el.style.display = 'inline'; });
+			} else {
+				document.getElementById('controls-formal-add-for').style.display = 'flex';
+				document.getElementById('controls-formal-add-against').style.display = 'flex';
+			}
 		}
+		
+		$('[data-toggle="tooltip"]').tooltip();
 	}
 };
