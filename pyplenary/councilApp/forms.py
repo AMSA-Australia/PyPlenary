@@ -22,9 +22,9 @@ class StartPollForm(forms.Form):
         widget=forms.RadioSelect(), initial='simple')
 
 class RegoForm(forms.Form):
-    name = forms.CharField(max_length=100, label='Display name', help_text='Please set your name as you want it displayed.', 
-        widget=forms.TextInput(attrs={'placeholder': 'Name'}), required=True)
-    email = forms.EmailField(max_length=254, label="Email", help_text='Please enter your email.', 
+    name = forms.CharField(max_length=100, label='Full name', help_text='Please set your full name as you want it displayed.', 
+        widget=forms.TextInput(attrs={'placeholder': 'Full name'}), required=True)
+    email = forms.EmailField(max_length=254, label="Email", help_text='Please enter your email address.', 
         widget=forms.TextInput(attrs={'placeholder': 'Email'}), required=True)
     institution = forms.ModelChoiceField(label="Institution", help_text='Please select your institution.', 
         queryset=Institution.objects.all(), required=True)
