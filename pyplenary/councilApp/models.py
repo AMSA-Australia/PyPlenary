@@ -8,6 +8,7 @@ class Institution(models.Model):
     shortName = models.CharField(max_length=100, null=True)
     state = models.CharField(max_length=100, null=True)
     votesWeight = models.IntegerField(default=1)
+    is_node = models.BooleanField()
 
     class Meta:
         db_table = 'Institution'
@@ -121,6 +122,7 @@ class Speaker(models.Model):
     delegate = models.ForeignKey(Delegate, models.CASCADE)
     index = models.IntegerField()
     intention = models.IntegerField() # 0 = standard, 1 = point of order, 2 = for, 3 = against
+    node = models.ForeignKey(Institution, models.CASCADE, null=True)
     
     class Meta:
         db_table = 'Speaker'

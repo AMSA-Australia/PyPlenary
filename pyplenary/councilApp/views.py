@@ -39,7 +39,8 @@ def index(request):
 
 @login_required
 def speakerList(request):
-    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'mode': caches['default'].get('speaker_mode', 'standard')})
+    nodes = Institution.objects.filter(is_node=True)
+    return render(request, 'councilApp/speaker_list.html', {'active_tab':'speaker_list', 'mode': caches['default'].get('speaker_mode', 'standard'), 'nodes': nodes})
 
 @login_required
 def ajaxSpeakerAdd(request):

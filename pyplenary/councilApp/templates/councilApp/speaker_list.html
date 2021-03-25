@@ -24,11 +24,27 @@
   <div style="max-width: 600px; margin: 0 auto;">
     <h2 class="mb-3">Speaker List</h2>
 
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label">Location</label>
+      <div class="col-sm-10">
+        <select class="select form-control" id="location-dropdown">
+          <option value="---">Please select</option>
+          <option value="">I am Zooming in by myself</option>
+          {% for node in nodes %}
+          <option value="{{ node.id }}">I am at the {{ node.name }} node</option>
+          {% endfor %}
+        </select>
+        <div class="invalid-feedback">
+          Please select your location.
+        </div>
+      </div>
+    </div>
+
     {% if user.delegate.superadmin %}
       <div class="row mb-3">
         <label class="col-sm-2 col-form-label">Mode</label>
         <div class="col-sm-10">
-          <select class="select form-control" id="mode-dropdown" onchange="modeChanged()">
+          <select class="select form-control" id="mode-dropdown">
             <option value="standard"{% if mode == 'standard' %} selected{% endif %}>Standard</option>
             <option value="rollcall"{% if mode == 'rollcall' %} selected{% endif %}>Roll call</option>
             <option value="formal"{% if mode == 'formal' %} selected{% endif %}>Formal debate</option>

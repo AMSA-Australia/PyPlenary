@@ -1,7 +1,14 @@
 var sl = document.getElementById('speaker-list');
+var locDD = document.getElementById('location-dropdown');
 
 document.querySelectorAll('button[name="action"]').forEach(function(el) {
-	el.addEventListener('click', function(evt) {
+	el.addEventListener('click', function() {
+		if (el.getAttribute('value') !== 'remove' && locDD.value === '---') {
+			locDD.classList.add('is-invalid');
+			return;
+		}
+		locDD.classList.remove('is-invalid');
+		
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener('load', function() {
 			document.getElementById('speaker-controls').style.display = 'flex';
@@ -12,6 +19,10 @@ document.querySelectorAll('button[name="action"]').forEach(function(el) {
 		document.getElementById('adding-spinner').style.display = 'block';
 		xhr.send();
 	});
+});
+
+locDD.addEventListener('change', function() {
+	locDD.classList.remove('is-invalid');
 });
 
 function removeSpeaker(evt) {
@@ -33,12 +44,12 @@ if (is_superadmin) {
 		xhr.open('GET', '/ajax/reorderSpeakers?order=' + order);
 		xhr.send();
 	});
-}
-
-function modeChanged() {
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET', '/ajax/changeSpeakingMode?mode=' + document.getElementById('mode-dropdown').value);
-	xhr.send();
+	
+	document.getElementById('mode-dropdown').addEventListener('click', function() {
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', '/ajax/changeSpeakingMode?mode=' + document.getElementById('mode-dropdown').value);
+		xhr.send();
+	});
 }
 
 // Live refresh
