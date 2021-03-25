@@ -129,9 +129,15 @@ class Speaker(models.Model):
         ordering = ['index']
     
     # For speaker list websockets
+    
+    @staticmethod
+    def speakers_for_ws():
+        return [s.to_json() for s in Speaker.objects.all().select_related('delegate').select_related('node')]
+    
     def to_json(self):
         return {
             'delegate': {'id': self.delegate.id, 'name': self.delegate.name, 'role': self.delegate.role, 'speakerNum': self.delegate.speakerNum, 'first_time': self.delegate.first_time},
             'index': self.index,
             'intention': self.intention,
+            'node': self.node.shortName if self.node is not None else '',
         }

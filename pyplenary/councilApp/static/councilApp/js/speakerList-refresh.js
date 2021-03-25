@@ -14,7 +14,7 @@ document.querySelectorAll('button[name="action"]').forEach(function(el) {
 			document.getElementById('speaker-controls').style.display = 'flex';
 			document.getElementById('adding-spinner').style.display = 'none';
 		});
-		xhr.open('GET', '/ajax/speakerAdd?action=' + el.getAttribute('value'));
+		xhr.open('GET', '/ajax/speakerAdd?action=' + el.getAttribute('value') + '&location=' + locDD.value);
 		document.getElementById('speaker-controls').style.display = 'none';
 		document.getElementById('adding-spinner').style.display = 'block';
 		xhr.send();
@@ -142,7 +142,7 @@ ws.onmessage = function(event) {
 				}
 				
 				var elL2 = document.createElement('span');
-				elL2.innerText = 'Speaker ' + speaker.delegate.speakerNum + '. ' + speaker.delegate.role + '.';
+				elL2.innerText = 'Speaker ' + speaker.delegate.speakerNum + ' (' + (speaker.node === '' ? 'Own Zoom). ' : (speaker.node + ' node). ')) + speaker.delegate.role + '.';
 				elItem.appendChild(elL2);
 			}
 		}

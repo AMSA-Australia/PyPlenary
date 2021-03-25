@@ -13,7 +13,7 @@ class SpeakerListConsumer(WebsocketConsumer):
         self.accept()
         
         delegate = self.scope['user'].delegate
-        speakers = [s.to_json() for s in Speaker.objects.all()]
+        speakers = Speaker.speakers_for_ws()
         self.send(text_data=json.dumps({'type': 'init', 'delegate_id': delegate.id, 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': speakers}))
 
     def disconnect(self, code):

@@ -49,7 +49,7 @@ def ajaxSpeakerAdd(request):
     Speaker.objects.filter(delegate=request.user.delegate).delete()
 
     if request.GET['action'] == 'remove':
-        speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
+        speakers = Speaker.speakers_for_ws()
         async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': speakers})
         return HttpResponse()
 
@@ -68,9 +68,14 @@ def ajaxSpeakerAdd(request):
     else:
         return HttpResponseBadRequest('Unknown action')
 
+    if request.GET['location'] == '':
+        speaker.node = None
+    else:
+        speaker.node = Institution.objects.get(id=request.GET['location'])
+
     speaker.save()
 
-    speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
+    speakers = Speaker.speakers_for_ws()
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': speakers})
     return HttpResponse()
 
@@ -81,7 +86,7 @@ def ajaxSpeakerRemove(request):
     
     Speaker.objects.filter(delegate__id=request.GET['delegateId']).delete()
     
-    speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
+    speakers = Speaker.speakers_for_ws()
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': speakers})
     return HttpResponse()
 
@@ -95,7 +100,7 @@ def ajaxSpeakersReorder(request):
         speaker.index = order.index(speaker.delegate.id)
         speaker.save()
     
-    speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
+    speakers = Speaker.speakers_for_ws()
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': speakers})
     return HttpResponse()
 
@@ -106,7 +111,7 @@ def ajaxChangeSpeakingMode(request):
     
     caches['default'].set('speaker_mode', request.GET['mode'], timeout=None)
     
-    speakers = [s.to_json() for s in Speaker.objects.all().select_related('delegate')]
+    speakers = Speaker.speakers_for_ws()
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': request.GET['mode'], 'speakerlist': speakers})
     return HttpResponse()
 
