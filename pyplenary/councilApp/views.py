@@ -115,6 +115,15 @@ def ajaxChangeSpeakingMode(request):
     async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': request.GET['mode'], 'speakerlist': speakers})
     return HttpResponse()
 
+@login_required
+def ajaxSpeakersClear(request):
+    if not request.user.delegate.superadmin:
+        raise HttpResponseForbidden()
+    
+    Speaker.objects.all().delete()
+    async_to_sync(channel_layer.group_send)('speakerlist', {'type': 'speakerlist_updated', 'mode': caches['default'].get('speaker_mode', 'standard'), 'speakerlist': []})
+    return HttpResponse()
+
 def delegates(request):
     if request.user.is_authenticated:
         allDelegates = [request.user.delegate] + list(Delegate.objects.exclude(authClone=request.user).order_by('speakerNum'))

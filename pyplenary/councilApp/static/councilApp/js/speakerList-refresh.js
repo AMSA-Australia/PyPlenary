@@ -50,6 +50,12 @@ if (is_superadmin) {
 		xhr.open('GET', '/ajax/changeSpeakingMode?mode=' + document.getElementById('mode-dropdown').value);
 		xhr.send();
 	});
+	
+	document.getElementById('clear-speakers').addEventListener('click', function() {
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', '/ajax/clearSpeakers');
+		xhr.send();
+	});
 }
 
 // Live refresh

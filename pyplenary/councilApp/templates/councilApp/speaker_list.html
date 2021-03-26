@@ -43,13 +43,14 @@
     {% if user.delegate.superadmin %}
       <div class="row mb-3">
         <label class="col-sm-2 col-form-label">Mode</label>
-        <div class="col-sm-10">
+        <div class="col-sm-8">
           <select class="select form-control" id="mode-dropdown">
             <option value="standard"{% if mode == 'standard' %} selected{% endif %}>Standard</option>
             {% comment %}<option value="rollcall"{% if mode == 'rollcall' %} selected{% endif %}>Roll call</option>{% endcomment %}
             <option value="formal"{% if mode == 'formal' %} selected{% endif %}>Formal debate</option>
           </select>
         </div>
+        <div class="col-sm-2"><button class="btn btn-outline-primary w-100" id="clear-speakers">Clear</button></div>
       </div>
     {% endif %}
 
