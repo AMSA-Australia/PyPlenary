@@ -148,7 +148,7 @@ ws.onmessage = function(event) {
 				}
 				
 				var elL2 = document.createElement('span');
-				elL2.innerText = 'Speaker ' + speaker.delegate.speakerNum + ' (' + (speaker.node === '' ? 'Own Zoom). ' : (speaker.node + ' node). ')) + speaker.delegate.role + '.';
+				elL2.innerText = 'Speaker ' + speaker.delegate.speakerNum + ' (' + (speaker.node === '' ? 'Own Zoom). ' : (speaker.node + ' node). ')) + speaker.delegate.role + '. ' + speaker.delegate.institution + '.';
 				elItem.appendChild(elL2);
 			}
 		}

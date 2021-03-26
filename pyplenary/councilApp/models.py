@@ -143,11 +143,11 @@ class Speaker(models.Model):
     
     @staticmethod
     def speakers_for_ws():
-        return [s.to_json() for s in Speaker.objects.all().select_related('delegate').select_related('node')]
+        return [s.to_json() for s in Speaker.objects.all().select_related('delegate', 'delegate__institution', 'node')]
     
     def to_json(self):
         return {
-            'delegate': {'id': self.delegate.id, 'name': self.delegate.name, 'role': self.delegate.role, 'speakerNum': self.delegate.speakerNum, 'first_time': self.delegate.first_time},
+            'delegate': {'id': self.delegate.id, 'name': self.delegate.name, 'role': self.delegate.role, 'speakerNum': self.delegate.speakerNum, 'first_time': self.delegate.first_time, 'institution': self.delegate.institution.shortName},
             'index': self.index,
             'intention': self.intention,
             'node': self.node.shortName if self.node is not None else '',
