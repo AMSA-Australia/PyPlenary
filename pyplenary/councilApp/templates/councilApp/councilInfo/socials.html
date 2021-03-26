@@ -16,12 +16,12 @@
           </h2>
           <div id="{{city}}" class="accordion-collapse collapse" data-bs-parent="#socialsAccordion">
             <div class="accordion-body">
-              <div class="row row-cols-1 row-cols-md-2 g-4">
+              <div class="row row-cols-1 row-cols-md-1 g-4">
                 {% for item in items %}
                   <div class="col">
                     <div class="card h-100">
                       <div class="card-header">
-                        <h5 class="card-title">{{item.day}}: {{city}}</h5>
+                        <h5 class="card-title">{{item.day}}</h5>
                       </div>
                       <div class="card-body">
                         {% if item.event %}
