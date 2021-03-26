@@ -43,14 +43,13 @@
                               </tbody>
                             </table>
                           </div>
-                        </div>
-                        <a href="{{item.map}}" target="_blank" class="btn btn-primary card-btn stretched-link">View on Google Maps</a>
+                          <a href="{{item.map}}" target="_blank" class="btn btn-primary card-btn stretched-link">View on Google Maps</a>
                         {% else %}
                           Unfortunately, there are no social events scheduled in {{city}} on {{item.day}}.
-                        </div>
                         {% endif %}
+                        </div>
+                      </div>
                     </div>
-                  </div>
                 {% endfor %}
               </div>
             </div>

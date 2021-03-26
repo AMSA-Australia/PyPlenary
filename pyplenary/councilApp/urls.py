@@ -32,6 +32,7 @@ urlpatterns = [
 	path('agenda/', views.agenda),
 	path('reports/', views.reports),
 	path('socials/', views.socials),
+	path('nodes/', views.nodes),
 	path('login/', views.loginCustom),
 	path('logout/', views.logoutCustom),
 	path('password_change_request/', views.passwordResetLinkRequest),

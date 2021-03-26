@@ -148,7 +148,7 @@ PYPLENARY_SITE_TAGLINE = '26-28 March 2021 🍊'
 PYPLENARY_AGENDA_URI = 'https://drive.google.com/uc?id=1dP1j0mX7OVNnjB1p1XP1ZxJV0MxI9T33'
 PYPLENARY_REPORTS_URI = 'https://drive.google.com/uc?id=1HciBoCsCMPA3sIEV83WRE3pnZGSGCE8V'
 PYPLENARY_SOCIALS_URI = 'https://drive.google.com/uc?id=1Qvw7y6uaWquAQ8osxprv0GIsm3ZWPGaY'
-
+PYPLENARY_NODES_URI = 'https://drive.google.com/uc?id=1pS2Gj8P1wKPC3IYxcEug7bVyAG8rkV0Q'
 # PRODUCTION SETTINGS
 
 # Configure the domain name using the environment variable

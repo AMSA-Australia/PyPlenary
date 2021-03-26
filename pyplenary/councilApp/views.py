@@ -401,6 +401,15 @@ def socials(request):
 
     return render(request, 'councilApp/councilInfo/socials.html', {'active_tab':'socials', 'active_tab2': 'info', 'allCities':cached_socials})
 
+def nodes(request):
+    cache1 = caches['default']
+    cached_nodes = cache1.get('nodes')
+    if cached_nodes is None or request.GET.get('refresh', '0') == '1':
+        cached_nodes = yaml.load(requests.get(settings.PYPLENARY_NODES_URI).text)
+        cache1.set('nodes', cached_nodes, timeout=None)
+
+    return render(request, 'councilApp/councilInfo/nodes.html', {'active_tab':'nodes', 'active_tab2': 'info', 'allNodes':cached_nodes})
+
 def loginCustom(request):
     if request.user.is_authenticated:
         return redirect('/')
