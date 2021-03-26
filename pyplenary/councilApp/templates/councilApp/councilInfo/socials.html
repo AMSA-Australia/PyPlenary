@@ -23,8 +23,8 @@
                       <div class="card-header">
                         <h6 class="card-title" style="margin-bottom:0rem;">{{item.day}}</h6>
                       </div>
-                      <div class="card-body" style="padding-bottom:0.5rem; padding-top:0.5rem;">
-                        {% if item.event %}
+                      {% if item.event %}
+                        <div class="card-body" style="padding-bottom:0.5rem; padding-top:0.5rem;">
                           <div class="table-responsive">
                             <table class="table table-borderless" style="margin-bottom:0rem;">
                               <tbody>
@@ -43,13 +43,15 @@
                               </tbody>
                             </table>
                           </div>
-                          <a href="{{item.map}}" target="_blank" class="btn btn-primary card-btn stretched-link">View on Google Maps</a>
-                        {% else %}
-                          Unfortunately, there are no social events scheduled in {{city}} on {{item.day}}.
-                        {% endif %}
                         </div>
-                      </div>
+                        <a href="{{item.map}}" target="_blank" class="btn btn-primary card-btn stretched-link">View on Google Maps</a>
+                      {% else %}
+                        <div class="card-body" style="padding-bottom:0.5rem; padding-top:0.5rem;">
+                          Unfortunately, there are no social events scheduled in {{city}} on {{item.day}}.
+                        </div>
+                      {% endif %}
                     </div>
+                  </div>
                 {% endfor %}
               </div>
             </div>
