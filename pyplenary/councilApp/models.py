@@ -50,6 +50,7 @@ class Poll(models.Model):
     repsOnly = models.BooleanField(default=False)
     weighted = models.BooleanField(default=False)
     supermajority = models.BooleanField(default=False) #False for simple, True for super
+    roll_call = models.BooleanField(default=False)
     outcome = models.IntegerField(default=0) # 0 for no result, 1 for pass, 2 for fail, 3 for chair's call
 
     # TODO: Separately store number of ballots and number of votes
@@ -60,6 +61,16 @@ class Poll(models.Model):
     def __str__(self):
         output = f'{self.id} - {self.title}'
         return output
+    
+    def describe(self):
+        result = []
+        result.append('AMSA Reps only' if self.repsOnly else 'Voting open to all')
+        if self.roll_call:
+            result.append('Roll call')
+        result.append('Anonymous voting' if self.anonymous else 'Non-anonymous')
+        result.append('Requires ⅔ supermajority' if self.supermajority else 'Requires ½ simple majority')
+        result.append('Institutional-weighted votes' if self.weighted else 'Votes not weighted')
+        return result
 
 class Proxy(models.Model):
     id = models.AutoField(primary_key=True)

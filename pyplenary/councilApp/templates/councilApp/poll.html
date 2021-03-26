@@ -26,27 +26,7 @@
             <h5 class="card-title"><strong>Motion:</strong> {{poll.title}}</h5>
           </div>
           <div class="card-body">
-            <p class="card-text">
-              {% if poll.repsOnly %}
-                AMSA Reps only, 
-              {% else %}
-                Voting open to all, 
-              {% endif %}
-
-              {% if poll.anonymous %}
-                Anonymous voting, 
-              {% endif %}
-
-              {% if poll.supermajority %}
-                Requires ⅔ majority, 
-              {% else %}
-                Requires ½ majority, 
-              {% endif %}
-
-              {% if poll.weighted %}
-                Institutional-weighted
-              {% endif %}
-            </p>
+            <p class="card-text">{{ poll.describe|join:', ' }}</p>
           </div>
           <a href="/vote/{{poll.id}}/" class="btn btn-primary card-btn stretched-link">Vote</a>
         </div>

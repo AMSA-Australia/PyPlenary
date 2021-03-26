@@ -209,6 +209,7 @@ def createPoll(request):
             newPoll = Poll()
             newPoll.title = pollForm.cleaned_data.get('title')
             newPoll.anonymous = pollForm.cleaned_data.get('anonymous')
+            newPoll.roll_call = pollForm.cleaned_data.get('roll_call')
             newPoll.repsOnly = pollForm.cleaned_data.get('repsOnly')
             newPoll.weighted = pollForm.cleaned_data.get('weighted')
             newPoll.supermajority = pollForm.cleaned_data.get('majority') == 'super'
@@ -234,7 +235,9 @@ def closePoll(request, pollId):
     pollResults = calculateResults(activePoll)
     (activePoll.abstainVotes, activePoll.yesVotes, activePoll.noVotes) = pollResults
 
-    if not activePoll.supermajority:
+    if activePoll.roll_call:
+        activePoll.outcome = 0
+    elif not activePoll.supermajority:
         # Ordinary majority
         if activePoll.yesVotes > activePoll.noVotes:
             activePoll.outcome = 1

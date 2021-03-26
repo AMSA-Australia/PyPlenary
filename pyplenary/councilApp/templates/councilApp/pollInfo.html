@@ -6,34 +6,9 @@
 
 <h2>Poll: "{{ poll.title }}"</h2>
 <ul>
-  <li>
-  {% if poll.repsOnly %}
-    AMSA Reps only
-  {% else %}
-    Voting open to all 
-  {% endif %}
-  </li>
-  <li>
-    {% if poll.anonymous %}
-      Anonymous voting
-    {% else %}
-      Non-anonymous
-    {% endif %}
-  </li>
-  <li>
-    {% if poll.supermajority %}
-      Requires ⅔ supermajority
-    {% else %}
-      Requires ½ simple majority
-    {% endif %}
-  </li>
-  <li>
-    {% if poll.weighted %}
-      Institutional-weighted votes
-    {% else %}
-      Votes not weighted
-    {% endif %}
-  </li>
+  {% for item in poll.describe %}
+    <li>{{ item }}</li>
+  {% endfor %}
 </ul>
 {% if poll.active %}
 <a href="/vote/{{poll.id}}/" class="btn btn-primary mb-2">Open poll: Vote now</a>
@@ -62,13 +37,13 @@
 <br>
 <br>
 
-{% if poll.active and superadmin %}
+{% if poll.active and superadmin and not poll.roll_call %}
 <div class="alert alert-info" role="alert">
   As this poll is active, the votes are visible only to you.
 </div>
 {% endif %}
 
-{% if not poll.active or superadmin %}
+{% if not poll.active or superadmin or poll.roll_call %}
   <h4>Total ballots cast: {{ allVotes|length }}</h4>
   {% if poll.weighted %}
     {% if superadmin %}
@@ -83,6 +58,24 @@
   {% endif %}
   <br>
   <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% if poll.roll_call %}
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-header" style="background-color: #80ff80">
+          <h5 class="card-title">Present: {% if poll.weighted and not superadmin %}Hidden{% else %}{{ pollResults.1 }}{% endif %}</h5>
+        </div>
+        <div class="card-body">
+          {% if poll.anonymous and not superadmin%}
+            <p>Names hidden</p>
+          {% else %}
+            {% for vote in allVotes %}
+              <p>{{vote.voter.name}} ({{vote.voter.institution.shortName}})</p>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% else %}
     <div class="col">
       <div class="card h-100">
         <div class="card-header" style="background-color: #80ff80">
@@ -139,6 +132,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
   </div>
   {% if poll.repsOnly%}
     <br>

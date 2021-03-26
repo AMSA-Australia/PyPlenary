@@ -14,6 +14,8 @@ class StartPollForm(forms.Form):
     title = forms.CharField(max_length=1000, label="Poll title", widget=forms.TextInput(attrs={'placeholder': 'Motion to be put to a vote'}))
     anonymous = forms.BooleanField(required = False, label="Anonymous voting", 
         widget=forms.CheckboxInput(attrs={'class': 'centred-checkbox'}))
+    roll_call = forms.BooleanField(required = False, label="Roll call",
+        widget=forms.CheckboxInput(attrs={'class': 'centred-checkbox', 'id':'check_roll_call'}))
     repsOnly = forms.BooleanField(required = False, label="Reps only", 
         widget=forms.CheckboxInput(attrs={'class': 'centred-checkbox', 'id':'check_reps'}))
     weighted = forms.BooleanField(required = False, label="Institution-weighted vote", 

@@ -7,32 +7,9 @@
 
 <h2>Vote on: "{{ activePoll.title }}"</h2>
 <ul>
-  <li>
-  {% if activePoll.repsOnly %}
-    AMSA Reps only
-  {% else %}
-    Voting open to all 
-  {% endif %}
-  </li>
-  <li>
-    {% if activePoll.anonymous %}
-      Anonymous voting
-    {% else %}
-      Non-anonymous
-    {% endif %}
-  </li>
-  <li>
-    {% if activePoll.supermajority %}
-      Requires ⅔ supermajority
-    {% else %}
-      Requires ½ simple majority
-    {% endif %}
-  </li>
-  {% if activePoll.weighted %}
-    <li>
-      Institutional-weighted votes
-    </li>
-  {% endif %}
+  {% for item in activePoll.describe %}
+    <li>{{ item }}</li>
+  {% endfor %}
 </ul>
 <p>If you need to appoint or manage proxies, <a href="/proxy/">click here</a>.</p>
 <p>Note: To submit your votes, click the green "Submit" button at the bottom of the screen. Please ensure you have selected voted on all ballots (including proxies). <strong>You may amend your vote after you have submitted it.</strong></p>
@@ -78,6 +55,10 @@
             </p>
           </div>
           <div class="btn-group" role="group">
+            {% if activePoll.roll_call %}
+            <input type="radio" class="btn-check" name="btnradio_Own" id="ownRadio_1" autocomplete="off">
+            <label class="btn btn-outline-success" for="ownRadio_1">Present</label>
+            {% else %}
             <input type="radio" class="btn-check" name="btnradio_Own" id="ownRadio_1" autocomplete="off">
             <label class="btn btn-outline-success" for="ownRadio_1">For</label>
 
@@ -86,6 +67,7 @@
 
             <input type="radio" class="btn-check" name="btnradio_Own" id="ownRadio_0" autocomplete="off">
             <label class="btn btn-outline-primary" for="ownRadio_0">Abstain</label>
+            {% endif %}
           </div>
         {% endif %}
       {% endif %}
@@ -112,14 +94,19 @@
             </p>
           </div>
           <div class="btn-group" role="group">
+            {% if activePoll.roll_call %}
             <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_1_{{proxyInfo.proxyObj.id}}" autocomplete="off">
-            <label class="btn btn-outline-success" for="proxyRadio_1_{{proxyInfo.proxyObj.id}}">Yes</label>
+            <label class="btn btn-outline-success" for="proxyRadio_1_{{proxyInfo.proxyObj.id}}">Present</label>
+            {% else %}
+            <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_1_{{proxyInfo.proxyObj.id}}" autocomplete="off">
+            <label class="btn btn-outline-success" for="proxyRadio_1_{{proxyInfo.proxyObj.id}}">For</label>
 
             <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_2_{{proxyInfo.proxyObj.id}}" autocomplete="off">
-            <label class="btn btn-outline-danger" for="proxyRadio_2_{{proxyInfo.proxyObj.id}}">No</label>
+            <label class="btn btn-outline-danger" for="proxyRadio_2_{{proxyInfo.proxyObj.id}}">Against</label>
 
             <input type="radio" class="btn-check" name="btnradio_{{proxyInfo.proxyObj.id}}" id="proxyRadio_0_{{proxyInfo.proxyObj.id}}" autocomplete="off">
             <label class="btn btn-outline-primary" for="proxyRadio_0_{{proxyInfo.proxyObj.id}}">Abstain</label>
+            {% endif %}
           </div>
         {% endif %}
         </div>
