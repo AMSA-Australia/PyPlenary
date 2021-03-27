@@ -84,7 +84,7 @@ class Proxy(models.Model):
         db_table = 'Proxy'
 
     def __str__(self):
-        output = f'{self.holder.name}: proxy for {self.voter.name}'
+        output = f'{self.holder.name} holds proxy for {self.voter.name}'
         return output
 
 class Vote(models.Model):
@@ -100,7 +100,7 @@ class Vote(models.Model):
         db_table = 'Vote'
 
     def __str__(self):
-        output = f'{self.poll.title} - {self.rep.institution} - {self.vote}'
+        output = f'{self.poll.title} - {self.voter.institution} - {self.vote}'
         return output
 
 class ResetToken(models.Model):
