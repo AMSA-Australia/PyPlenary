@@ -586,7 +586,7 @@ def regoSetPassword(request, token):
                 email=tokenObj.email,
                 institution=tokenObj.institution,
                 role=tokenObj.role,
-                speakerNum=max([i.speakerNum for i in Delegate.objects.all()])+1,
+                speakerNum=max([0]+[i.speakerNum for i in Delegate.objects.all()])+1,
                 pronouns=tokenObj.pronouns,
                 first_time=tokenObj.firstTime)
 
