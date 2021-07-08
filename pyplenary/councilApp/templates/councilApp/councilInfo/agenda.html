@@ -25,7 +25,8 @@
   <div style="max-width: 600px; margin: 0 auto;">
     <h2 class="mb-3">Agenda</h2>
 
-    <p>All times are shown in Melbourne time (Australian Eastern Daylight Time).</p>
+    {% comment %}TODO: Make configurable{% endcomment %}
+    <p>All times are shown in Melbourne time (Australian Eastern Standard Time).</p>
 
     <ul class="nav nav-tabs">
       {% for day in agenda.keys %}
