@@ -658,3 +658,12 @@ def passwordResetLoggedIn(request):
 
 def loaderio_token(request):
     return HttpResponse('loaderio-' + settings.LOADERIO_TOKEN, content_type='text/plain')
+
+def appAdmin(request):
+    if request.user.is_authenticated and request.user.delegate.superadmin:
+        return render(request, 'councilApp/app_admin.html', {'active_tab':'app_admin'})
+    else:
+        raise Http404()
+
+def appAdminDownloadData(request):
+    return generateSpeakerListCSV()

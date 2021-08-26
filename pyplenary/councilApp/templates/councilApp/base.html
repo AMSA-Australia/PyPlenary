@@ -57,6 +57,14 @@
               <a class="nav-link {% if active_tab == 'poll' %}active{% endif %}"  href="/poll/">Poll Centre</a>
             </li>
 
+            {% if user.is_authenticated %}
+              {% if user.delegate.superadmin %}
+                <li class="nav-item">
+                  <a class="nav-link {% if active_tab == 'app_admin' %}active{% endif %}"  href="/app_admin/">Admin Centre</a>
+                </li>
+              {% endif %}
+            {% endif %}
+
             <li style="flex-grow:1;"></li><!-- Force other items to the right -->
 
             {% if user.is_authenticated %}

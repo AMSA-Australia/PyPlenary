@@ -43,4 +43,6 @@ urlpatterns = [
 	path('registration/', views.regoRequest),
 	path('activate/<str:token>/', views.regoSetPassword),
 	path('loaderio-' + settings.LOADERIO_TOKEN + '.txt', views.loaderio_token),
+	path('app_admin/', views.appAdmin),
+	path('app_admin/download_data/', views.appAdminDownloadData),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

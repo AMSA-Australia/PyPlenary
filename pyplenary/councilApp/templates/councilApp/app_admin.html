@@ -1,0 +1,34 @@
+{% extends 'councilApp/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Admin Centre{% endblock %}
+
+{% block content %}
+
+<h2>Admin Centre</h2>
+These tools are available to you because you are a superadmin.
+<hr/>
+
+<h4>Download data</h4>
+You will download a .zip folder containing CSV files of the following:
+<ul>
+  <li>speaker list</li>
+  <li>motions and voting results</li>
+  <li>links to reports</li>
+</ul>
+<a href="/app_admin/download_data/" class="btn btn-primary">Download data</a>
+
+
+<hr/>
+
+<h4>Add users</h4>
+<hr/>
+
+<h4>Open/close registrations</h4>
+<hr/>
+
+<h4>Reset webapp and wipe all data</h4>
+<hr/>
+
+{% endblock %}
