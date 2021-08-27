@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import *
+from .utils import *
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Email', help_text='Please enter the email you signed up with.')
@@ -35,3 +36,9 @@ class RegoForm(forms.Form):
     pronouns = forms.CharField(max_length=100, label='Pronouns (Optional)', help_text='Please enter your pronouns if you wish. This will be publicly displayed.', 
         widget=forms.TextInput(attrs={'placeholder': 'Pronouns'}), required=False)
     firstTime = forms.BooleanField(required = False, label='First-time Council attendee', help_text='Is this your first time at Council?')
+
+class AddUserForm(forms.Form):
+    file = forms.FileField(required = True, label='<strong>Upload new users</strong>', help_text='<br/>Please upload the CSV file containing user datails.',
+        validators=[validateCSVextension])
+    reissue = forms.BooleanField(required = False, label='Overwrite existing invitations?', 
+        help_text= '<br/>Toggle whether or not users are reissued invitations if valid invitations already exist.')

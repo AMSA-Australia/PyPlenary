@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.cache import caches
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from .models import *
 import json
@@ -97,3 +98,7 @@ def generateSpeakerListCSV(request):
     z.close()
 
     return response
+
+def validateCSVextension(value):
+    if not value.name.endswith('.csv'):
+        raise ValidationError(u'Please upload a valid CSV.')

@@ -29,6 +29,7 @@ import os
 import yaml
 from .utils import *
 import requests
+import csv
 
 os.chdir(settings.BASE_DIR) # For loading agenda.yaml, etc.
 
@@ -667,3 +668,22 @@ def appAdmin(request):
 
 def appAdminDownloadData(request):
     return generateSpeakerListCSV(request)
+
+def appAdminAddUsersTemplate(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="add_user_template.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Email', 'Role', 'Institution', 'Pronouns', 'First time'])
+
+    return response
+
+def appAdminAddUsers(request):
+    if request.method == 'POST':
+        addUserForm = AddUserForm(request.POST, request.FILES)
+        if addUserForm.is_valid():
+            print(request.FILES['file'].name)
+            return redirect('/')
+    else:
+        addUserForm = AddUserForm()
+    return render(request, 'councilApp/adminToolTemplates/add_users.html', {'active_tab':'app_admin', 'addUserForm': addUserForm})

@@ -45,4 +45,6 @@ urlpatterns = [
 	path('loaderio-' + settings.LOADERIO_TOKEN + '.txt', views.loaderio_token),
 	path('app_admin/', views.appAdmin),
 	path('app_admin/download_data/', views.appAdminDownloadData),
+	path('app_admin/add_users/', views.appAdminAddUsers),
+	path('app_admin/add_users_template/', views.appAdminAddUsersTemplate),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
