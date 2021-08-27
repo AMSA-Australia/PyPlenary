@@ -47,4 +47,8 @@ urlpatterns = [
 	path('app_admin/download_data/', views.appAdminDownloadData),
 	path('app_admin/add_users/', views.appAdminAddUsers),
 	path('app_admin/add_users_template/', views.appAdminAddUsersTemplate),
+	path('app_admin/valid_institutions/', views.appAdminAddUsersValidInstitutions),
+	path('app_admin/valid_institutions/download/', views.appAdminAddUsersValidInstitutionsDownload),
+	path('ajax/downloadAddUsersLog/', views.ajaxDownloadAddUsersLog),
+	path('ajax/downloadReviewCSV/', views.ajaxDownloadReviewsCSV)
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

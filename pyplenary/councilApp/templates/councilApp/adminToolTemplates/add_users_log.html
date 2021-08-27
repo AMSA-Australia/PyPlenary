@@ -1,0 +1,45 @@
+{% extends 'councilApp/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Add Users{% endblock %}
+
+{% block content %}
+
+<h2>Add Users Log</h2>
+<p>A total of ???? potential users were processed. The results are as follows. You can also <a onclick="downloadLogAJAX('{{loggingJSON}}')" href="javascript:void(0)">download a full log</a>.</p>
+
+<div class="alert alert-success" role="alert">
+  <strong>?????</strong> emails were successfully sent. Click to see/hide all successful recipients. 
+</div>
+
+<div class="alert alert-warning" role="alert">
+  <strong>?????</strong> emails were not sent because of errors. Please review them below and resubmit.
+</div>
+
+<div class="alert alert-primary" role="alert">
+  <strong>?????</strong> emails were not sent because pending invitations already exist. Click to see/hide all applicable.
+</div>
+
+<script>
+  function downloadLogAJAX(logJSON) {
+    logJSON = JSON.parse(logJSON)
+    console.log(logJSON)
+    $.ajax({
+      url: '/ajax/downloadAddUsersLog/',
+      data: {'logInfo':JSON.stringify(logJSON)},
+      dataType: 'json',
+      success: function (data) {
+        if (data.raise404) {
+          if(!alert('An error occurred.')){}
+        } else {
+          download(data.filename, data.response);
+        }
+      },
+      failure: function (data) {
+        if(!alert('An error occurred.')){}
+      }
+    });
+  };
+</script>
+{% endblock %}

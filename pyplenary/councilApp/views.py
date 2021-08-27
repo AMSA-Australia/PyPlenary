@@ -30,6 +30,7 @@ import yaml
 from .utils import *
 import requests
 import csv
+from io import StringIO
 
 os.chdir(settings.BASE_DIR) # For loading agenda.yaml, etc.
 
@@ -660,15 +661,18 @@ def passwordResetLoggedIn(request):
 def loaderio_token(request):
     return HttpResponse('loaderio-' + settings.LOADERIO_TOKEN, content_type='text/plain')
 
+@login_required
 def appAdmin(request):
     if request.user.is_authenticated and request.user.delegate.superadmin:
         return render(request, 'councilApp/adminToolTemplates/app_admin.html', {'active_tab':'app_admin'})
     else:
         raise Http404()
 
+@login_required
 def appAdminDownloadData(request):
     return generateSpeakerListCSV(request)
 
+@login_required
 def appAdminAddUsersTemplate(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="add_user_template.csv"'
@@ -678,12 +682,51 @@ def appAdminAddUsersTemplate(request):
 
     return response
 
+@login_required
+def appAdminAddUsersValidInstitutions(request):
+    institutions = sorted(Institution.objects.all(), key = lambda x:x.name)
+    return render(request, 'councilApp/adminToolTemplates/valid_institutions.html', {'active_tab':'app_admin', 'institutions':institutions})
+
+@login_required
+def appAdminAddUsersValidInstitutionsDownload(request):
+    institutions = sorted(Institution.objects.all(), key = lambda x:x.name)
+    response = HttpResponse('\n'.join([f'{i.name}\n{i.shortName}' for i in institutions]), content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="valid_institutions.txt"'
+    return response
+
+@login_required
 def appAdminAddUsers(request):
     if request.method == 'POST':
         addUserForm = AddUserForm(request.POST, request.FILES)
         if addUserForm.is_valid():
-            print(request.FILES['file'].name)
-            return redirect('/')
+            fileRead = request.FILES['file'].read().decode('utf-8')
+            addUserOutputs = addUsersFromCSV(fileRead, forceResend=addUserForm.cleaned_data.get('reissue'))
+            return render(request, 'councilApp/adminToolTemplates/add_users_log.html', {'active_tab':'app_admin', 
+                'successes': addUserOutputs['successes'],
+                'duplicates': addUserOutputs['duplicates'],
+                'errors': addUserOutputs['errors'],
+                'logging': addUserOutputs['logging'],
+                'loggingJSON': json.dumps(addUserOutputs['logging'])})
     else:
         addUserForm = AddUserForm()
     return render(request, 'councilApp/adminToolTemplates/add_users.html', {'active_tab':'app_admin', 'addUserForm': addUserForm})
+
+@login_required
+def ajaxDownloadAddUsersLog(request):
+    try:
+        logInfo = request.GET.get('logInfo')
+        print()
+        print(logInfo)
+        print()
+        print(json.load(StringIO(logInfo)))
+        print()
+        response = addUsersLog(json.load(StringIO(logInfo)))
+        return JsonResponse({'raise404':False, 'filename':'add_users_log.txt', 'response':response})
+    except:
+        return JsonResponse({'raise404':True})
+
+    
+
+@login_required
+def ajaxDownloadReviewsCSV(request):
+    pass

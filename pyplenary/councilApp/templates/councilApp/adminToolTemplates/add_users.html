@@ -12,11 +12,12 @@
 <p>You MUST use <a href='/app_admin/add_users_template/'><strong>this CSV template</strong></a> to upload users. Click on the link to download the template.</p>
 <p>Some important notes on using the template:</p>
 <ul>
-  <li>Institution names must be exactly one from <a href='/app_admin/valid_institutions/'><strong>this list</strong></a> (eg. <span style="color:green;font-weight:bold;">University of Melbourne</span> and <span style="color:green;font-weight: bold;">UMelb</span> are valid, but <span style="color:red;font-weight: bold;">Melbourne University</span> is invalid.)</li>
-  <li>In the column for first-time attendee status, type the number <span style="color:blue;font-weight:bold;">1</span> for first-timers, and type <span style="color:blue;font-weight:bold;">0</span> otherwise.</li>
+  <li>Institution names must be exactly one from <a href='/app_admin/valid_institutions/' target="_blank"><strong>this list</strong></a> (eg. <span style="color:green;font-weight:bold;">University of Melbourne</span> and <span style="color:green;font-weight: bold;">UMelb</span> are valid, but <span style="color:red;font-weight: bold;">umelb</span> and <span style="color:red;font-weight: bold;">Melbourne University</span> are invalid.)</li>
+  <li>In the column for first-time attendee status, type the number <span style="color:blue;font-weight:bold;">1</span> for first-timers, and type <span style="color:blue;font-weight:bold;">0</span> for returning attendees.</li>
   <li>Do not add or remove columns from the template.</li>
-  <li>By default, users with pending invitations or registered accounts are not reissued an invitation link. However, the checkbox below allows you to force the reissuing of invitations (eg. if a user claims not to have received their original invitation)</li>
+  <li>By default, users with pending invitations or registered accounts are not reissued a new invitation link. However, the checkbox below allows you to force the reissuing of invitations (eg. if a user claims not to have received their original invitation, and you want to send out a new invitation)</li>
 </ul>
+<hr/>
 <form method="post" enctype="multipart/form-data">
   <div class="form">
     {% csrf_token %}
