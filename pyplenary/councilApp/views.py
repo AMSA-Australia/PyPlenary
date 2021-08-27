@@ -661,9 +661,9 @@ def loaderio_token(request):
 
 def appAdmin(request):
     if request.user.is_authenticated and request.user.delegate.superadmin:
-        return render(request, 'councilApp/app_admin.html', {'active_tab':'app_admin'})
+        return render(request, 'councilApp/adminToolTemplates/app_admin.html', {'active_tab':'app_admin'})
     else:
         raise Http404()
 
 def appAdminDownloadData(request):
-    return generateSpeakerListCSV()
+    return generateSpeakerListCSV(request)

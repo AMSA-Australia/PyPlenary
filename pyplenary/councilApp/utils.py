@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.cache import caches
 from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from .models import *
 import json
@@ -5,7 +7,10 @@ import string
 import random
 import csv
 import zipfile
+import yaml
+
 from io import StringIO
+import requests
 
 def eligibleToVote(delegate, poll):
     if poll.repsOnly:
@@ -39,7 +44,7 @@ def generateToken():
         token += random.choice(choice)
     return token
 
-def generateSpeakerListCSV():
+def generateSpeakerListCSV(request):
 
     speakersIO = StringIO()
     writer = csv.writer(speakersIO)
@@ -59,12 +64,36 @@ def generateSpeakerListCSV():
         toWrite.append("; ".join([f'{vote.voter.name} ({vote.voter.institution.shortName})' for vote in allVotes if vote.vote == 0]))
         writer.writerow(toWrite)
 
+    agendaIO = StringIO()
+    writer = csv.writer(agendaIO)
+    writer.writerow(['Day', 'Time', 'Item'])
+    cached_agenda = yaml.load(requests.get(settings.PYPLENARY_AGENDA_URI).text)
+    for day, items in cached_agenda.items():
+        for item in items:
+            print(item)
+            writer.writerow([day, 
+                item['time'] if 'time' in item else '', 
+                item['title'] if 'title' in item else ''])
+
+    reportsIO = StringIO()
+    writer = csv.writer(reportsIO)
+    writer.writerow(['Group', 'Position', 'Name', 'Report link'])
+    cached_reports = yaml.load(requests.get(settings.PYPLENARY_REPORTS_URI).text)
+    for group in cached_reports:
+        for report in group['reports']:
+            writer.writerow([group['name'] if 'name' in group else '', 
+                report['position'] if 'position' in report else '', 
+                report['name'] if 'name' in report else '', 
+                report['URL'] if 'URL' in report else ''])
+
     response = HttpResponse(content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename=councilAppData.zip'
 
-    z = zipfile.ZipFile(response,'w')   ## write zip to response
-    z.writestr("speakerList.csv", speakersIO.getvalue())  ## write csv file to zip
-    z.writestr("polls.csv", pollsIO.getvalue())  ## write csv file to zip
+    z = zipfile.ZipFile(response,'w') 
+    z.writestr("speakerList.csv", speakersIO.getvalue())
+    z.writestr("polls.csv", pollsIO.getvalue())
+    z.writestr("agenda.csv", agendaIO.getvalue())
+    z.writestr("reports.csv", reportsIO.getvalue())
     z.close()
 
     return response

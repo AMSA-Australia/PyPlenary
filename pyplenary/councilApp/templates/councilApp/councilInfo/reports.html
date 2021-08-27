@@ -20,7 +20,7 @@
             <div class="accordion-body">
               <div class="list-group">
                 {% for report in group.reports %}
-                  <a href="{{report.URL}}" target="_blank" class="list-group-item list-group-item-action">{{report.person | safe}}</a>
+                  <a href="{{report.URL}}" target="_blank" class="list-group-item list-group-item-action"><strong>{{report.position | safe}}</strong> - {{report.name | safe}}</a>
                 {% endfor %}
               </div>
             </div>
