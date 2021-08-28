@@ -75,7 +75,6 @@ def generateSpeakerListCSV(request):
     cached_agenda = yaml.load(requests.get(settings.PYPLENARY_AGENDA_URI).text)
     for day, items in cached_agenda.items():
         for item in items:
-            print(item)
             writer.writerow([day, 
                 item['time'] if 'time' in item else '', 
                 item['title'] if 'title' in item else ''])
@@ -188,7 +187,17 @@ def addUsersLog(logging):
         else:
             toDownload += f'---FAILED to send email to {i["Name"]} at {i["Email"]} (Error code: {i["code"]})\n'
     return toDownload
-    # print(toDownload)
-    # response = HttpResponse(toDownload, content_type='text/plain')
-    # response['Content-Disposition'] = 'attachment; filename="add_users_log.txt"'
-    # return response
+
+def reviewCSV(errorsInfo):
+    toDownload = StringIO()
+    writer = csv.writer(toDownload)
+    writer.writerow(['Name', 'Email', 'Role', 'Institution', 'Pronouns', 'First time'])
+    for i in errorsInfo:
+        writer.writerow([i[0]['Name'],
+            i[0]['Email'],
+            i[0]['Role'],
+            i[0]['Institution'],
+            i[0]['Pronouns'],
+            i[0]['First time']])
+    return toDownload.getvalue()
+

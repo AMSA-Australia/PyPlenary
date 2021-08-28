@@ -1,0 +1,32 @@
+{% extends 'councilApp/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Add Users{% endblock %}
+
+{% block content %}
+
+<h2>Assigned AMSA Reps</h2>
+
+<div class="table">
+  <table class="table table-hover" id="Reps">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Institution</th>
+        <th scope="col">AMSA Representative</th>
+        <th scope="col">Assign/Reassign</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in repsList %}
+        <tr>
+          <td>{{item.inst}}</td>
+          <td>{{item.rep}}</td>
+          <td><a href='/app_admin/assign_rep/{{item.inst.id}}/'>Assign/Reassign</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</script>
+{% endblock %}

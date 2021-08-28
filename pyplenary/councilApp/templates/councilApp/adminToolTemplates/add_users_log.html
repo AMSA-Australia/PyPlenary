@@ -7,18 +7,18 @@
 {% block content %}
 
 <h2>Add Users Log</h2>
-<p>A total of ???? potential users were processed. The results are as follows. You can also <a onclick="downloadLogAJAX('{{loggingJSON}}')" href="javascript:void(0)">download a full log</a>.</p>
+<p>A total of <strong>{{ logging|length }}</strong> potential users were processed. The results are as follows. You can also <a onclick="downloadLogAJAX('{{loggingJSON}}')" href="javascript:void(0)">download a full log</a>.</p>
 
 <div class="alert alert-success" role="alert">
-  <strong>?????</strong> emails were successfully sent. Click to see/hide all successful recipients. 
+  <strong>{{ successes|length }}</strong> emails were successfully sent. Click to see/hide all successful recipients. 
 </div>
 
-<div class="alert alert-warning" role="alert">
-  <strong>?????</strong> emails were not sent because of errors. Please review them below and resubmit.
+<div class="alert alert-danger" role="alert">
+  <strong>{{ errors|length }}</strong> emails were not sent because of errors. You can <a onclick="downloadErrorsAJAX('{{errorsJSON}}')" href="javascript:void(0)">download a CSV of accounts with errors</a> to review and <a href='/app_admin/add_users/' target="_blank">resubmit</a>. 
 </div>
 
 <div class="alert alert-primary" role="alert">
-  <strong>?????</strong> emails were not sent because pending invitations already exist. Click to see/hide all applicable.
+  <strong>{{ duplicates|length }}</strong> emails were not sent because pending invitations already exist. Click to see/hide all applicable.
 </div>
 
 <script>
@@ -28,6 +28,26 @@
     $.ajax({
       url: '/ajax/downloadAddUsersLog/',
       data: {'logInfo':JSON.stringify(logJSON)},
+      dataType: 'json',
+      success: function (data) {
+        if (data.raise404) {
+          if(!alert('An error occurred.')){}
+        } else {
+          download(data.filename, data.response);
+        }
+      },
+      failure: function (data) {
+        if(!alert('An error occurred.')){}
+      }
+    });
+  };
+
+  function downloadErrorsAJAX(errorsJSON) {
+    errorsJSON = JSON.parse(errorsJSON)
+    console.log(errorsJSON)
+    $.ajax({
+      url: '/ajax/downloadReviewCSV/',
+      data: {'errorsInfo':JSON.stringify(errorsJSON)},
       dataType: 'json',
       success: function (data) {
         if (data.raise404) {

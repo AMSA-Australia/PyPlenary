@@ -50,5 +50,8 @@ urlpatterns = [
 	path('app_admin/valid_institutions/', views.appAdminAddUsersValidInstitutions),
 	path('app_admin/valid_institutions/download/', views.appAdminAddUsersValidInstitutionsDownload),
 	path('ajax/downloadAddUsersLog/', views.ajaxDownloadAddUsersLog),
-	path('ajax/downloadReviewCSV/', views.ajaxDownloadReviewsCSV)
+	path('ajax/downloadReviewCSV/', views.ajaxDownloadReviewsCSV),
+	path('app_admin/assign_reps/', views.appAdminAssignReps),
+	path('app_admin/assign_rep/<int:instId>/', views.appAdminAssignRepById),
+	path('ajax/assignRep/', views.ajaxAssignRep),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
