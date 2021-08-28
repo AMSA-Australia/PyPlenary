@@ -1,16 +1,22 @@
 from django.conf import settings
+from django.core import mail
+from django.core.mail import send_mail
 from django.core.cache import caches
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse, FileResponse, Http404, HttpResponse
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from .models import *
-import json
-import string
-import random
-import csv
-import zipfile
-import yaml
 
+import csv
 from io import StringIO
+import json
+import os
+import random
 import requests
+import string
+import yaml
+import zipfile
 
 def eligibleToVote(delegate, poll):
     if poll.repsOnly:
@@ -45,7 +51,6 @@ def generateToken():
     return token
 
 def generateSpeakerListCSV(request):
-
     speakersIO = StringIO()
     writer = csv.writer(speakersIO)
     writer.writerow(['Speaker #', 'Name', 'Role', 'Institution', 'Pronouns'])
@@ -70,7 +75,6 @@ def generateSpeakerListCSV(request):
     cached_agenda = yaml.load(requests.get(settings.PYPLENARY_AGENDA_URI).text)
     for day, items in cached_agenda.items():
         for item in items:
-            print(item)
             writer.writerow([day, 
                 item['time'] if 'time' in item else '', 
                 item['title'] if 'title' in item else ''])
@@ -97,3 +101,103 @@ def generateSpeakerListCSV(request):
     z.close()
 
     return response
+
+def validateCSVextension(value):
+    if not value.name.endswith('.csv'):
+        raise ValidationError(u'Please upload a valid CSV.')
+
+def addUsersFromCSV(csvFile, forceResend = False):
+    csvReader = csv.DictReader(csvFile.split('\n'))
+    successes = []
+    duplicates = []
+    errors = []
+    logging = []
+    for account in csvReader:
+        account = dict(account)
+        institution = Institution.objects.filter(name = account['Institution']) | Institution.objects.filter(shortName = account['Institution'])
+        if len(institution) == 1:
+            institution = institution[0]
+        else:
+            errors.append((account, "InstitutionError"))
+            account.update({'code':"InstitutionError"})
+            logging.append(account)
+            continue
+
+        [email, name, institution, role, pronouns, firstTime] = [account['Email'],
+            account['Name'],
+            institution,
+            account['Role'] if account['Role'] else 'Delegate',
+            account['Pronouns'],
+            account['First time'] in ("1", 1, True, "Yes", "yes", "YES", "True", "true", "TRUE"),]
+
+        if not name or not email:
+            errors.append((account, "MissingInfoError"))
+            account.update({'code':"MissingInfoError"})
+            logging.append(account)
+            continue
+
+        if User.objects.filter(username=email):
+            errors.append((account, "AlreadyExistError"))
+            account.update({'code':"AlreadyExistError"})
+            logging.append(account)
+            continue
+
+        if not forceResend:
+            if PendingRego.objects.filter(email=email, active=True):
+                duplicates.append(account)
+                account.update({'code':"Duplicate"})
+                logging.append(account)
+                continue
+
+        for oldToken in PendingRego.objects.filter(email=email):
+            oldToken.active = False
+            oldToken.save()
+
+        token = generateToken()
+        while PendingRego.objects.filter(token=token):
+            token = generateToken()
+        
+        try:
+            activateLink = f'https://council.amsa.org.au/activate/{token}'
+            subject = '[ACTION REQUIRED] AMSA Council: Webapp Acccount Activation'
+            html_message = render_to_string('councilApp/adminToolTemplates/emailTemplate.html', {'activateLink':activateLink, 'name':name})
+            plain_message = strip_tags(html_message)
+            email_from = 'AMSA Council Webmaster'
+            send_mail(subject, plain_message, email_from, [email], html_message=html_message)
+            PendingRego.objects.create(token=token, email=email, name=name, institution=institution, role=role, pronouns=pronouns, firstTime=firstTime)
+            successes.append(account)
+            account.update({'code':"Success"})
+            logging.append(account)
+        except:
+            errors.append((account, "EmailError"))
+            account.update({'code':"EmailError"})
+            logging.append(account)
+            continue
+
+    return {'successes':successes, 
+            'duplicates':duplicates, 
+            'errors':errors,
+            'logging':logging}
+
+def addUsersLog(logging):
+    toDownload = ''
+    for i in logging:
+        if i['code'] == 'Success':
+            toDownload += f'Successfully sent email to {i["Name"]} at {i["Email"]}\n'
+        else:
+            toDownload += f'---FAILED to send email to {i["Name"]} at {i["Email"]} (Error code: {i["code"]})\n'
+    return toDownload
+
+def reviewCSV(errorsInfo):
+    toDownload = StringIO()
+    writer = csv.writer(toDownload)
+    writer.writerow(['Name', 'Email', 'Role', 'Institution', 'Pronouns', 'First time'])
+    for i in errorsInfo:
+        writer.writerow([i[0]['Name'],
+            i[0]['Email'],
+            i[0]['Role'],
+            i[0]['Institution'],
+            i[0]['Pronouns'],
+            i[0]['First time']])
+    return toDownload.getvalue()
+

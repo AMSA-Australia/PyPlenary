@@ -29,6 +29,8 @@ import os
 import yaml
 from .utils import *
 import requests
+import csv
+from io import StringIO
 
 os.chdir(settings.BASE_DIR) # For loading agenda.yaml, etc.
 
@@ -126,11 +128,10 @@ def ajaxSpeakersClear(request):
 
 def delegates(request):
     if request.user.is_authenticated:
-        allDelegates = [request.user.delegate] + list(Delegate.objects.exclude(authClone=request.user).order_by('speakerNum'))
+        allDelegates = [request.user.delegate] + list(Delegate.objects.exclude(authClone=request.user).exclude(speakerNum=0).order_by('speakerNum'))
     else:
-        allDelegates = Delegate.objects.order_by('speakerNum')
-    return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates,
-        'active_tab':'delegates'})
+        allDelegates = Delegate.objects.exclude(speakerNum=0).order_by('speakerNum')
+    return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates, 'active_tab':'delegates'})
 
 @login_required
 def proxy(request):
@@ -139,7 +140,7 @@ def proxy(request):
     proxiesForMe = Proxy.objects.filter(voter=delegate, active=True)
     proxiesIHold = Proxy.objects.filter(holder=delegate, active=True)
 
-    allDelegates = sorted(Delegate.objects.exclude(id=delegate.id), key=lambda x:x.speakerNum)
+    allDelegates = sorted(Delegate.objects.exclude(id=delegate.id).exclude(speakerNum=0), key=lambda x:x.speakerNum)
 
     return render(request, 'councilApp/proxy.html', {'delegate':delegate, 'proxiesForMe':proxiesForMe, 'proxiesIHold':proxiesIHold,
         'allDelegates':allDelegates, 'active_tab':'proxy'})
@@ -659,11 +660,120 @@ def passwordResetLoggedIn(request):
 def loaderio_token(request):
     return HttpResponse('loaderio-' + settings.LOADERIO_TOKEN, content_type='text/plain')
 
+@login_required
 def appAdmin(request):
     if request.user.is_authenticated and request.user.delegate.superadmin:
         return render(request, 'councilApp/adminToolTemplates/app_admin.html', {'active_tab':'app_admin'})
     else:
         raise Http404()
 
+@login_required
 def appAdminDownloadData(request):
     return generateSpeakerListCSV(request)
+
+@login_required
+def appAdminAddUsersTemplate(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="add_user_template.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Email', 'Role', 'Institution', 'Pronouns', 'First time'])
+
+    return response
+
+@login_required
+def appAdminAddUsersValidInstitutions(request):
+    institutions = sorted(Institution.objects.all(), key = lambda x:x.name)
+    return render(request, 'councilApp/adminToolTemplates/valid_institutions.html', {'active_tab':'app_admin', 'institutions':institutions})
+
+@login_required
+def appAdminAddUsersValidInstitutionsDownload(request):
+    institutions = sorted(Institution.objects.all(), key = lambda x:x.name)
+    response = HttpResponse('\n'.join([f'{i.name}\n{i.shortName}' for i in institutions]), content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="valid_institutions.txt"'
+    return response
+
+@login_required
+def appAdminAddUsers(request):
+    if request.method == 'POST':
+        addUserForm = AddUserForm(request.POST, request.FILES)
+        if addUserForm.is_valid():
+            fileRead = request.FILES['file'].read().decode('utf-8')
+            addUserOutputs = addUsersFromCSV(fileRead, forceResend=addUserForm.cleaned_data.get('reissue'))
+            return render(request, 'councilApp/adminToolTemplates/add_users_log.html', {'active_tab':'app_admin', 
+                'successes': addUserOutputs['successes'],
+                'duplicates': addUserOutputs['duplicates'],
+                'errors': addUserOutputs['errors'],
+                'logging': addUserOutputs['logging'],
+                'loggingJSON': json.dumps(addUserOutputs['logging']),
+                'errorsJSON': json.dumps(addUserOutputs['errors'])})
+    else:
+        addUserForm = AddUserForm()
+    return render(request, 'councilApp/adminToolTemplates/add_users.html', {'active_tab':'app_admin', 'addUserForm': addUserForm})
+
+@login_required
+def ajaxDownloadAddUsersLog(request):
+    try:
+        logInfo = request.GET.get('logInfo')
+        response = addUsersLog(json.load(StringIO(logInfo)))
+        return JsonResponse({'raise404':False, 'filename':'add_users_log.txt', 'response':response})
+    except:
+        return JsonResponse({'raise404':True})
+
+@login_required
+def ajaxDownloadReviewsCSV(request):
+    try:
+        errorsInfo = request.GET.get('errorsInfo')
+        errorsInfo = json.load(StringIO(errorsInfo))
+        print(errorsInfo)
+        response = reviewCSV(errorsInfo)
+        return JsonResponse({'raise404':False, 'filename':'error_review.csv', 'response':response})
+    except:
+        return JsonResponse({'raise404':True})
+
+@login_required
+def appAdminAssignReps(request):
+    institutions = sorted(Institution.objects.all(), key = lambda x:x.name)
+    toPass = []
+    for inst in institutions:
+        if inst.name in ('N/A', 'Other'):
+            continue
+        rep = Delegate.objects.filter(institution = inst, rep = True)
+        if rep:
+            rep = rep[0]
+        else:
+            rep = '-'
+        toPass.append({'inst':inst, 'rep':rep})
+    return render(request, 'councilApp/adminToolTemplates/view_reps.html', {'active_tab':'app_admin', 'repsList': toPass})
+
+@login_required
+def appAdminAssignRepById(request, instId):
+    try:
+        inst = Institution.objects.get(id=instId)
+    except:
+        raise Http404()
+    if inst.name in ('N/A', 'Other'):
+        raise Http404()
+    rep = Delegate.objects.filter(institution = inst, rep = True)
+    if rep:
+        rep = rep[0]
+    else:
+        rep = None
+
+    validDelegates = Delegate.objects.filter(institution=inst).exclude(speakerNum=0).order_by('speakerNum')
+    return render(request, 'councilApp/adminToolTemplates/assign_rep.html', {'active_tab':'app_admin', 'validDelegates': validDelegates, 'inst':inst, 'curRep':rep})
+
+def ajaxAssignRep(request):
+    try:
+        delegateId = request.GET.get('delegateId', None)
+        delegate = Delegate.objects.get(id=delegateId)
+    except:
+        return JsonResponse({'raise404':True, 'newRep':None})
+    for otherDelegate in Delegate.objects.filter(institution=delegate.institution):
+        otherDelegate.rep = False
+        otherDelegate.save()
+    delegate.rep = True
+    delegate.save()
+
+    data = {'raise404':False, 'newRep':[delegate.name, delegate.institution.name]}
+    return JsonResponse(data)
