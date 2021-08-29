@@ -1,20 +1,27 @@
 # -*- coding: utf-8 -*-
-
 from pathlib import Path
 import os
+from .utils import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
+# location of custom configurations file
+CUSTOM_CONFIGS = readConfigYAMLFromHTML('https://drive.google.com/uc?id=1851_s4XH7rQUrGQuU5zkZ1-ryBDPTqru')
+
+SECRET_KEY = CUSTOM_CONFIGS['SECRET_KEY']
+
+WEBSITE_HTTPLOGGING_RETENTION_DAYS = CUSTOM_CONFIGS['WEBSITE_HTTPLOGGING_RETENTION_DAYS']
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ubfxhi$qrj&9$s&^g5lmru3l03h5azq&w@mfso0+*beq71x!8t'
+# SECRET_KEY = 'ubfxhi$qrj&9$s&^g5lmru3l03h5azq&w@mfso0+*beq71x!8t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ['DEBUG'])) if os.environ.get('DEBUG') else False
+# DEBUG = bool(int(os.environ['DEBUG'])) if os.environ.get('DEBUG') else False
+DEBUG =  bool(int(CUSTOM_CONFIGS['DEBUG']))
 
 # ALLOWED_HOSTS = ['*']
 
@@ -77,9 +84,7 @@ ASGI_APPLICATION = "pyplenary.asgi.application"
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
-
-REDIS_URL = os.environ['REDIS_URL'] if os.environ.get('REDIS_URL') else None
+REDIS_URL = CUSTOM_CONFIGS['REDIS_URL']
 
 CHANNEL_LAYERS = {
     'default': {
@@ -141,14 +146,15 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 # PYPLENARY SETTINGS
+PYPLENARY_NAVBAR_NAME = CUSTOM_CONFIGS['PYPLENARY_NAVBAR_NAME']
+PYPLENARY_SITE_NAME = CUSTOM_CONFIGS['PYPLENARY_SITE_NAME']
+PYPLENARY_SITE_TAGLINE = CUSTOM_CONFIGS['PYPLENARY_SITE_TAGLINE']
+PYPLENARY_AGENDA_URI = CUSTOM_CONFIGS['PYPLENARY_AGENDA_URI']
+PYPLENARY_REPORTS_URI = CUSTOM_CONFIGS['PYPLENARY_REPORTS_URI']
+PYPLENARY_SOCIALS_URI = CUSTOM_CONFIGS['PYPLENARY_SOCIALS_URI']
+PYPLENARY_NODES_URI = CUSTOM_CONFIGS['PYPLENARY_NODES_URI']
 
-PYPLENARY_NAVBAR_NAME = 'AMSA Council 2 2021'
-PYPLENARY_SITE_NAME = 'AMSA National Council 2 2021'
-PYPLENARY_SITE_TAGLINE = '9-11 July 2021 🍊'
-PYPLENARY_AGENDA_URI = 'https://drive.google.com/uc?id=1dP1j0mX7OVNnjB1p1XP1ZxJV0MxI9T33'
-PYPLENARY_REPORTS_URI = 'https://drive.google.com/uc?id=1HciBoCsCMPA3sIEV83WRE3pnZGSGCE8V'
-PYPLENARY_SOCIALS_URI = 'https://drive.google.com/uc?id=1Qvw7y6uaWquAQ8osxprv0GIsm3ZWPGaY'
-PYPLENARY_NODES_URI = 'https://drive.google.com/uc?id=1pS2Gj8P1wKPC3IYxcEug7bVyAG8rkV0Q'
+
 # PRODUCTION SETTINGS
 
 # Configure the domain name using the environment variable
@@ -163,19 +169,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DATABASES = {}
 
-if all(x in os.environ for x in ['DBHOST', 'DBNAME', 'DBUSER', 'DBPASS']):
-    # DBHOST is only the server name, not the full URL
-    hostname = os.environ['DBHOST']
+# DBHOST is only the server name, not the full URL
 
-    # Configure Postgres database; the full username is username@servername,
-    # which we construct using the DBHOST value.
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['DBNAME'],
-        'HOST': hostname + ".postgres.database.azure.com",
-        'USER': os.environ['DBUSER'] + "@" + hostname,
-        'PASSWORD': os.environ['DBPASS'] 
-    }
+hostname = CUSTOM_CONFIGS['DBHOST']
+
+# Configure Postgres database; the full username is username@servername,
+# which we construct using the DBHOST value.
+DATABASES['default'] = {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': CUSTOM_CONFIGS['DBNAME'],
+    'HOST': hostname + CUSTOM_CONFIGS['DBDOMAIN'],
+    'USER': CUSTOM_CONFIGS['DBUSER'] + "@" + hostname,
+    'PASSWORD': CUSTOM_CONFIGS['DBPASS']
+}
 
 CACHES = {
     'default': {
@@ -184,23 +190,21 @@ CACHES = {
     }
 }
 
-WEB_DOMAIN = "https://council.amsa.org.au"
+WEB_DOMAIN = CUSTOM_CONFIGS['COUNCIL_URL']
 
 #auto email stuff
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', None)
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
+EMAIL_HOST_USER = CUSTOM_CONFIGS['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = CUSTOM_CONFIGS['EMAIL_HOST_PASSWORD']
 
 # TEMP PASSWORD FOR NEW USERS
-
-if not os.environ.get('USER_TEMP_PASSWORD'):
-    USER_TEMP_PASSWORD = 'tempPassword'
+USER_TEMP_PASSWORD = CUSTOM_CONFIGS['USER_TEMP_PASSWORD']
 
 # OPEN REGO
-REGO_OPEN = True if os.environ.get('REGO_OPEN', '0') == "1" else False
+REGO_OPEN = True if CUSTOM_CONFIGS['REGO_OPEN'] in ("1", 1) else False
 
 LOADERIO_TOKEN = '71c1d90d203bf7dd2d56ce4203cb238f' # For https://loader.io/
 
