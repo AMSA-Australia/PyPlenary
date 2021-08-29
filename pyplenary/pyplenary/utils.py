@@ -1,7 +1,6 @@
+import requests
 import yaml
-import urllib
-from urllib import request
 
 def readConfigYAMLFromHTML(fileURL):
-    x = yaml.safe_load(urllib.request.urlopen(fileURL))
+    x = yaml.safe_load(requests.get(fileURL).text)
     return x
