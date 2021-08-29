@@ -19,7 +19,7 @@ import yaml
 import zipfile
 
 def readConfigYAMLFromHTML(fileURL):
-    x = yaml.load(requests.get(fileURL).text)
+    x = yaml.safe_load(requests.get(fileURL).text)
     return x
 
 def eligibleToVote(delegate, poll):
