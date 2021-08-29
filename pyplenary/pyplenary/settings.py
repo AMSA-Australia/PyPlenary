@@ -10,7 +10,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # location of custom configurations file
-CUSTOM_CONFIG_URL = 'https://drive.google.com/uc?id=1851_s4XH7rQUrGQuU5zkZ1-ryBDPTqru'
+# LOAD DEVELOPMENT SETTINGS IF ENVIRON SET
+if os.environ.get('DJANGO_DEVELOPMENT'):
+    # development environment
+    CUSTOM_CONFIG_URL = 'https://drive.google.com/uc?id=1FJFrtS2sJ9kk9a1Bsokt0cBYg05-ESpn'
+else:
+    # production environment
+    CUSTOM_CONFIG_URL = 'https://drive.google.com/uc?id=1851_s4XH7rQUrGQuU5zkZ1-ryBDPTqru'
 CUSTOM_CONFIGS = readConfigYAMLFromHTML(CUSTOM_CONFIG_URL)
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -19,7 +25,7 @@ SECRET_KEY = CUSTOM_CONFIGS['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =  bool(int(CUSTOM_CONFIGS['DEBUG']))
 
-# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 # SECURE_SSL_REDIRECT = True
 
@@ -147,15 +153,9 @@ PYPLENARY_NODES_URI = CUSTOM_CONFIGS['PYPLENARY_NODES_URI']
 
 # PRODUCTION SETTINGS
 
-# Configure the domain name using the environment variable
-# that Azure automatically creates for us.
-# ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
-ALLOWED_HOSTS = ['*']
-
 # whitenoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 
 DATABASES = {}
 
@@ -165,13 +165,21 @@ hostname = CUSTOM_CONFIGS['DBHOST']
 
 # Configure Postgres database; the full username is username@servername,
 # which we construct using the DBHOST value.
-DATABASES['default'] = {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': CUSTOM_CONFIGS['DBNAME'],
-    'HOST': hostname + CUSTOM_CONFIGS['DBDOMAIN'],
-    'USER': CUSTOM_CONFIGS['DBUSER'] + "@" + hostname,
-    'PASSWORD': CUSTOM_CONFIGS['DBPASS']
-}
+if os.environ.get('DJANGO_DEVELOPMENT'):
+    # development environment
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+else:
+    # production environment
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': CUSTOM_CONFIGS['DBNAME'],
+        'HOST': hostname + CUSTOM_CONFIGS['DBDOMAIN'],
+        'USER': CUSTOM_CONFIGS['DBUSER'] + "@" + hostname,
+        'PASSWORD': CUSTOM_CONFIGS['DBPASS']
+    }
 
 CACHES = {
     'default': {
@@ -195,6 +203,3 @@ USER_TEMP_PASSWORD = CUSTOM_CONFIGS['USER_TEMP_PASSWORD']
 
 LOADERIO_TOKEN = '71c1d90d203bf7dd2d56ce4203cb238f' # For https://loader.io/
 
-# LOAD DEVELOPMENT SETTINGS IF ENVIRON SET
-if os.environ.get('DJANGO_DEVELOPMENT'):
-    from .settingsDev import *
