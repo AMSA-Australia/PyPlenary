@@ -664,17 +664,22 @@ def loaderio_token(request):
 
 @login_required
 def appAdmin(request):
-    if request.user.is_authenticated and request.user.delegate.superadmin:
-        return render(request, 'councilApp/adminToolTemplates/app_admin.html', {'active_tab':'app_admin'})
+    if request.user.delegate.superadmin:
+        return render(request, 'councilApp/adminToolTemplates/app_admin.html', {'active_tab':'app_admin', 
+            'customConfigURL':settings.CUSTOM_CONFIG_URL.replace('https://drive.google.com/uc?id=', 'https://drive.google.com/file/d/')+'/view?usp=sharing'})
     else:
         raise Http404()
 
 @login_required
 def appAdminDownloadData(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     return generateSpeakerListCSV(request)
 
 @login_required
 def appAdminAddUsersTemplate(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="add_user_template.csv"'
 
@@ -685,11 +690,15 @@ def appAdminAddUsersTemplate(request):
 
 @login_required
 def appAdminAddUsersValidInstitutions(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     institutions = sorted(Institution.objects.all(), key = lambda x:x.name)
     return render(request, 'councilApp/adminToolTemplates/valid_institutions.html', {'active_tab':'app_admin', 'institutions':institutions})
 
 @login_required
 def appAdminAddUsersValidInstitutionsDownload(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     institutions = sorted(Institution.objects.all(), key = lambda x:x.name)
     response = HttpResponse('\n'.join([f'{i.name}\n{i.shortName}' for i in institutions]), content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename="valid_institutions.txt"'
@@ -697,6 +706,8 @@ def appAdminAddUsersValidInstitutionsDownload(request):
 
 @login_required
 def appAdminAddUsers(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     if request.method == 'POST':
         addUserForm = AddUserForm(request.POST, request.FILES)
         if addUserForm.is_valid():
@@ -715,6 +726,8 @@ def appAdminAddUsers(request):
 
 @login_required
 def ajaxDownloadAddUsersLog(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     try:
         logInfo = request.GET.get('logInfo')
         response = addUsersLog(json.load(StringIO(logInfo)))
@@ -724,6 +737,8 @@ def ajaxDownloadAddUsersLog(request):
 
 @login_required
 def ajaxDownloadReviewsCSV(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     try:
         errorsInfo = request.GET.get('errorsInfo')
         errorsInfo = json.load(StringIO(errorsInfo))
@@ -735,6 +750,8 @@ def ajaxDownloadReviewsCSV(request):
 
 @login_required
 def appAdminAssignReps(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     institutions = sorted(Institution.objects.all(), key = lambda x:x.name)
     toPass = []
     for inst in institutions:
@@ -750,6 +767,8 @@ def appAdminAssignReps(request):
 
 @login_required
 def appAdminAssignRepById(request, instId):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     try:
         inst = Institution.objects.get(id=instId)
     except:
@@ -765,7 +784,10 @@ def appAdminAssignRepById(request, instId):
     validDelegates = Delegate.objects.filter(institution=inst).exclude(speakerNum=0).order_by('speakerNum')
     return render(request, 'councilApp/adminToolTemplates/assign_rep.html', {'active_tab':'app_admin', 'validDelegates': validDelegates, 'inst':inst, 'curRep':rep})
 
+@login_required
 def ajaxAssignRep(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
     try:
         delegateId = request.GET.get('delegateId', None)
         delegate = Delegate.objects.get(id=delegateId)
@@ -779,3 +801,28 @@ def ajaxAssignRep(request):
 
     data = {'raise404':False, 'newRep':[delegate.name, delegate.institution.name]}
     return JsonResponse(data)
+
+@login_required
+def ajaxResetAndWipe(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
+    try:
+        confirmation = request.GET.get('confirmation')
+        if not confirmation:
+            return JsonResponse({'raise404':True})
+
+        # Deleting in the order
+        superadminEmail = 'council.webmaster@amsa.org.au'
+        Vote.objects.all().delete()
+        Proxy.objects.all().delete()
+        Poll.objects.all().delete()
+        Speaker.objects.all().delete()
+        ResetToken.objects.all().delete()
+        PendingRego.objects.all().delete()
+        Delegate.objects.all().exclude(authClone__username='council.webmaster@amsa.org.au').exclude(id=request.user.delegate.id).delete()
+        User.objects.all().exclude(username=superadminEmail).exclude(username=request.user.username).delete()
+
+        return JsonResponse({'raise404':False, 'successWipe':True})
+        
+    except:
+        return JsonResponse({'raise404':True})

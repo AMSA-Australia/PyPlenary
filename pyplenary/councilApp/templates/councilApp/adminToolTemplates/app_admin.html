@@ -36,7 +36,52 @@ These tools are available to you because you are a superadmin.
 <p>Django has a <a href='/admin/'>native admin interface</a> that can be used to edit database entries directly. Use this function ONLY if you are confident to do so.</p>
 <hr/>
 
-<h4>Reset webapp and wipe all data</h4>
+<h4>Webapp custom configuration settings</h4>
+<p>Custom configuration settings can be found in <a href="{{ customConfigURL }}" target="_blank">this YAML file</a>.</p>
 <hr/>
+
+<h4>Reset webapp and wipe all data</h4>
+<div class="alert alert-danger" role="alert">
+  <strong>WARNING:</strong> This action will permanently remove ALL database information such as delegate, poll and proxy data from the webapp. Information such as the agenda and report links will not be affected as they are configuration variables. Institutional information will also be unaffected.
+  <br/>
+  <strong>Please ensure you have downloaded a copy of the Council data before you do this.</strong>
+</div>
+<p>(Note: it may take a few seconds to delete and reset the webapp. Please wait patiently.)</p>
+<a onclick="checkDelete()" href="javascript:void(0)" class="btn btn-danger">Delete all data and reset webapp</a>
+<hr/>
+
+<script>
+  function checkDelete() {
+    if (confirm('Resetting the webapp is IRREVERSIBLE. Please ensure you have saved a copy of the webapp data. Do you wish to proceed?')) {
+  // Save it!
+      resetWebappAJAX();
+    } else {
+      // Do nothing!
+      alert('Nothing was attempted.');
+    }
+  }
+
+  function resetWebappAJAX() {
+    $.ajax({
+      url: '/ajax/ResetAndWipe/',
+      data: {'confirmation':true},
+      dataType: 'json',
+      success: function (data) {
+        if (data.raise404) {
+          if(!alert('An error occurred. Nothing will be attempted.')){}
+        } else {
+          if (data.successWipe) {
+            if(!alert('All data has successfully been wiped, and the webapp has been reset.')){}
+          } else {
+            if(!alert('An error occurred. Nothing will be attempted.')){}
+          }
+        }
+      },
+      failure: function (data) {
+        if(!alert('An error occurred. Nothing will be attempted.')){}
+      }
+    });
+  };
+</script>
 
 {% endblock %}
