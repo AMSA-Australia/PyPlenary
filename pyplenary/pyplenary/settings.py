@@ -10,17 +10,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # location of custom configurations file
-CUSTOM_CONFIGS = readConfigYAMLFromHTML('https://drive.google.com/uc?id=1851_s4XH7rQUrGQuU5zkZ1-ryBDPTqru')
-
-SECRET_KEY = CUSTOM_CONFIGS['SECRET_KEY']
-
-WEBSITE_HTTPLOGGING_RETENTION_DAYS = CUSTOM_CONFIGS['WEBSITE_HTTPLOGGING_RETENTION_DAYS']
+CUSTOM_CONFIG_URL = 'https://drive.google.com/uc?id=1851_s4XH7rQUrGQuU5zkZ1-ryBDPTqru'
+CUSTOM_CONFIGS = readConfigYAMLFromHTML(CUSTOM_CONFIG_URL)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'ubfxhi$qrj&9$s&^g5lmru3l03h5azq&w@mfso0+*beq71x!8t'
+SECRET_KEY = CUSTOM_CONFIGS['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = bool(int(os.environ['DEBUG'])) if os.environ.get('DEBUG') else False
 DEBUG =  bool(int(CUSTOM_CONFIGS['DEBUG']))
 
 # ALLOWED_HOSTS = ['*']
@@ -78,12 +74,6 @@ ASGI_APPLICATION = "pyplenary.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 REDIS_URL = CUSTOM_CONFIGS['REDIS_URL']
 
 CHANNEL_LAYERS = {
@@ -202,9 +192,6 @@ EMAIL_HOST_PASSWORD = CUSTOM_CONFIGS['EMAIL_HOST_PASSWORD']
 
 # TEMP PASSWORD FOR NEW USERS
 USER_TEMP_PASSWORD = CUSTOM_CONFIGS['USER_TEMP_PASSWORD']
-
-# OPEN REGO
-REGO_OPEN = True if CUSTOM_CONFIGS['REGO_OPEN'] in ("1", 1) else False
 
 LOADERIO_TOKEN = '71c1d90d203bf7dd2d56ce4203cb238f' # For https://loader.io/
 

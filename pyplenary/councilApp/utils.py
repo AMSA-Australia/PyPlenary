@@ -16,7 +16,13 @@ import random
 import requests
 import string
 import yaml
+import urllib
+from urllib import request
 import zipfile
+
+def readConfigYAMLFromHTML(fileURL):
+    x = yaml.safe_load(urllib.request.urlopen(fileURL))
+    return x
 
 def eligibleToVote(delegate, poll):
     if poll.repsOnly:
