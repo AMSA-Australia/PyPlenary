@@ -55,4 +55,5 @@ urlpatterns = [
 	path('app_admin/assign_rep/<int:instId>/', views.appAdminAssignRepById),
 	path('ajax/assignRep/', views.ajaxAssignRep),
 	path('ajax/ResetAndWipe/', views.ajaxResetAndWipe),
+	path('ajax/restartSite/', views.ajaxRestartSite),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

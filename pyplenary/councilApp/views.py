@@ -826,3 +826,13 @@ def ajaxResetAndWipe(request):
         
     except:
         return JsonResponse({'raise404':True})
+
+@login_required
+def ajaxRestartSite(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
+    
+    import subprocess
+    proc = subprocess.run(['bash', '-c', "kill -HUP `ps aux | grep gunicorn | head -n 1 | awk '{print $2;}'`"])
+    
+    return HttpResponse()
