@@ -19,17 +19,37 @@
   <li>Please add only maximum <strong>50 users</strong> at a time!</li>
 </ul>
 <hr/>
-<form method="post" enctype="multipart/form-data">
+
+
+<h4>Upload CSV</h4>
+<form id="CSVUploadForm" onsubmit="return submitCSVForm()">
   <div class="form">
-    {% csrf_token %}
-    {{ addUserForm|crispy }}  
-    <button type="submit" class="btn btn-success btn-block">Upload CSV file</button>
-    <p><strong>Note: it may take 15 seconds per user entry to upload! Please wait and DO NOT navigate away from this page until you see the log!</strong></p>
+    <div>
+      <input class="form-control" type="file" id="CSVFileUploadBox">
+      <small class="form-text text-muted">Please ensure the uploaded file is generated from <a href='/app_admin/add_users_template/'><strong>the CSV template</strong></a>.</small>
+      <div id="CSVFileUploadErrorMessage" style="display:none;">
+        <small class="form-text" style="color:red; font-weight: bold;">Error: please ensure you have uploaded a valid CSV file!</small>
+      </div>
+    </div>
+    <br/>
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" value="" id="reissueInviteCheck">
+      <label class="form-check-label" for="reissueInviteCheck">Reissue invitations to those with valid invitations already?</label>
+      <br/>
+      <small class="form-text text-muted">This does not affect users who have already activated their accounts, to whom the webapp will never reissue an invitation.</small>
+    </div>
+    <br/>
+    <button type="submit" value="Submit" class="btn btn-primary btn-block">Upload CSV file</button>
   </div>
-
 </form>
+<hr/>
 
-<script>
-  $(".form-group").append("<br/>");
-</script>
+<h4>User upload log</h4>
+
+<div class="spinner-border" role="status" style="color:#ff9133;">
+  <span class="sr-only"></span>
+</div>
+
+<script src="{% static 'councilApp/js/papaparse.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'councilApp/js/addUsers.js' %}" type="text/javascript"></script>
 {% endblock %}

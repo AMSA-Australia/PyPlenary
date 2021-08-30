@@ -706,23 +706,28 @@ def appAdminAddUsersValidInstitutionsDownload(request):
 
 @login_required
 def appAdminAddUsers(request):
-    if not request.user.delegate.superadmin:
-        raise Http404()
-    if request.method == 'POST':
-        addUserForm = AddUserForm(request.POST, request.FILES)
-        if addUserForm.is_valid():
-            fileRead = request.FILES['file'].read().decode('utf-8')
-            addUserOutputs = addUsersFromCSV(fileRead, forceResend=addUserForm.cleaned_data.get('reissue'))
-            return render(request, 'councilApp/adminToolTemplates/add_users_log.html', {'active_tab':'app_admin', 
-                'successes': addUserOutputs['successes'],
-                'duplicates': addUserOutputs['duplicates'],
-                'errors': addUserOutputs['errors'],
-                'logging': addUserOutputs['logging'],
-                'loggingJSON': json.dumps(addUserOutputs['logging']),
-                'errorsJSON': json.dumps(addUserOutputs['errors'])})
-    else:
-        addUserForm = AddUserForm()
-    return render(request, 'councilApp/adminToolTemplates/add_users.html', {'active_tab':'app_admin', 'addUserForm': addUserForm})
+    return render(request, 'councilApp/adminToolTemplates/add_users.html', {'active_tab':'app_admin'})
+
+
+# @login_required
+# def appAdminAddUsers(request):
+#     if not request.user.delegate.superadmin:
+#         raise Http404()
+#     if request.method == 'POST':
+#         addUserForm = AddUserForm(request.POST, request.FILES)
+#         if addUserForm.is_valid():
+#             fileRead = request.FILES['file'].read().decode('utf-8')
+#             addUserOutputs = addUsersFromCSV(fileRead, forceResend=addUserForm.cleaned_data.get('reissue'))
+#             return render(request, 'councilApp/adminToolTemplates/add_users_log.html', {'active_tab':'app_admin', 
+#                 'successes': addUserOutputs['successes'],
+#                 'duplicates': addUserOutputs['duplicates'],
+#                 'errors': addUserOutputs['errors'],
+#                 'logging': addUserOutputs['logging'],
+#                 'loggingJSON': json.dumps(addUserOutputs['logging']),
+#                 'errorsJSON': json.dumps(addUserOutputs['errors'])})
+#     else:
+#         addUserForm = AddUserForm()
+#     return render(request, 'councilApp/adminToolTemplates/add_users.html', {'active_tab':'app_admin', 'addUserForm': addUserForm})
 
 @login_required
 def ajaxDownloadAddUsersLog(request):
