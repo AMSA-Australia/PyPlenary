@@ -109,7 +109,6 @@ function finishAdding(totalToAdd) {
   liveLog.appendChild(logMsg);
   document.getElementById("uploadSpinner").style.display = "none";
   document.getElementById("downloadBtns").style.display = "block";
-  setTimeout(function() { alert(`Finished processing ${totalToAdd} users.`); }, 1);
 }
 
 function downloadReviewCSV () {

@@ -574,7 +574,7 @@ def regoSetPassword(request, token):
         return render(request, 'councilApp/authTemplates/regoPassword.html', {'error':1, 'done':False})
 
     if not User.objects.filter(username=tokenObj.email):
-        user = User.objects.create(username=tokenObj.email, password=os.environ.get('USER_TEMP_PASSWORD'), email=tokenObj.email)
+        user = User.objects.create(username=tokenObj.email, password=settings.USER_TEMP_PASSWORD, email=tokenObj.email)
     else:
         user = User.objects.get(username=tokenObj.email)
 
