@@ -514,7 +514,7 @@ def passwordReset(request, token):
     return render(request, 'councilApp/authTemplates/passwordReset.html', {'changeForm':changeForm, 'linkExpired':False, 'done':False, 'user':user})
 
 def regoRequest(request):
-    regoOpen = True if readConfigYAMLFromHTML(settings.CUSTOM_CONFIG_URL)['REGO_OPEN'] in ("1", 1) else False
+    regoOpen = settings.REGO_OPEN
 
     if not regoOpen:
         return render(request, 'councilApp/authTemplates/noRego.html', {'active_tab':'registration'})
@@ -706,47 +706,22 @@ def appAdminAddUsersValidInstitutionsDownload(request):
 
 @login_required
 def appAdminAddUsers(request):
-    if not request.user.delegate.superadmin:
-        raise Http404()
-    if request.method == 'POST':
-        addUserForm = AddUserForm(request.POST, request.FILES)
-        if addUserForm.is_valid():
-            fileRead = request.FILES['file'].read().decode('utf-8')
-            addUserOutputs = addUsersFromCSV(fileRead, forceResend=addUserForm.cleaned_data.get('reissue'))
-            return render(request, 'councilApp/adminToolTemplates/add_users_log.html', {'active_tab':'app_admin', 
-                'successes': addUserOutputs['successes'],
-                'duplicates': addUserOutputs['duplicates'],
-                'errors': addUserOutputs['errors'],
-                'logging': addUserOutputs['logging'],
-                'loggingJSON': json.dumps(addUserOutputs['logging']),
-                'errorsJSON': json.dumps(addUserOutputs['errors'])})
-    else:
-        addUserForm = AddUserForm()
-    return render(request, 'councilApp/adminToolTemplates/add_users.html', {'active_tab':'app_admin', 'addUserForm': addUserForm})
+    return render(request, 'councilApp/adminToolTemplates/add_users.html', {'active_tab':'app_admin'})
 
 @login_required
-def ajaxDownloadAddUsersLog(request):
+def ajaxAddOneUser(request):
     if not request.user.delegate.superadmin:
         raise Http404()
     try:
-        logInfo = request.GET.get('logInfo')
-        response = addUsersLog(json.load(StringIO(logInfo)))
-        return JsonResponse({'raise404':False, 'filename':'add_users_log.txt', 'response':response})
-    except:
-        return JsonResponse({'raise404':True})
+        userInfo = request.GET.get('userInfo')
+        userInfo = json.loads(userInfo)
+        reissue = True if request.GET.get('reissue') == 'true' else False
+        result = addUserFromJSON(userInfo, reissue)
 
-@login_required
-def ajaxDownloadReviewsCSV(request):
-    if not request.user.delegate.superadmin:
-        raise Http404()
-    try:
-        errorsInfo = request.GET.get('errorsInfo')
-        errorsInfo = json.load(StringIO(errorsInfo))
-        print(errorsInfo)
-        response = reviewCSV(errorsInfo)
-        return JsonResponse({'raise404':False, 'filename':'error_review.csv', 'response':response})
+        return JsonResponse({'result':result})
     except:
-        return JsonResponse({'raise404':True})
+        result['errorCode'] = 'Unknown Error'
+        return JsonResponse({'result':result})
 
 @login_required
 def appAdminAssignReps(request):

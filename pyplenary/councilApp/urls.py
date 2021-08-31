@@ -49,11 +49,10 @@ urlpatterns = [
 	path('app_admin/add_users_template/', views.appAdminAddUsersTemplate),
 	path('app_admin/valid_institutions/', views.appAdminAddUsersValidInstitutions),
 	path('app_admin/valid_institutions/download/', views.appAdminAddUsersValidInstitutionsDownload),
-	path('ajax/downloadAddUsersLog/', views.ajaxDownloadAddUsersLog),
-	path('ajax/downloadReviewCSV/', views.ajaxDownloadReviewsCSV),
 	path('app_admin/assign_reps/', views.appAdminAssignReps),
 	path('app_admin/assign_rep/<int:instId>/', views.appAdminAssignRepById),
 	path('ajax/assignRep/', views.ajaxAssignRep),
 	path('ajax/ResetAndWipe/', views.ajaxResetAndWipe),
+	path('ajax/addOneUser/', views.ajaxAddOneUser),
 	path('ajax/restartSite/', views.ajaxRestartSite),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

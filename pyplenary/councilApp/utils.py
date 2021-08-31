@@ -106,52 +106,45 @@ def generateSpeakerListCSV(request):
 
     return response
 
-def validateCSVextension(value):
-    if not value.name.endswith('.csv'):
-        raise ValidationError(u'Please upload a valid CSV.')
-
-def addUsersFromCSV(csvFile, forceResend = False):
-    csvReader = csv.DictReader(csvFile.split('\n'))
-    successes = []
-    duplicates = []
-    errors = []
-    logging = []
-    for account in csvReader:
+def addUserFromJSON(account, forceResend = False):
+    try:
         account = dict(account)
-        institution = Institution.objects.filter(name = account['Institution']) | Institution.objects.filter(shortName = account['Institution'])
-        if len(institution) == 1:
-            institution = institution[0]
-        else:
-            errors.append((account, "InstitutionError"))
-            account.update({'code':"InstitutionError"})
-            logging.append(account)
-            continue
+        toReturn = {'success':False, 'errorCode':'',  'errorMsg':'',
+            'name':account['Name'], 'email':account['Email'], 'inst':'', 'account':account}
+        print(account)
 
+        instNameLower = [(i.name.lower(), i.id) for i in Institution.objects.all()] + [(i.shortName.lower(), i.id) for i in Institution.objects.all()]
+
+        institution = None
+        for i in instNameLower:
+            if account['Institution'].lower() == i[0]:
+                institution = Institution.objects.get(id=i[1])
+                toReturn['inst'] = institution.shortName
+                break
+        if not institution:
+            toReturn['errorCode'] = 'Invalid Institution'
+            toReturn['errorMsg'] = f"{account['Institution']} is an invalid institution"
+            return toReturn
+        
         [email, name, institution, role, pronouns, firstTime] = [account['Email'],
             account['Name'],
             institution,
             account['Role'] if account['Role'] else 'Delegate',
             account['Pronouns'],
             account['First time'] in ("1", 1, True, "Yes", "yes", "YES", "True", "true", "TRUE"),]
-
+        
         if not name or not email:
-            errors.append((account, "MissingInfoError"))
-            account.update({'code':"MissingInfoError"})
-            logging.append(account)
-            continue
+            toReturn['errorCode'] = 'Missing Name Or Email'
+            return toReturn
 
         if User.objects.filter(username=email):
-            errors.append((account, "AlreadyExistError"))
-            account.update({'code':"AlreadyExistError"})
-            logging.append(account)
-            continue
+            toReturn['errorCode'] = 'Account Already Created'
+            return toReturn
 
         if not forceResend:
             if PendingRego.objects.filter(email=email, active=True):
-                duplicates.append(account)
-                account.update({'code':"Duplicate"})
-                logging.append(account)
-                continue
+                toReturn['errorCode'] = 'Duplicate'
+                return toReturn
 
         for oldToken in PendingRego.objects.filter(email=email):
             oldToken.active = False
@@ -160,48 +153,25 @@ def addUsersFromCSV(csvFile, forceResend = False):
         token = generateToken()
         while PendingRego.objects.filter(token=token):
             token = generateToken()
+
+    except:
+        toReturn['errorCode'] = 'Unknown Error'
+        return toReturn
+    
+    try:
+        activateLink = f'https://council.amsa.org.au/activate/{token}'
+        subject = '[ACTION REQUIRED] AMSA Council: Webapp Acccount Activation'
+        html_message = render_to_string('councilApp/adminToolTemplates/emailTemplate.html', {'activateLink':activateLink, 'name':name})
+        plain_message = strip_tags(html_message)
+        email_from = 'AMSA Council Webmaster'
+        send_mail(subject, plain_message, email_from, [email], html_message=html_message)
+        PendingRego.objects.create(token=token, email=email, name=name, institution=institution, role=role, pronouns=pronouns, firstTime=firstTime)
         
-        try:
-            activateLink = f'https://council.amsa.org.au/activate/{token}'
-            subject = '[ACTION REQUIRED] AMSA Council: Webapp Acccount Activation'
-            html_message = render_to_string('councilApp/adminToolTemplates/emailTemplate.html', {'activateLink':activateLink, 'name':name})
-            plain_message = strip_tags(html_message)
-            email_from = 'AMSA Council Webmaster'
-            send_mail(subject, plain_message, email_from, [email], html_message=html_message)
-            PendingRego.objects.create(token=token, email=email, name=name, institution=institution, role=role, pronouns=pronouns, firstTime=firstTime)
-            successes.append(account)
-            account.update({'code':"Success"})
-            logging.append(account)
-        except:
-            errors.append((account, "EmailError"))
-            account.update({'code':"EmailError"})
-            logging.append(account)
-            continue
+        toReturn['success'] = True
 
-    return {'successes':successes, 
-            'duplicates':duplicates, 
-            'errors':errors,
-            'logging':logging}
+    except:
+        toReturn['errorCode'] = 'Email Error'
+        toReturn['errorMsg'] = 'An error occurred when attempting to email an invitation.'
+        return toReturn
 
-def addUsersLog(logging):
-    toDownload = ''
-    for i in logging:
-        if i['code'] == 'Success':
-            toDownload += f'Successfully sent email to {i["Name"]} at {i["Email"]}\n'
-        else:
-            toDownload += f'---FAILED to send email to {i["Name"]} at {i["Email"]} (Error code: {i["code"]})\n'
-    return toDownload
-
-def reviewCSV(errorsInfo):
-    toDownload = StringIO()
-    writer = csv.writer(toDownload)
-    writer.writerow(['Name', 'Email', 'Role', 'Institution', 'Pronouns', 'First time'])
-    for i in errorsInfo:
-        writer.writerow([i[0]['Name'],
-            i[0]['Email'],
-            i[0]['Role'],
-            i[0]['Institution'],
-            i[0]['Pronouns'],
-            i[0]['First time']])
-    return toDownload.getvalue()
-
+    return toReturn

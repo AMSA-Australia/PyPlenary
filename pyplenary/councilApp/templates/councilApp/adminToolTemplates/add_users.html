@@ -12,24 +12,52 @@
 <p>You MUST use <a href='/app_admin/add_users_template/'><strong>this CSV template</strong></a> to upload users. Click on the link to download the template.</p>
 <p>Some important notes on using the template:</p>
 <ul>
-  <li>Institution names must be exactly one from <a href='/app_admin/valid_institutions/' target="_blank"><strong>this list</strong></a> (eg. <span style="color:green;font-weight:bold;">University of Melbourne</span> and <span style="color:green;font-weight: bold;">UMelb</span> are valid, but <span style="color:red;font-weight: bold;">umelb</span> and <span style="color:red;font-weight: bold;">Melbourne University</span> are invalid.)</li>
+  <li>Institution names must be exactly one from <a href='/app_admin/valid_institutions/' target="_blank"><strong>this list</strong></a> (eg. <span style="color:green;font-weight:bold;">University of Melbourne</span>, <span style="color:green;font-weight: bold;">UMelb</span> and <span style="color:green;font-weight: bold;">umelb</span> are valid, but <span style="color:red;font-weight: bold;">Melbourne University</span> is invalid. Case insensitive.)</li>
   <li>In the column for first-time attendee status, type the number <span style="color:blue;font-weight:bold;">1</span> for first-timers, and type <span style="color:blue;font-weight:bold;">0</span> for returning attendees.</li>
   <li>Do not add or remove columns from the template.</li>
   <li>By default, users with pending invitations or registered accounts are not reissued a new invitation link. However, the checkbox below allows you to force the reissuing of invitations (eg. if a user claims not to have received their original invitation, and you want to send out a new invitation)</li>
-  <li>Please add only maximum <strong>50 users</strong> at a time!</li>
 </ul>
 <hr/>
-<form method="post" enctype="multipart/form-data">
+
+
+<h4>Upload CSV</h4>
+<form id="CSVUploadForm" onsubmit="return submitCSVForm()">
   <div class="form">
-    {% csrf_token %}
-    {{ addUserForm|crispy }}  
-    <button type="submit" class="btn btn-success btn-block">Upload CSV file</button>
-    <p><strong>Note: it may take 15 seconds per user entry to upload! Please wait and DO NOT navigate away from this page until you see the log!</strong></p>
+    <div>
+      <input class="form-control" type="file" id="CSVFileUploadBox">
+      <small class="form-text text-muted">Please ensure the uploaded file is generated from <a href='/app_admin/add_users_template/'><strong>the CSV template</strong></a>.</small>
+      <div id="CSVFileUploadErrorMessage" style="display:none;">
+        <small class="form-text" style="color:red; font-weight: bold;">Error: please ensure you have uploaded a valid CSV file!</small>
+      </div>
+    </div>
+    <br/>
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" value="" id="reissueInviteCheck">
+      <label class="form-check-label" for="reissueInviteCheck">Reissue invitations to those with valid invitations already?</label>
+      <br/>
+      <small class="form-text text-muted">This does not affect users who have already activated their accounts, to whom the webapp will never reissue an invitation.</small>
+    </div>
+    <br/>
+    <button type="submit" value="Submit" class="btn btn-primary btn-block">Upload CSV file</button>
   </div>
-
 </form>
+<hr/>
 
-<script>
-  $(".form-group").append("<br/>");
-</script>
+<div id="uploadLogContainer" style="display:none">
+  <h4>User upload log</h4>
+  <div class="spinner-border" role="status" id="uploadSpinner" style="color:#ff9133;display:block">
+    <span class="sr-only"></span>
+  </div>
+  <div id="downloadBtns" style="display:none">
+    <button class="btn btn-primary btn-block" id="downloadLogBtn" onclick="downloadLogTxt()">Download log</button>
+    <button class="btn btn-primary btn-block" id="downloadReviewCSVBtn" onclick="downloadReviewCSV()">Download CSV with failed sends</button>
+  </div>
+  <div class="jumbotron rounded">
+    <div style="overflow:auto" id="liveLog">
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'councilApp/js/papaparse.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'councilApp/js/addUsers.js' %}" type="text/javascript"></script>
 {% endblock %}
