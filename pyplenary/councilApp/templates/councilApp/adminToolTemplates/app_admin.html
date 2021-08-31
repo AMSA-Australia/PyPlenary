@@ -37,7 +37,8 @@ These tools are available to you because you are a superadmin.
 <hr/>
 
 <h4>Webapp custom configuration settings</h4>
-<p>Custom configuration settings can be found in <a href="{{ customConfigURL }}" target="_blank">this YAML file</a>.</p>
+<p>Custom configuration settings can be found in <a href="{{ customConfigURL }}" target="_blank">this YAML file</a>. Modifying this configuration requires restarting the server.</p>
+<a onclick="restartSite();return false;" href="#" class="btn btn-primary">Reload data and restart server</a>
 <hr/>
 
 <h4>Reset webapp and wipe all data</h4>
@@ -82,6 +83,17 @@ These tools are available to you because you are a superadmin.
       }
     });
   };
+
+  function doReload() {
+    window.setTimeout(function() { location.reload(); }, 500);
+  }
+  function restartSite() {
+    $.ajax({
+      url: '/ajax/restartSite/',
+      success: doReload,
+      failure: doReload
+    });
+  }
 </script>
 
 {% endblock %}
