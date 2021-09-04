@@ -1,0 +1,82 @@
+{% extends 'councilApp/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Assign Webapp Admins - Council Webapp{% endblock %}
+
+{% block content %}
+
+<h2>Assign Webapp Admins</h2>
+<p>Use this interface to assign or unassign Webapp admins. People who should be admins include the Council Chair, the AMSA Secretary, AMSA IT Officer, and anyone else you believe should have ability to manage the Webapp and all its features.</p>
+<p>Note that the <strong>Council Webmaster (council.webmaster@amsa.org.au)</strong> account cannot be removed as an admin.</p>
+<br/>
+<input type="text" class="form-control" id="delegateSearchInput" onkeyup="searchDelegateTable()" placeholder="Search within delegate table...">
+<br>
+<div class="table-responsive">
+  <table class="table table-hover" id="delegateTable">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col"><span class="d-none d-md-block">Speaker</span></th>
+        <th scope="col" style="width: 25%">Name</th>
+        <th scope="col">Role</th>
+        <th scope="col">Institution</th>
+        <th scope="col">Assign Admin</th>
+        <th scope="col">Unassign Admin</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:lightblue">
+        <td>-</td>
+        <td>Council Webmaster</td>
+        <td>Council Webmaster</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      {% for delegate in validDelegates %}
+        {% if delegate.superadmin %}
+          <tr style="background:lightblue">
+        {% else %}
+          <tr>
+        {% endif %}
+          <td>{{ delegate.speakerNum }}</th>
+          <td>{{ delegate.name }}</td>
+          <td>{{ delegate.role }}</td>
+          <td>{{ delegate.institution }}</td>
+          {% if not delegate.superadmin %}
+            <td><a onclick="assignAdmin({{ delegate.id}}, 1)" href="javascript:void(0)">Assign Admin</a></td>
+            <td>-</td>
+          {% else %}
+            <td>-</td>
+            <td><a onclick="assignAdmin({{ delegate.id}}, 0)" href="javascript:void(0)">Unassign Admin</a></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function assignAdmin(delegateId, toAssign) {
+    $.ajax({
+      url: '/ajax/assignAdmin/',
+      data: {
+        'delegateId': delegateId,
+        'toAssign': toAssign,
+      },
+      dataType: 'json',
+      success: function (data) {
+        if (data.raise404) {
+          if(!alert('An error occurred.')){window.location.reload();}
+        } else {
+          if(!alert(data.adminUser + ' has been ' + data.hasAssigned + ' as an admin.')){window.location.reload();}
+        }
+      },
+      failure: function (data) {
+        if(!alert('An error occurred.')){window.location.reload();}
+      }
+    });
+  };
+</script>
+
+{% endblock %}

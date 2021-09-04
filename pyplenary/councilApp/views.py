@@ -777,6 +777,37 @@ def ajaxAssignRep(request):
     data = {'raise404':False, 'newRep':[delegate.name, delegate.institution.name]}
     return JsonResponse(data)
 
+def appAdminAssignAdmins(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
+    validDelegates = list(Delegate.objects.filter(superadmin=True).exclude(id=request.user.delegate.id).exclude(speakerNum=0).exclude(speakerNum=0).order_by('speakerNum'))
+    validDelegates += list(Delegate.objects.filter(superadmin=False).exclude(id=request.user.delegate.id).exclude(speakerNum=0).exclude(speakerNum=0).order_by('speakerNum'))
+    return render(request, 'councilApp/adminToolTemplates/assign_admin.html', {'active_tab':'app_admin', 'validDelegates':validDelegates})
+
+def ajaxAssignRep(request):
+    if not request.user.delegate.superadmin:
+        raise Http404()
+    try:
+        delegateId = request.GET.get('delegateId', None)
+        toAssign = int(request.GET.get('toAssign', None))
+        delegate = Delegate.objects.get(id=delegateId)
+    except:
+        return JsonResponse({'raise404':True})
+
+    if delegate.id == request.user.delegate:
+        return JsonResponse({'raise404':True})
+
+    if toAssign:
+        delegate.superadmin = True
+        delegate.save()
+        data = {'raise404':False, 'adminUser':delegate.name, 'hasAssigned':'assigned'}
+    else:
+        delegate.superadmin = False
+        delegate.save()
+        data = {'raise404':False, 'adminUser':delegate.name, 'hasAssigned':'unassigned'}
+
+    return JsonResponse(data)
+
 @login_required
 def ajaxResetAndWipe(request):
     if not request.user.delegate.superadmin:
