@@ -1,3 +1,4 @@
 #!/bin/bash
 cd pyplenary
-SECRET_KEY= python manage.py collectstatic
+SECRET_KEY="tempKey"
+python manage.py collectstatic
