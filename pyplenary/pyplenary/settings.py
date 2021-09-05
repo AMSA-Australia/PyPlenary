@@ -9,6 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
 # location of custom configurations file
 # LOAD DEVELOPMENT SETTINGS IF ENVIRON SET
 if os.environ.get('DJANGO_DEVELOPMENT'):
@@ -18,9 +21,6 @@ else:
     # production environment
     CUSTOM_CONFIG_URL = 'https://drive.google.com/uc?id=1851_s4XH7rQUrGQuU5zkZ1-ryBDPTqru'
 CUSTOM_CONFIGS = readConfigYAMLFromHTML(CUSTOM_CONFIG_URL)
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = CUSTOM_CONFIGS['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =  bool(int(CUSTOM_CONFIGS['DEBUG']))
