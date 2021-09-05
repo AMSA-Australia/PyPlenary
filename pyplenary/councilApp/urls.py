@@ -56,5 +56,5 @@ urlpatterns = [
 	path('ajax/addOneUser/', views.ajaxAddOneUser),
 	path('ajax/restartSite/', views.ajaxRestartSite),
 	path('app_admin/assign_admins/', views.appAdminAssignAdmins),
-	path('ajax/assignAdmin/', views.ajaxAssignRep),
+	path('ajax/assignAdmin/', views.ajaxAssignAdmin),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
