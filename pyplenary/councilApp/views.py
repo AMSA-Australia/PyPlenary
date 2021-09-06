@@ -800,10 +800,16 @@ def ajaxAssignAdmin(request):
     if toAssign:
         delegate.superadmin = True
         delegate.save()
+        delegate.authClone.is_superuser = True
+        delegate.authClone.is_staff = True
+        delegate.authClone.save()
         data = {'raise404':False, 'adminUser':delegate.name, 'hasAssigned':'assigned'}
     else:
         delegate.superadmin = False
         delegate.save()
+        delegate.authClone.is_superuser = False
+        delegate.authClone.is_staff = False
+        delegate.authClone.save()
         data = {'raise404':False, 'adminUser':delegate.name, 'hasAssigned':'unassigned'}
 
     return JsonResponse(data)
@@ -819,14 +825,17 @@ def ajaxResetAndWipe(request):
 
         # Deleting in the order
         superadminEmail = 'council.webmaster@amsa.org.au'
+
+        if request.user.username != superadminEmail:
+            logout(request)
         Vote.objects.all().delete()
         Proxy.objects.all().delete()
         Poll.objects.all().delete()
         Speaker.objects.all().delete()
         ResetToken.objects.all().delete()
         PendingRego.objects.all().delete()
-        Delegate.objects.all().exclude(authClone__username='council.webmaster@amsa.org.au').exclude(id=request.user.delegate.id).delete()
-        User.objects.all().exclude(username=superadminEmail).exclude(username=request.user.username).delete()
+        Delegate.objects.all().exclude(authClone__username='council.webmaster@amsa.org.au').delete()
+        User.objects.all().exclude(username=superadminEmail).delete()
 
         return JsonResponse({'raise404':False, 'successWipe':True})
         
