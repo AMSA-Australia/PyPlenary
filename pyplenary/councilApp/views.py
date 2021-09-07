@@ -848,6 +848,6 @@ def ajaxRestartSite(request):
         raise Http404()
     
     import subprocess
-    proc = subprocess.run(['bash', '-c', "kill -HUP `ps aux | grep gunicorn | head -n 1 | awk '{print $2;}'`"])
+    proc = subprocess.run(['bash', '-c', "kill -HUP `ps aux | grep rainbow-saddle | head -n 1 | awk '{print $2;}'`"])
     
     return HttpResponse()

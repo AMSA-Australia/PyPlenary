@@ -16,3 +16,4 @@ Twisted
 uvicorn[standard]==0.13.4
 gunicorn==20.0.4
 gevent==21.1.2
+rainbow-saddle==0.4.0
