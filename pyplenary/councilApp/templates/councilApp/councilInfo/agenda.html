@@ -25,8 +25,7 @@
   <div style="max-width: 600px; margin: 0 auto;">
     <h2 class="mb-3">Agenda</h2>
 
-    {% comment %}TODO: Make configurable{% endcomment %}
-    <p>All times are shown in Melbourne time (Australian Eastern Standard Time).</p>
+    <p>All times are shown in {{ PYPLENARY_TZ }}.</p>
 
     <ul class="nav nav-tabs">
       {% for day in agenda.keys %}
