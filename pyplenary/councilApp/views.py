@@ -31,6 +31,7 @@ from .utils import *
 import requests
 import csv
 from io import StringIO
+import datetime
 
 os.chdir(settings.BASE_DIR) # For loading agenda.yaml, etc.
 
@@ -391,7 +392,23 @@ def agenda(request):
         cached_agenda = yaml.load(requests.get(settings.PYPLENARY_AGENDA_URI).text)
         cache1.set('agenda', cached_agenda, timeout=None)
 
-    return render(request, 'councilApp/councilInfo/agenda.html', {'active_tab':'agenda', 'active_tab2': 'info', 'agenda':cached_agenda})
+    agendaDates = [(key, cached_agenda[key]['date']) for key in cached_agenda.keys()]
+    try:
+        toDisp = 0
+        timeNow = datetime.datetime.now()
+        formatStr = '%d/%m/%Y'
+        for i in agendaDates:
+            agendaTime = datetime.datetime.strptime(i[1], formatStr)
+            if (timeNow - agendaTime).total_seconds() > 0:
+                toDisp += 1
+        if toDisp == 0:
+            toDisp += 1
+    except:
+        toDisp = 1
+
+    print(agendaDates)
+
+    return render(request, 'councilApp/councilInfo/agenda.html', {'active_tab':'agenda', 'active_tab2': 'info', 'agenda':cached_agenda, 'toDisp':toDisp})
 
 def reports(request):
     cache1 = caches['default']

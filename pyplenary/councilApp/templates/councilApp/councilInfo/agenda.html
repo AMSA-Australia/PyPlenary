@@ -29,17 +29,18 @@
 
     <ul class="nav nav-tabs">
       {% for day in agenda.keys %}
+        
         <li class="nav-item">
-          <button class="nav-link{% if forloop.first %} active{% endif %}" data-bs-toggle="tab" data-bs-target="#{{ day|slugify }}" aria-controls="{{ day|slugify }}" aria-selected="true">{{ day }}</button>
+          <button class="nav-link{% if forloop.counter == toDisp %} active{% endif %}" data-bs-toggle="tab" data-bs-target="#{{ day|slugify }}" aria-controls="{{ day|slugify }}" aria-selected="true">{{ day }} </button>
         </li>
       {% endfor %}
     </ul>
 
     <div class="tab-content">
       {% for day, items in agenda.items %}
-        <div class="tab-pane fade{% if forloop.first %} show active{% endif %}" id="{{ day|slugify }}">
+        <div class="tab-pane fade{% if forloop.counter == toDisp %} show active{% endif %}" id="{{ day|slugify }}">
           <div class="timeline mt-4">
-            {% for item in items %}
+            {% for item in items.schedule %}
               <div>
                 {% if item.color %}<span class="badge badge-dot bg-{{ item.color }}"><i></i></span>{% endif %}
                 <div class="content">

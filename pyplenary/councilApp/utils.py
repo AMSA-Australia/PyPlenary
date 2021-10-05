@@ -160,7 +160,7 @@ def addUserFromJSON(account, forceResend = False):
     
     try:
         activateLink = f'https://council.amsa.org.au/activate/{token}'
-        subject = '[ACTION REQUIRED] AMSA Council: Webapp Acccount Activation'
+        subject = f'[ACTION REQUIRED] Webapp Acccount Activation, {settings.CUSTOM_CONFIGS["PYPLENARY_SITE_NAME"]}'
         html_message = render_to_string('councilApp/adminToolTemplates/emailTemplate.html', {'activateLink':activateLink, 'name':name})
         plain_message = strip_tags(html_message)
         email_from = 'AMSA Council Webmaster'
