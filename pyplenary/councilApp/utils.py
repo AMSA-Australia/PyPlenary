@@ -126,7 +126,7 @@ def addUserFromJSON(account, forceResend = False):
             toReturn['errorMsg'] = f"{account['Institution']} is an invalid institution"
             return toReturn
         
-        [email, name, institution, role, pronouns, firstTime] = [account['Email'].lower(),
+        [email, name, institution, role, pronouns, firstTime] = [''.join(account['Email'].lower().split()),
             account['Name'],
             institution,
             account['Role'] if account['Role'] else 'Delegate',
