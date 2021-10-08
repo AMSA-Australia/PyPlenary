@@ -23,6 +23,8 @@
       {% for delegate in allDelegates %}
         {% if user.is_authenticated and delegate == user.delegate %}
           <tr style="background:lightgreen">
+        {% elif delegate.rep == True %}
+          <tr style="background:lightblue;">
         {% else %}
           <tr>
         {% endif %}
