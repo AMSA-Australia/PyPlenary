@@ -133,7 +133,8 @@ def delegates(request):
             + list(Delegate.objects.exclude(authClone=request.user).exclude(speakerNum=0).filter(rep=True).order_by('speakerNum'))
             + list(Delegate.objects.exclude(authClone=request.user).exclude(speakerNum=0).filter(rep=False).order_by('speakerNum'))
     else:
-        allDelegates = Delegate.objects.exclude(speakerNum=0).order_by('speakerNum')
+        allDelegates = list(Delegate.objects.exclude(speakerNum=0)..filter(rep=True).order_by('speakerNum'))
+            + list(Delegate.objects.exclude(speakerNum=0).filter(rep=False).order_by('speakerNum'))
     return render(request, 'councilApp/delegates.html', {'allDelegates':allDelegates, 'active_tab':'delegates'})
 
 @login_required
