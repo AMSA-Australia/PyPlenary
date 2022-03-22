@@ -23,7 +23,7 @@ else:
 CUSTOM_CONFIGS = readConfigYAMLFromHTML(CUSTOM_CONFIG_URL)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  bool(int(CUSTOM_CONFIGS['DEBUG']))
+DEBUG =  bool(int(CUSTOM_CONFIGS['DEBUG_MODE']))
 
 ALLOWED_HOSTS = ['*']
 
