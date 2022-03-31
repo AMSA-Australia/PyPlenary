@@ -419,6 +419,15 @@ def reports(request):
 
     return render(request, 'councilApp/councilInfo/reports.html', {'active_tab':'reports', 'active_tab2': 'info', 'allGroups':cached_reports})
 
+def policies(request):
+    cache1 = caches['default']
+    cached_policies = cache1.get('policies')
+    if cached_policies is None or request.GET.get('refresh', '0') == '1':
+        cached_policies = yaml.load(requests.get(settings.PYPLENARY_POLICIES_URI).text)
+        cache1.set('reports', cached_policies, timeout=None)
+
+    return render(request, 'councilApp/councilInfo/policies.html', {'active_tab':'policies', 'active_tab2': 'info', 'allPolicies':cached_policies})
+
 def socials(request):
     cache1 = caches['default']
     cached_socials = cache1.get('socials')
@@ -436,6 +445,12 @@ def nodes(request):
         cache1.set('nodes', cached_nodes, timeout=None)
 
     return render(request, 'councilApp/councilInfo/nodes.html', {'active_tab':'nodes', 'active_tab2': 'info', 'allNodes':cached_nodes})
+
+def fbgroup(request):
+    try:
+        return redirect(settings.PYPLENARY_FACEBOOK_GROUP)
+    except:
+        raise Http404()
 
 def loginCustom(request):
     if request.user.is_authenticated:

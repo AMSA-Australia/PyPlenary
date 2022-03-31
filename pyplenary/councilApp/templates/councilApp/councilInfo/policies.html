@@ -1,0 +1,80 @@
+{% extends 'councilApp/base.html' %}
+{% load timeline %}
+{% load markdown %}
+
+{% block title %}Policies - Council Webapp{% endblock %}
+
+{% block content %}
+  <div style="max-width: 600px; margin: 0 auto;">
+    <h2 class="mb-3">Policies</h2>
+    <p>Please contact <strong><a href="mailto:{{allPolicies.npo.email}}">{{allPolicies.npo.name}}</a> (National Policy Officer)</strong>, with any concerns or queries.
+
+    <div class="accordion" id="policiesAccordion">
+      {% for policy in allPolicies.policies %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#P{{policy.id}}" aria-expanded="false" aria-controls="collapse{{policy.name}}">
+              <h5>
+                {{policy.name}} &nbsp;
+                {% if policy.status == 0 %}
+                  <span class="badge bg-secondary">Pending</span>
+                {% elif policy.status == 1 %}
+                  <span class="badge bg-success">Adopted</span>
+                {% elif policy.status == 2 %}
+                  <span class="badge bg-danger">Rejected</span>
+                {% elif policy.status == 3 %}
+                  <span class="badge bg-warning">Deferred</span>
+                {% else %}
+                  <span class="badge bg-secondary">Status NA</span>
+                {% endif %}
+                
+              </h5>
+            </button>
+          </h2>
+          <div id="P{{policy.id}}" class="accordion-collapse collapse" data-bs-parent="#policiesAccordion">
+            <div class="accordion-body">
+              <div class="table-responsive">
+                <table class="table table-borderless" style="margin-bottom:0rem;">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Link to policy:</th>
+                      <td><a href="{{policy.URL|safe}}" target="_blank">Click here</a></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Lead Author(s):</th>
+                      <td>
+                        {% for author in policy.authors.leads %}
+                          {{author}}<br>
+                        {% endfor %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Policy Author(s):</th>
+                      <td>
+                        {% for author in policy.authors.authors %}
+                          {{author}}<br>
+                        {% endfor %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Policy Mentor(s)/ Officer(s):</th>
+                      <td>
+                        {% for author in policy.authors.mentors %}
+                          {{author}}<br>
+                        {% endfor %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Description: </th>
+                      <td>{{policy.description|safe}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

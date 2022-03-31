@@ -36,11 +36,11 @@
               <a class="nav-link dropdown-toggle {% if active_tab2 == 'info' %}active{% endif %}" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Council Info</a>
               <ul class="dropdown-menu dropdown-menu-dark">
                 <li><a class="dropdown-item {% if active_tab == 'agenda' %}active{% endif %}" href="/agenda/">Agenda</a></li>
-                <li><a class="dropdown-item {% if active_tab == 'nodes' %}active{% endif %}" href="/nodes/">Nodes</a></li>
+                <!-- <li><a class="dropdown-item {% if active_tab == 'nodes' %}active{% endif %}" href="/nodes/">Nodes</a></li> -->
                 <li><a class="dropdown-item {% if active_tab == 'socials' %}active{% endif %}" href="/socials/">Social Events</a></li>
                 <li><a class="dropdown-item {% if active_tab == 'reports' %}active{% endif %}" href="/reports/">Reports</a></li>
-                <li><a class="dropdown-item" href="https://docs.google.com/document/d/1-OlE4j2IY7QRyxmdgXUQV97bCQOD__Qe/edit" target="_blank">Policies</a></li>{% comment %}TODO: Make configurable{% endcomment %}
-                <li><a class="dropdown-item" href="https://www.facebook.com/groups/911996769749516/" target="_blank">Facebook Group</a></li>{% comment %}TODO: Make configurable{% endcomment %}
+                <li><a class="dropdown-item {% if active_tab == 'reports' %}active{% endif %}" href="/policies/">Policies</a></li>
+                <li><a class="dropdown-item {% if active_tab == 'reports' %}active{% endif %}" href="/fbgroup/">Facebook Group</a></li>
               </ul>
             </li>
 
