@@ -424,7 +424,7 @@ def policies(request):
     cached_policies = cache1.get('policies')
     if cached_policies is None or request.GET.get('refresh', '0') == '1':
         cached_policies = yaml.load(requests.get(settings.PYPLENARY_POLICIES_URI).text)
-        cache1.set('reports', cached_policies, timeout=None)
+        cache1.set('policies', cached_policies, timeout=None)
 
     return render(request, 'councilApp/councilInfo/policies.html', {'active_tab':'policies', 'active_tab2': 'info', 'allPolicies':cached_policies})
 
