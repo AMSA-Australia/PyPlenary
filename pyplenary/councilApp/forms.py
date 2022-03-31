@@ -18,9 +18,9 @@ class StartPollForm(forms.Form):
     roll_call = forms.BooleanField(required = False, label="Roll call",
         widget=forms.CheckboxInput(attrs={'class': 'centred-checkbox', 'id':'check_roll_call'}))
     repsOnly = forms.BooleanField(required = False, label="Reps only", 
-        widget=forms.CheckboxInput(attrs={'class': 'centred-checkbox', 'id':'check_reps'}))
+        widget=forms.CheckboxInput(attrs={'class': 'centred-checkbox', 'id':'check_reps'}), initial=True)
     weighted = forms.BooleanField(required = False, label="Institution-weighted vote", 
-        widget=forms.CheckboxInput(attrs={'class': 'centred-checkbox', 'id':'check_weighted', 'disabled':True}))
+        widget=forms.CheckboxInput(attrs={'class': 'centred-checkbox', 'id':'check_weighted'}))
     majority = forms.ChoiceField(required = True, label="Majority", choices=[('simple','Simple majority (1/2 of votes)'),('super','Supermajority (2/3 of votes)')],
         widget=forms.RadioSelect(), initial='simple')
 
