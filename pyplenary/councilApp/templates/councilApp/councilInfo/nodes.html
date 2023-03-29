@@ -24,13 +24,13 @@
                       <td>{{item.address|safe}}</td>
                     </tr>
                     <tr>
-                      <th scope="row">Leads:</th>
-                      <td>{{item.nodeLead}}</td>
+                      <th scope="row">Event Page:</th>
+                      <td><a href="{{item.nodeLead}}">{{item.nodeLead}}</a></td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                       <th scope="row">Contact: </th>
                       <td><a href="mailto:{{item.email}}">{{item.email}}</a>{% if item.email2 %}, <a href="mailto:{{item.email2}}">{{item.email2}}</a>{% endif %}</td>
-                    </tr>
+                    </tr> -->
                     <tr>
                       <th scope="row">Map: </th>
                       <td><a href="{{item.map}}">Click here for Google Maps</a></td>
