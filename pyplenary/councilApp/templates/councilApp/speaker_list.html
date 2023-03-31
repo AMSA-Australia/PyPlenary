@@ -30,13 +30,6 @@
         <select class="select form-control" id="location-dropdown">
           <option value="---">Please select</option>
           <option value="">I am Zooming in by myself</option>
-          <option value="">I am at the NSW node</option>
-          <option value="">I am at the VIC node</option>
-          <option value="">I am at the SA node</option>
-          <option value="">I am at the QLD node</option>
-          <option value="">I am at the WA node</option>
-          <option value="">I am at the TAS node</option>
-          <option value="">I am at the MedSoc Presidents' node</option>
           {% for node in nodes %}
           <option value="{{ node.id }}">I am at the {{ node.name }} node</option>
           {% endfor %}
