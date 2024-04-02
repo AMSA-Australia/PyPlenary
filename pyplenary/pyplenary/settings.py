@@ -181,7 +181,9 @@ else:
         'NAME': CUSTOM_CONFIGS['DBNAME'],
         'HOST': hostname + CUSTOM_CONFIGS['DBDOMAIN'],
         'USER': CUSTOM_CONFIGS['DBUSER'] + "@" + hostname,
-        'PASSWORD': os.environ.get('DBPASS')
+        'PASSWORD': os.environ.get('DBPASS'),
+        'PORT': CUSTOM_CONFIGS['DBPORT'],
+        'SSLMODE': 'true'
     }
 
 CACHES = {
